@@ -1,4 +1,4 @@
-package Homeworks_And_Labs.L02_Java_Fundamentals_Arrays_EXC;
+package Homeworks_And_Labs.L03_Java_Fundamentals_Arrays_EXC;
 
 import java.util.Scanner;
 
