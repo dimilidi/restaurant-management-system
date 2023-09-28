@@ -6,9 +6,7 @@ public class ReverseArrayOfStrings {
         Scanner scanner = new Scanner(System.in);
 
         String[] arr = scanner.nextLine().split(" ");
-
         String[] reversedArr = new String[arr.length];
-
 
         for (int i = 0; i < arr.length ; i++) {
             reversedArr[i] = arr[(arr.length - 1) - i];
