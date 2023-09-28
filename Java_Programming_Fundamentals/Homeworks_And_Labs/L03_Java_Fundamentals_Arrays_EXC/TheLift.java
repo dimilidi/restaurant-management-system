@@ -9,6 +9,7 @@ public class TheLift {
 
         int waitingPeople = Integer.parseInt(scanner.nextLine());
         int[] wagons = Arrays.stream(scanner.nextLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        //int[] wagons = Arrays.stream(scanner.nextLine().split(" ")).mapToInt(e->Integer.parseInt(e)).toArray();
 
         boolean liftFull = true;
 
