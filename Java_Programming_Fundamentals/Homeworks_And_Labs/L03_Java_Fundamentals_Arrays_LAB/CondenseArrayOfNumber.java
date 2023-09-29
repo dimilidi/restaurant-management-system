@@ -8,22 +8,16 @@ public class CondenseArrayOfNumber {
         Scanner scanner = new Scanner(System.in);
 
         int[] numbers = Arrays.stream(scanner.nextLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-        int[] temp = new int[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
-            temp[i] = numbers[i];
-        }
 
-        for (int i = 0; i < numbers.length - 1; i++) {
-            int[] currArr = new int[temp.length - 1] ;
-
-            for (int j = 0; j <= currArr.length - 1; j++) {
-                currArr[j] = temp[j] + temp[j+1];
+        while (numbers.length > 1) {
+            int[] condensed = new int[numbers.length - 1];
+            for (int i = 0; i < numbers.length - 1; i++) {
+                condensed[i] = numbers[i] + numbers[i + 1];
             }
-
-            temp = currArr;
+            numbers = condensed;
         }
-
-        System.out.println(temp[0]);
-
+        System.out.println(numbers[0]);
     }
+
+
 }
