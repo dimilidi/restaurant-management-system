@@ -18,26 +18,24 @@ public class MovingTarget {
         while (!input.equalsIgnoreCase("end")) {
             String[] commandArr = input.split(" ");
             String command = commandArr[0];
-            int index  = Integer.parseInt(commandArr[1]);
+            int index = Integer.parseInt(commandArr[1]);
 
             switch (command) {
                 case "Shoot":
-                        int target = targets.get(index);
+                    if (isValidIndex(index, targets.size())) {
                         int power = Integer.parseInt(commandArr[2]);
-                        if (targets.indexOf(target) == index) {
-                            if (target - power <= 0) {
-                                targets.remove(index);
-                            } else {
-                                target -= power;
-                                if(target > 0) {
-                                     targets.set(index, target);
-                                }
-                            }
+                        int target = targets.get(index);
+                        target -= power;
+                        if (target <= 0) {
+                            targets.remove(index);
+                        } else {
+                            targets.set(index, target);
                         }
+                    }
                     break;
                 case "Add":
                     int elementToAdd = Integer.parseInt(commandArr[2]);
-                    if (index <= targets.size() - 1) {
+                    if (isValidIndex(index, targets.size())) {
                         targets.add(index, elementToAdd);
                     } else {
                         System.out.println("Invalid placement!");
@@ -45,28 +43,26 @@ public class MovingTarget {
                     break;
                 case "Strike":
                     int radius = Integer.parseInt(commandArr[2]);
-                    int leftRange = index - radius;
-                    int rightRange = index + radius;
-                    if (rightRange <= targets.size() - 1 && leftRange >= 0) {
-                        for (int i = rightRange; i >= leftRange; i--) {
+                    if (isValidIndex(index, targets.size()) && isValidIndex(index - radius, targets.size()) && isValidIndex(index + radius, targets.size())) {
+                        for (int i = index + radius; i >= index - radius; i--) {
                             targets.remove(i);
                         }
                     } else {
                         System.out.println("Strike missed!");
                     }
                     break;
-
             }
-           input = scanner.nextLine();
+            input = scanner.nextLine();
         }
 
+        String result = targets.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining("|"));
 
-        for(Integer target : targets) {
-            if(targets.indexOf(target) == (targets.size() - 1)) {
-                System.out.println(target);
-            } else {
-                 System.out.print(target + "|");
-            }
-        }
+        System.out.println(result);
+    }
+
+    private static boolean isValidIndex(int index, int size) {
+        return index >= 0 && index < size;
     }
 }
