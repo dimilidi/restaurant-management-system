@@ -1,0 +1,2 @@
+package Homeworks_And_Labs.L06_Java_Fundamentals_Mid_Exam_Preparation_EXC;public class Inventory {
+}
