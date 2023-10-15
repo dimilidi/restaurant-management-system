@@ -33,5 +33,4 @@ public class MultiplyBigNumber {
         System.out.println(result);
     }
 
-
 }
