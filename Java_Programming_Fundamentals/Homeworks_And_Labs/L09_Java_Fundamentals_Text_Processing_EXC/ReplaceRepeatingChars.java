@@ -17,7 +17,6 @@ public class ReplaceRepeatingChars {
                 i = -1;
             }
         }
-
         System.out.println(string);
     }
 }
