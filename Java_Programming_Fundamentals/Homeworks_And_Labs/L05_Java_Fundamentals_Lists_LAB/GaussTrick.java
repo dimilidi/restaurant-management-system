@@ -25,8 +25,15 @@ public class GaussTrick {
             result.add(leftElement + rightElement);
         }
 
-        for (int num : result) {
-            System.out.print(num + " ");
-        }
+//        for (int num : result) {
+//            System.out.print(num + " ");
+//        }
+
+        System.out.println(String.join(
+                " ",
+                result
+                        .stream()
+                        .map(e -> String.valueOf(e))
+                        .toArray(String[]::new)));
     }
 }
