@@ -1,0 +1,29 @@
+package Homeworks_And_Labs.L03_Java_OOP_Inheritance_LAB.StackOfStrings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class StackOfStrings {
+    private List<String> data;
+
+    public StackOfStrings() {
+        this.data = new ArrayList<>();
+    }
+
+    public void push(String item) {
+        this.data.add(item);
+    }
+
+    public String pop() {
+        return this.data.remove(this.data.size() - 1);
+    }
+
+    public String peek() {
+        return  this.data.get(this.data.size() - 1);
+
+    }
+
+    public boolean isEmpty() {
+        return this.data.isEmpty();
+    }
+}
