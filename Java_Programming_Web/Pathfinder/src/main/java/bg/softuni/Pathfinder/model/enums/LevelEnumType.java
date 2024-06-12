@@ -1,5 +1,5 @@
 package bg.softuni.Pathfinder.model.enums;
 
-public enum Level {
+public enum LevelEnumType {
     BEGINNER, INTERMEDIATE, ADVANCED;
 }

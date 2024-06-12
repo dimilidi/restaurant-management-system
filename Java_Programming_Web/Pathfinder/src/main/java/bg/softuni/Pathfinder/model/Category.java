@@ -1,6 +1,6 @@
 package bg.softuni.Pathfinder.model;
 
-import bg.softuni.Pathfinder.model.enums.CategoryType;
+import bg.softuni.Pathfinder.model.enums.CategoryEnumType;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +12,7 @@ public class Category {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private CategoryType name;
+    private CategoryEnumType name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -27,11 +27,11 @@ public class Category {
         this.id = id;
     }
 
-    public CategoryType getName() {
+    public CategoryEnumType getName() {
         return name;
     }
 
-    public void setName(CategoryType name) {
+    public void setName(CategoryEnumType name) {
         this.name = name;
     }
 

@@ -15,9 +15,9 @@ import java.util.Random;
 @Service
 public class RouteService {
 
-    private RouteRepository routeRepository;
-    private ModelMapper  modelMapper;
-    private Random random;
+    private final RouteRepository routeRepository;
+    private final ModelMapper  modelMapper;
+    private final Random random;
 
     public RouteService(RouteRepository routeRepository, ModelMapper modelMapper) {
         this.routeRepository = routeRepository;

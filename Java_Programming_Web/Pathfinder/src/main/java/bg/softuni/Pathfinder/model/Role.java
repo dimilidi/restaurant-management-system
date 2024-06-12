@@ -1,6 +1,6 @@
 package bg.softuni.Pathfinder.model;
 
-import bg.softuni.Pathfinder.model.enums.UserRoles;
+import bg.softuni.Pathfinder.model.enums.UserRolesEnum;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,7 +11,7 @@ public class Role {
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private UserRoles name;
+    private UserRolesEnum name;
 
     public Role() {}
 
@@ -23,11 +23,11 @@ public class Role {
         this.id = id;
     }
 
-    public UserRoles getName() {
+    public UserRolesEnum getName() {
         return name;
     }
 
-    public void setName(UserRoles name) {
+    public void setName(UserRolesEnum name) {
         this.name = name;
     }
 }

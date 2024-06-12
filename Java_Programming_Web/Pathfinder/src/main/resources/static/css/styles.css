@@ -60,7 +60,7 @@ img {
     grid-template-columns: repeat(4, 1fr);
 }
 
-.main-nav a {
+.main-nav a, .logout-btn {
     background: var(--primary);
     display: block;
     text-decoration: none;
@@ -72,9 +72,14 @@ img {
     box-shadow: var(--shadow);
 }
 
-.main-nav a:hover {
+.main-nav a:hover,
+ .logout-btn:hover{
     background: var(--dark);
     color: var(--light);
+}
+
+.logout-btn {
+    width: 100%
 }
 
 /* Top Container */
@@ -357,3 +362,5 @@ body {
     height: 40px;
     background-color: #0833e3
 }
+
+
