@@ -2,6 +2,7 @@ package com.dictionaryapp.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,9 @@ public class User {
     @OneToMany(mappedBy = "addedBy")
     private Set<Word> addedWords;
 
-    public User() {}
+    public User() {
+        addedWords = new HashSet<>();
+    }
 
     public Long getId() {
         return id;

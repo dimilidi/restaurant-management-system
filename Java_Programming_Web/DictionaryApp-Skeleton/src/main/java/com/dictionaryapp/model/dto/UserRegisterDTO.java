@@ -1,6 +1,8 @@
 package com.dictionaryapp.model.dto;
 
 import com.dictionaryapp.validation.FieldMatch;
+import com.dictionaryapp.validation.UniqueUserEmail;
+import com.dictionaryapp.validation.UniqueUsername;
 import jakarta.validation.constraints.*;
 
 @FieldMatch(
@@ -12,10 +14,12 @@ public class UserRegisterDTO {
 
     @NotNull( message = "Username cannot be empty")
     @Size(min = 3, max = 20, message = "Username length must be between 3 and 20 characters")
+    @UniqueUsername
     private String username;
 
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Invalid email format")
+    @UniqueUserEmail
     private String email;
 
     @NotNull( message = "Password cannot be empty")

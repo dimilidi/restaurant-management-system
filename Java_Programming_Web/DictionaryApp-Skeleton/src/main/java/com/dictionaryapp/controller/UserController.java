@@ -39,6 +39,9 @@ public class UserController {
 
             return "redirect:/register";
         }
+
+        boolean success = userService.register(data);
+
         return "redirect:/login";
     }
 
