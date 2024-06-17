@@ -1,9 +1,9 @@
 package com.dictionaryapp.repo;
 
-import com.dictionaryapp.model.entity.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import  com.dictionaryapp.model.entity.User;
 
 @Repository
-public interface LanguageRepository extends JpaRepository<Language, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 }

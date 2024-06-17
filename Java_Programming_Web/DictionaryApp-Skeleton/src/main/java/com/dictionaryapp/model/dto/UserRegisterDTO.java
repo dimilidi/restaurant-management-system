@@ -1,25 +1,29 @@
 package com.dictionaryapp.model.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.dictionaryapp.validation.FieldMatch;
+import jakarta.validation.constraints.*;
 
+@FieldMatch(
+        first = "password",
+        second = "confirmPassword",
+        message= "Passwords should match"
+)
 public class UserRegisterDTO {
 
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotNull( message = "Username cannot be empty")
+    @Size(min = 3, max = 20, message = "Username length must be between 3 and 20 characters")
     private String username;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotNull( message = "Password cannot be empty")
+    @Size(min = 3, max = 20, message = "Password length must be between 3 and 20 characters")
     private String password;
 
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotNull( message = "Password cannot be empty")
+    @Size(min = 3, max = 20, message = "Password length must be between 3 and 20 characters")
     private String confirmPassword;
 
     public UserRegisterDTO() {
