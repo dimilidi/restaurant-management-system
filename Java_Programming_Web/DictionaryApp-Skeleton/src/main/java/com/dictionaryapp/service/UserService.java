@@ -73,5 +73,20 @@ public class UserService {
         return false;*/
     }
 
+    public void logout() {
+        currentUser.logout();
+    }
+
+    public boolean isLoggedIn() {
+        return this.currentUser.getId() != null;
+    }
+
+    public User findByUsername(String username) {
+
+        return this.userRepository
+                .findByUsername(username)
+                .get();
+    }
+
 }
 

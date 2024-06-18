@@ -21,7 +21,7 @@ public class Language {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "language")
+    @OneToMany(mappedBy = "language", fetch = FetchType.EAGER)
     private Set<Word> words;
 
     public Language() {
