@@ -4,11 +4,13 @@ import bg.softuni.shoppinglist.model.entity.CategoryEntity;
 import bg.softuni.shoppinglist.model.enums.CategoryNameEnum;
 import bg.softuni.shoppinglist.repository.CategoryRepository;
 import bg.softuni.shoppinglist.service.CategoryService;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;

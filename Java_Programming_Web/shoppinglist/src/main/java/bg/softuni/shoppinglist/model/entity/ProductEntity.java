@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,7 +21,6 @@ public class ProductEntity extends BaseEntity{
     @Column(nullable = false)
     private BigDecimal price;
 
-    @DateTimeFormat(pattern="dd-MM-yyyy")
     private LocalDateTime neededBefore;
 
     @ManyToOne
