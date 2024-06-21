@@ -43,8 +43,8 @@ spring:
         show_sql: true
         format_sql: true
     defer-datasource-initialization: true
-#Cloudinary Properties
-#cloudinary:
+  #Cloudinary Properties
+  #cloudinary:
   #api-key:
   #api-secret:
   #cloud-name:

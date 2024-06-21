@@ -8,14 +8,13 @@
 <header th:fragment="header">
     <nav class="main-nav">
         <ul>
-            <li>
-                <a th:href="@{/}">Home</a>
-            </li>
-            <li>
-                <a th:href="@{/about}">About</a>
-            </li>
-
             <th:block th:unless="${@currentUser.username}">
+                <li>
+                    <a th:href="@{/}">Home</a>
+                </li>
+                <li>
+                    <a th:href="@{/about}">About</a>
+                </li>
                 <li>
                     <a th:href="@{/users/login}">Login</a>
                 </li>
@@ -34,7 +33,7 @@
                     <a th:href="@{/}">Admin</a>
                 </li>
                 <li>
-                    <form th:action="@{/users/logout}" method="post">
+                    <form th:action="@{/users/logout}" th:method="post">
                         <input type="hidden" name="_method" value="delete" />
                         <input type="submit" value="Logout" class="logout-btn btn btn-link nav-link"input />
                     </form>
