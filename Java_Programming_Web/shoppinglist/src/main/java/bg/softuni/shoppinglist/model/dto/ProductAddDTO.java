@@ -20,10 +20,52 @@ public class ProductAddDTO {
     private LocalDateTime neededBefore;
 
     @Positive(message = "Price must be positive")
-    @DecimalMin(value =  "0", message = "Price must be positive")
+   // @DecimalMin(value =  "0", message = "Price must be positive")
     private BigDecimal price;
 
     @NotNull(message = "You must select category")
     private CategoryNameEnum category;
 
+    public ProductAddDTO() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getNeededBefore() {
+        return neededBefore;
+    }
+
+    public void setNeededBefore(LocalDateTime neededBefore) {
+        this.neededBefore = neededBefore;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public CategoryNameEnum getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryNameEnum category) {
+        this.category = category;
+    }
 }

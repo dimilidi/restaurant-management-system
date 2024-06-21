@@ -88,11 +88,14 @@ public class UserController {
 
         httpSession.setAttribute("user", loginData);
 
+        return "redirect:/";
+    }
 
-        /* userService.login(loginData);*/
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession) {
+        httpSession.invalidate();
 
         return "redirect:/";
-
     }
 
 
