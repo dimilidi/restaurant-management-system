@@ -31,6 +31,7 @@ public class UserController {
     public String register(Model model) {
         if(!model.containsAttribute("registerData")) {
             model.addAttribute("registerData", new UserRegisterDTO());
+            model.addAttribute("isExists", false);
         }
 
         return "register";
@@ -49,7 +50,13 @@ public class UserController {
             return "redirect:register";
         }
 
-        userService.register(registerData);
+        boolean isSuccess = userService.register(registerData);
+
+        if (!isSuccess) {
+            redirectAttributes.addFlashAttribute("registerData", registerData);
+            redirectAttributes.addFlashAttribute("isExists", true);
+            return "redirect:register";
+        }
 
         return "redirect:login";
     }

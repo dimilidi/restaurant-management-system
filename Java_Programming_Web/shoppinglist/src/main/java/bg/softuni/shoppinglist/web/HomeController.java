@@ -1,5 +1,6 @@
 package bg.softuni.shoppinglist.web;
 
+import bg.softuni.shoppinglist.model.enums.CategoryNameEnum;
 import bg.softuni.shoppinglist.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -23,11 +24,12 @@ public class HomeController {
         }
 
         model.addAttribute("totalSum", productService.getTotalSum());
-        model.addAttribute("drinks", productService.getTotalSum());
-        model.addAttribute("food", productService.getTotalSum());
-        model.addAttribute("household", productService.getTotalSum());
-        model.addAttribute("other", productService.getTotalSum());
+        model.addAttribute("drinks", productService.findAllProductsByCategoryName(CategoryNameEnum.DRINK));
+        model.addAttribute("food", productService.findAllProductsByCategoryName(CategoryNameEnum.FOOD));
+        model.addAttribute("household", productService.findAllProductsByCategoryName(CategoryNameEnum.HOUSEHOLD));
+        model.addAttribute("other", productService.findAllProductsByCategoryName(CategoryNameEnum.OTHER));
 
         return "home";
     }
+
 }

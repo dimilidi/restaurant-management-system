@@ -6,6 +6,7 @@ import bg.softuni.shoppinglist.model.enums.CategoryNameEnum;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductService {
     void add(ProductAddDTO productData);
@@ -13,4 +14,8 @@ public interface ProductService {
     BigDecimal getTotalSum();
 
     List<ProductViewDTO> findAllProductsByCategoryName(CategoryNameEnum categoryNameEnum);
+
+    void buyById(UUID id);
+
+    void buyAll();
 }

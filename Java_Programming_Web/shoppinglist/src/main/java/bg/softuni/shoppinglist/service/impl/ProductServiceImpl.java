@@ -1,6 +1,7 @@
 package bg.softuni.shoppinglist.service.impl;
 
 import bg.softuni.shoppinglist.model.dto.ProductAddDTO;
+import bg.softuni.shoppinglist.model.dto.ProductViewDTO;
 import bg.softuni.shoppinglist.model.entity.ProductEntity;
 import bg.softuni.shoppinglist.model.enums.CategoryNameEnum;
 import bg.softuni.shoppinglist.repository.ProductRepository;
@@ -10,6 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,5 +40,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public BigDecimal getTotalSum() {
         return productRepository.findTotalProductSum();
+    }
+
+    @Override
+    public List<ProductViewDTO> findAllProductsByCategoryName(CategoryNameEnum categoryNameEnum) {
+        return productRepository.findAllByCategory_Name(categoryNameEnum)
+                .stream().map(product -> modelMapper.map(product, ProductViewDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void buyById(UUID id) {
+        productRepository.deleteById(id);
+    }
+
+    @Override
+    public void buyAll() {
+        productRepository.deleteAll();
     }
 }

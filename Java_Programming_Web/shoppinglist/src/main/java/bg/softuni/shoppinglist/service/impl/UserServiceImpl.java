@@ -8,8 +8,6 @@ import bg.softuni.shoppinglist.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -22,13 +20,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(UserRegisterDTO registerData) {
-        userRepository.save(modelMapper.map(registerData, UserEntity.class));
+    public boolean register(UserRegisterDTO registerData) {
+        try {
+            userRepository.save(modelMapper.map(registerData, UserEntity.class));
+        } catch (Exception e) {
+            return false;
+        }
+
+        return  true;
     }
 
     @Override
     public void login(UserLoginDTO loginData) {
-
 
 
     }
