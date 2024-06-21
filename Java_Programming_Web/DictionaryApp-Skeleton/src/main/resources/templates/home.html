@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/commons::head}"></head>
+<body>
+<header th:replace="~{fragments/commons::nav}"></header>
+<main>
+
+    <div class="container bg-blur rounded mt-3 mb-4">
+        <h1>All words</h1>
+        <div class="row mt-3 mb-3">
+
+            <div class="col-5 bg-dark rounded m-auto" style="height: 30vh; overflow: auto" th:each="entry : ${wordsByLanguage}">
+                <h3 class="mySticky bg-gray text-dark rounded" th:text="${entry.key.name()} + ': ' + ${entry.value.size()}">Language: Words Count</h3>
+                <div th:each="word : ${entry.value}" class=" mt-3 rounded" th:classappend="'badge-' + ${entry.key.name().toLowerCase()}">
+                    <img class="mr-2" th:src="'/img/' + ${entry.key.name().toLowerCase()} + '.png'" alt="Flag" width="20px" height="20px">
+                    <span th:text="${word.term}">Term</span>: <span th:text="${word.translation}">Translation</span>
+                    <br>
+                    <span>Example: <span th:text="${word.example}">Example</span></span>
+                    <br>
+                    <div class = "inline">
+                        <span>Added by: <span th:text="${word.addedBy.username}">Username</span> on <span th:text="${word.inputDate}">Input Date</span></span>
+
+                        <form  th:action="@{/remove/{id}(id=${word.id})}" th:method="DELETE">
+                            <input type="submit"value = "Remove" class="logout-btn bg-transparent ml-3 text-danger">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <form th:if="${totalWordsCount} > 0" th:action="@{/remove-all}" th:method="DELETE">
+            <button type="submit" class="logout-btn btn btn-danger">
+                Remove all <span th:text="|${totalWordsCount} words|"></span>
+            </button>
+        </form>
+
+    </div>
+</main>
+<footer th:replace="~{fragments/commons::footer}"></footer>
+</body>
+</html>
