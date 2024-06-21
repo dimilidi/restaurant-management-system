@@ -78,6 +78,8 @@ public class WordService {
     }
 
     public void removeAllWords() {
-        this.wordRepository.deleteAll();
+        userRepository.findById(currentUser.getId())
+                .map(wordRepository::findAllByAddedBy)
+                .ifPresent(wordRepository::deleteAll);
     }
 }

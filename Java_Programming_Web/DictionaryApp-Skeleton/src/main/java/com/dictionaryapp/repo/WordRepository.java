@@ -18,8 +18,8 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     Optional<Word> findByIdAndAddedBy(Long id, User user);
 
-    @Query("SELECT COUNT(w) FROM Word w")
-    int countAllWords();
+    List<Word> findAllByAddedBy(User user);
+
 
     @Query("SELECT COUNT(w) FROM Word w WHERE w.addedBy.username = :username")
     int countWordsByUser(@Param("username") String username);
