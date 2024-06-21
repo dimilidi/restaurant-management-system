@@ -6,7 +6,6 @@ import com.dictionaryapp.repo.LanguageRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component

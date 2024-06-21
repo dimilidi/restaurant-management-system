@@ -52,25 +52,6 @@ public class UserService {
                     return true;
                 })
                 .orElse(false);
-
-        /*Optional<User> user = userRepository.findByUsername(data.getUsername());
-        if(user.isEmpty()) {
-            return false;
-        }
-
-        String rawPassword = data.getPassword();
-        String encodedPassword = user.get().getPassword();
-
-
-        if (encodedPassword != null && passwordEncoder.matches(rawPassword, encodedPassword)) {
-            currentUser.login(user.get());
-
-            return true;
-        }
-
-        //logoutUser();
-
-        return false;*/
     }
 
     public void logout() {

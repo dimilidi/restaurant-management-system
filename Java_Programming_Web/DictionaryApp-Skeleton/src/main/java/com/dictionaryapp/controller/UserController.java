@@ -78,7 +78,6 @@ public class UserController {
         }
 
         if (bindingResult.hasErrors()) {
-            System.out.println("BINDING ERR");
             redirectAttributes.addFlashAttribute("loginData", data);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginData", bindingResult);
 

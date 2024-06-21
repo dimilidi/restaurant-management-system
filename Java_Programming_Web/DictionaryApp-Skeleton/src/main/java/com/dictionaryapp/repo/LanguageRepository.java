@@ -5,9 +5,8 @@ import com.dictionaryapp.model.enumaration.LanguageNameEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 
 @Repository
 public interface LanguageRepository extends JpaRepository<Language, Long> {
-    Optional<Language> findByName(LanguageNameEnum language);
+    Language findByName(LanguageNameEnum language);
 }

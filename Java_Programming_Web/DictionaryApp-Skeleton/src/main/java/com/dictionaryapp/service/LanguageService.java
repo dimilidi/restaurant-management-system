@@ -22,14 +22,13 @@ public class LanguageService {
 
     public Language findLanguage(LanguageNameEnum language) {
         final LanguageNameEnum lang = LanguageNameEnum.valueOf(language.name());
-        return languageRepository.findByName(lang).orElse(null);
+        return languageRepository.findByName(lang);
     }
 
     public List<Word> findAllWordsByLanguage(String language) {
 
         Language foundLanguage = this.languageRepository
-                .findByName(LanguageNameEnum.valueOf(language))
-                .orElseThrow(() -> new RuntimeException("Language not found"));
+                .findByName(LanguageNameEnum.valueOf(language));
 
         return foundLanguage.getWords()
                 .stream()
