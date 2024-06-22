@@ -27,6 +27,14 @@ public class ItemEntity extends BaseEntity{
     public ItemEntity() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
     }
