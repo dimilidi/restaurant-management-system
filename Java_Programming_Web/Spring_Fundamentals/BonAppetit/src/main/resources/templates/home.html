@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+    <div class="container bg-blur rounded mt-1 mb-4">
+        <h6 class="bg-gray text-dark mb-0 mt-0" th:text="|Welcome, ${@currentUser.username()}|"></h6>
+        <div class="row mt-1 mb-2">
+            <div class="col-6 mt-1 mb-1">
+                <div th:replace="fragments/commons :: tableFragment('Desserts', ${dessertsData}, '/img/dessert.png', 'Dessert', 'bg-warning')"></div>
+                <div th:replace="fragments/commons :: tableFragment('Cocktails', ${cocktailsData}, '/img/cocktail.png', 'Cocktail', 'bg-success')"></div>
+            </div>
+
+            <div class="col-6 mt-1 mb-1">
+                <div th:replace="fragments/commons :: tableFragment('Main Dishes', ${mainDishesData}, '/img/main-dish.png', 'Main Dish', 'bg-info')"></div>
+                <div th:replace="fragments/commons :: tableFragment('Favourites', ${favouritesData}, '/img/star.png', 'Favourite', 'bg-primary')"></div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
