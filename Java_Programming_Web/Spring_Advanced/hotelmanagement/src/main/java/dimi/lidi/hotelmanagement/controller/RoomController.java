@@ -8,6 +8,7 @@ import dimi.lidi.hotelmanagement.response.RoomResponse;
 import dimi.lidi.hotelmanagement.service.BookingService;
 import dimi.lidi.hotelmanagement.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,6 +61,12 @@ public class RoomController {
             }
         }
         return ResponseEntity.ok(roomResponses);
+    }
+
+    @DeleteMapping("/delete/room/{roomId}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId){
+        roomService.deleteRoom(roomId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     private RoomResponse getRoomResponse(Room room) {
