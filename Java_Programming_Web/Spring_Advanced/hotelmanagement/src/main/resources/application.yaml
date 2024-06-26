@@ -16,15 +16,15 @@ spring:
     password: ${db_password}
     username: ${db_username}
     url: jdbc:mysql://localhost:3306/hotel_management?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-  thymeleaf: # Thymeleaf
-    cache: false
-    mode: HTML
-    encoding: UTF-8
-    prefix: file:src/main/resources/templates/
-  resources: # Static resources
-    static-locations: file:src/main/resources/static/
-    cache:
-    period: 0
+  servlet:
+    multipart:
+    max-file-size: 5MB
+    max-request-size: 5MB
+    file-size-threshold: 2KB
+    security:
+      jwt:
+        secret-key: 36763979244226452948404D635166546A576D5A7134743777217A25432A462D
+        expire-length: 3600000
 logging:
   level:
     org:
@@ -34,5 +34,6 @@ logging:
         SQL: DEBUG
       nodeValue: WARN
     blog: WARN
+
 server:
   port: 8080
