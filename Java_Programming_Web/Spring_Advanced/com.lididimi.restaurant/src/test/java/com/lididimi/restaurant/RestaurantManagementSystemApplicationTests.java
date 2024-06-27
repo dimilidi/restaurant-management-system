@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.com.lididimi.restaurant;
+package com.lididimi.restaurant;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
