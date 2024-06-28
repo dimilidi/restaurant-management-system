@@ -7,6 +7,7 @@ import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.model.entity.User;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
+import com.lididimi.restaurant.utils.EmailUtils;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import com.lididimi.restaurant.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +35,9 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final JwtFilter jwtFilter;
+    private final EmailUtils emailUtils;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.jwtFilter = jwtFilter;
+        this.emailUtils = emailUtils;
     }
 
     @Override
@@ -134,11 +137,7 @@ public class UserServiceImpl implements UserService {
                 Optional<User> optionalUser = userRepository.findById(Long.parseLong(requestMap.get("id")));
                 if(optionalUser.isPresent()) {
                     userRepository.updateStatus(requestMap.get("status"), Long.parseLong(requestMap.get("id")));
-                  /*  User user = optionalUser.get();
-                    user.setEmail(requestMap.get("email"));
-                    user.setPassword(passwordEncoder.encode(requestMap.get("password")));
-                    user.setRole(requestMap.get("role"));
-                    userRepository.save(user);*/
+                    sendMailToAllAdmins(requestMap.get("status"), optionalUser.get().getEmail(), userRepository.getAllAdmins());
                     return RestaurantUtils.getResponseEntity("Successfully updated user status", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("User does not exist", HttpStatus.OK);
@@ -151,5 +150,16 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private void sendMailToAllAdmins(String status, String user, List<String> allAdmins) {
+        allAdmins.remove(jwtFilter.currentUser());
+
+        if(status != null &&  status.equalsIgnoreCase("true")) {
+            emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account approved.", "User: " + user + "\nis approved by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
+        } else {
+            emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account disabled.", "User: " + user + "\nis disabled by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
+
+        }
     }
 }

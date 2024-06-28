@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT new com.lididimi.restaurant.wrapper.UserWrapper(u.id, u.name, u.email, u.contactNumber, u.status) FROM User u WHERE u.role = 'user'")
     List<UserWrapper> getAllUsers();
 
+    @Query("SELECT u.email FROM User u WHERE u.role = 'admin'")
+    List<String> getAllAdmins();
+
     @Query("UPDATE User u SET u.status=:status WHERE u.id=:id")
     @Transactional
     @Modifying

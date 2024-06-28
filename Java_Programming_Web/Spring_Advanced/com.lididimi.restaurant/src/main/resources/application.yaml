@@ -16,6 +16,17 @@ spring:
     password: ${db_password}
     username: ${db_username}
     url: jdbc:mysql://localhost:3306/restaurant?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tattoochase80@gmail.com
+    password: baqcgodkbzblfysy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 logging:
   level:
     org:
