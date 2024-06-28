@@ -25,7 +25,7 @@ public class UserController {
         try {
             return userService.register(requestMap);
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -38,7 +38,7 @@ public class UserController {
         try {
             return userService.login(requestMap);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -47,10 +47,10 @@ public class UserController {
 
     @GetMapping("/get")
     public ResponseEntity<List<UserWrapper>> getAllUsers() {
-        try{
+        try {
             return userService.getAllUsers();
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -58,14 +58,48 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateUser(@RequestBody(required = true)  Map<String, String> requestMap) {
+    public ResponseEntity<String> updateUser(@RequestBody(required = true) Map<String, String> requestMap) {
         try {
             return userService.update(requestMap);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/checkToken")
+    public ResponseEntity<String> checkToken() {
+        try {
+            userService.checkToken();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(@RequestBody(required = true) Map<String, String> requestMap) {
+        try {
+           return userService.changePassword(requestMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<String> forgotPassword(@RequestBody(required = true) Map<String, String> requestMap) {
+        try {
+            System.out.println("In Controller try forgotPassword");
+            return userService.forgotPassword(requestMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("In Controller 500");
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

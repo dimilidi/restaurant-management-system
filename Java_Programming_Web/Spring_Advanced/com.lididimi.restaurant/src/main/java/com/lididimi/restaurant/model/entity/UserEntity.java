@@ -6,16 +6,14 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 @Entity
 @Data
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
     private static long serialVersionUID = 1L;
 
     @Id

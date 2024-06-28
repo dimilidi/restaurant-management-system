@@ -1,6 +1,6 @@
 package com.lididimi.restaurant.jwt;
 
-import com.lididimi.restaurant.model.entity.User;
+import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,7 +18,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    private com.lididimi.restaurant.model.entity.User userDetail;
+    private UserEntity userEntityDetail;
 
     public CustomerUserDetailsService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
@@ -28,11 +28,11 @@ public class CustomerUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Inside loadUserByUsername {}", username);
-         userDetail = userRepository.findByEmail(username).orElse(null);
-        if (userDetail != null) {
+         userEntityDetail = userRepository.findByEmail(username).orElse(null);
+        if (userEntityDetail != null) {
              return new org.springframework.security.core.userdetails.User(
-                    userDetail.getEmail(),
-                    userDetail.getPassword(),
+                    userEntityDetail.getEmail(),
+                    userEntityDetail.getPassword(),
                     new ArrayList<>()
             );
         } else {
@@ -40,7 +40,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
         }
     }
 
-    public com.lididimi.restaurant.model.entity.User getUserDetails() {
-        return userDetail;
+    public UserEntity getUserDetails() {
+        return userEntityDetail;
     }
 }

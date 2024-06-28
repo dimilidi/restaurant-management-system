@@ -4,7 +4,7 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.CustomerUserDetailsService;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
-import com.lididimi.restaurant.model.entity.User;
+import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
@@ -53,13 +53,13 @@ public class UserServiceImpl implements UserService {
         log.info("Inside register {}", requestMap);
         try {
             if (validateRegister(requestMap)) {
-                Optional<User> userOptional = userRepository.findByEmail(requestMap.get("email"));
+                Optional<UserEntity> userOptional = userRepository.findByEmail(requestMap.get("email"));
                 if (userOptional.isEmpty()) {
-                    User user = modelMapper.map(requestMap, User.class);
-                    user.setPassword(passwordEncoder.encode(requestMap.get("password")));
-                    user.setStatus("false");
-                    user.setRole("user");
-                    userRepository.save(user);
+                    UserEntity userEntity = modelMapper.map(requestMap, UserEntity.class);
+                    userEntity.setPassword(passwordEncoder.encode(requestMap.get("password")));
+                    userEntity.setStatus("false");
+                    userEntity.setRole("user");
+                    userRepository.save(userEntity);
                     return RestaurantUtils.getResponseEntity("Successfully registered", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("Email already exists", HttpStatus.BAD_REQUEST);
@@ -116,14 +116,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<List<UserWrapper>> getAllUsers() {
-        try{
+        try {
             if (jwtFilter.isAdmin()) {
                 return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -133,16 +133,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> update(Map<String, String> requestMap) {
         try {
-            if(jwtFilter.isAdmin()) {
-                Optional<User> optionalUser = userRepository.findById(Long.parseLong(requestMap.get("id")));
-                if(optionalUser.isPresent()) {
+            if (jwtFilter.isAdmin()) {
+                Optional<UserEntity> optionalUser = userRepository.findById(Long.parseLong(requestMap.get("id")));
+                if (optionalUser.isPresent()) {
                     userRepository.updateStatus(requestMap.get("status"), Long.parseLong(requestMap.get("id")));
                     sendMailToAllAdmins(requestMap.get("status"), optionalUser.get().getEmail(), userRepository.getAllAdmins());
                     return RestaurantUtils.getResponseEntity("Successfully updated user status", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("User does not exist", HttpStatus.OK);
                 }
-            }else {
+            } else {
                 return new ResponseEntity<>("Bad Credentials.", HttpStatus.UNAUTHORIZED);
             }
 
@@ -155,11 +155,59 @@ public class UserServiceImpl implements UserService {
     private void sendMailToAllAdmins(String status, String user, List<String> allAdmins) {
         allAdmins.remove(jwtFilter.currentUser());
 
-        if(status != null &&  status.equalsIgnoreCase("true")) {
+        if (status != null && status.equalsIgnoreCase("true")) {
             emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account approved.", "User: " + user + "\nis approved by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
         } else {
             emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account disabled.", "User: " + user + "\nis disabled by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
 
         }
+    }
+
+    @Override
+    public ResponseEntity<String> checkToken() {
+        return RestaurantUtils.getResponseEntity("true", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        System.out.println("inside changePassword");
+        try {
+            System.out.println("inside changePassword try");
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(jwtFilter.currentUser());
+
+            if (optionalUser.isPresent()) {
+                UserEntity user = optionalUser.get();
+                if (passwordEncoder.matches(requestMap.get("oldPassword"), user.getPassword())) {
+                    user.setPassword(passwordEncoder.encode(requestMap.get("newPassword")));
+                    userRepository.save(user);
+                    return RestaurantUtils.getResponseEntity("Successfully updated password", HttpStatus.OK);
+                } else {
+                    return RestaurantUtils.getResponseEntity("Incorrect old password", HttpStatus.BAD_REQUEST);
+                }
+
+            } else {
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+        try {
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(requestMap.get("email"));
+            if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
+                UserEntity user = optionalUser.get();
+                emailUtils.forgotMail(user.getEmail(), "Credentials by Restaurant Management System", user.getPassword());
+            }
+            return RestaurantUtils.getResponseEntity("Check your email for credentials.", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("SERVICE");
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
