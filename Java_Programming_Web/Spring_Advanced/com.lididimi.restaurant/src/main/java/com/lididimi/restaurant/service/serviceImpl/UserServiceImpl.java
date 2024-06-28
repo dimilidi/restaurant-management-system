@@ -2,11 +2,13 @@ package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.CustomerUserDetailsService;
+import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.model.entity.User;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
+import com.lididimi.restaurant.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,14 +33,16 @@ public class UserServiceImpl implements UserService {
     private final CustomerUserDetailsService customerUserDetailsService;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final JwtFilter jwtFilter;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
         this.customerUserDetailsService = customerUserDetailsService;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
+        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -103,5 +109,21 @@ public class UserServiceImpl implements UserService {
         }
         // Return bad credentials if any exception occurred or authentication failed
         return new ResponseEntity<>("Bad Credentials.", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public ResponseEntity<List<UserWrapper>> getAllUsers() {
+        try{
+            if (jwtFilter.isAdmin()) {
+                return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+            }
+
+        }catch (Exception e){
+
+        }
+
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
