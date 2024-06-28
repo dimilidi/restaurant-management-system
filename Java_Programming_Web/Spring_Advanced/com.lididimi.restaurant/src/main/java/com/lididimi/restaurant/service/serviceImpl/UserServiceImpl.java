@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
                     return RestaurantUtils.getResponseEntity("Email already exists", HttpStatus.BAD_REQUEST);
                 }
             } else {
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,5 +125,31 @@ public class UserServiceImpl implements UserService {
         }
 
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try {
+            if(jwtFilter.isAdmin()) {
+                Optional<User> optionalUser = userRepository.findById(Long.parseLong(requestMap.get("id")));
+                if(optionalUser.isPresent()) {
+                    userRepository.updateStatus(requestMap.get("status"), Long.parseLong(requestMap.get("id")));
+                  /*  User user = optionalUser.get();
+                    user.setEmail(requestMap.get("email"));
+                    user.setPassword(passwordEncoder.encode(requestMap.get("password")));
+                    user.setRole(requestMap.get("role"));
+                    userRepository.save(user);*/
+                    return RestaurantUtils.getResponseEntity("Successfully updated user status", HttpStatus.OK);
+                } else {
+                    return RestaurantUtils.getResponseEntity("User does not exist", HttpStatus.OK);
+                }
+            }else {
+                return new ResponseEntity<>("Bad Credentials.", HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

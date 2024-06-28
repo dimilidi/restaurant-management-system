@@ -57,5 +57,16 @@ public class UserController {
         return new ResponseEntity<List<UserWrapper>>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestBody(required = true)  Map<String, String> requestMap) {
+        try {
+            return userService.update(requestMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }
