@@ -98,9 +98,32 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("In Controller 500");
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/reset-password")
+    public boolean validateResetToken(@RequestParam String token) {
+        return userService.validatePasswordResetToken(token);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> requestMap) {
+        String token = requestMap.get("token");
+        String newPassword = requestMap.get("newPassword");
+
+        if (token == null || newPassword == null) {
+            return new ResponseEntity<>("Token and new password must be provided", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            userService.updatePassword(token, newPassword);
+            return ResponseEntity.ok("Password updated successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RestaurantUtils.getResponseEntity("Failed to update password", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 }

@@ -1,5 +1,9 @@
 package com.lididimi.restaurant.utils;
 
+import com.lididimi.restaurant.model.entity.PasswordResetToken;
+import com.lididimi.restaurant.model.entity.UserEntity;
+import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
+import com.lididimi.restaurant.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,15 +12,21 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class EmailUtils {
     private final JavaMailSender emailSender;
+    private final UserRepository userRepository;
+    private PasswordResetTokenRepository tokenRepository;
 
     @Autowired
-    public EmailUtils(JavaMailSender emailSender) {
+    public EmailUtils(JavaMailSender emailSender, UserRepository userRepository) {
         this.emailSender = emailSender;
+        this.userRepository = userRepository;
     }
 
     public void sendSimpleMessage(String to, String subject, String text, List<String> list) {
@@ -41,14 +51,19 @@ public class EmailUtils {
         return cc;
     }
 
-    public void forgotMail(String to, String subject, String password) throws MessagingException {
+
+    public void forgotMail(String to, String subject, String resetUrl) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom("tattoochase80@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
-        String htmlMsg = "<p><b>Your Login details for Restaurant Management System</b><br><b>Email: </b> " + to + " <br><b>Password: </b> " + password + "<br><a href=\"http://localhost:4200/\">Click here to login</a></p>";
+       // String htmlMsg = "<p><b>Your Login details for Restaurant Management System</b><br><b>Email: </b> " + to + " <br><b>Password: </b> " + resetUrl + "<br><a href=\"http://localhost:4200/\">Click here to login</a></p>";
+        String htmlMsg = "<p><b>To reset your password, click the link below:</b><br>" +
+                "<a href=\"" + resetUrl + "\">Reset Password</a></p>";
+        message.setContent(htmlMsg, "text/html");
         message.setContent(htmlMsg, "text/html");
         emailSender.send(message);
     }
+
 }

@@ -4,7 +4,9 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.CustomerUserDetailsService;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
+import com.lididimi.restaurant.model.entity.PasswordResetToken;
 import com.lididimi.restaurant.model.entity.UserEntity;
+import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
@@ -20,10 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.mail.MessagingException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,8 +36,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtFilter jwtFilter;
     private final EmailUtils emailUtils;
+    private final PasswordResetTokenRepository tokenRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
         this.jwtFilter = jwtFilter;
         this.emailUtils = emailUtils;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -88,29 +90,23 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> login(Map<String, String> requestMap) {
         log.info("Inside login");
         try {
-            // Attempt authentication
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestMap.get("email"), requestMap.get("password"))
             );
 
-            // Check if authenticated
             if (auth.isAuthenticated()) {
-                // Check if user is approved by admin
                 if (customerUserDetailsService.getUserDetails().getStatus().equalsIgnoreCase("true")) {
                     String token = jwtUtils.generateToken(customerUserDetailsService.getUserDetails().getEmail(),
                             customerUserDetailsService.getUserDetails().getRole());
                     return new ResponseEntity<>(token, HttpStatus.OK);
                 } else {
-                    // User is not approved by admin
                     log.info("Wait for admin approval");
                     return new ResponseEntity<>("Wait for admin approval", HttpStatus.BAD_REQUEST);
                 }
             }
         } catch (Exception e) {
-            // Authentication failed
             log.error("{}", e);
         }
-        // Return bad credentials if any exception occurred or authentication failed
         return new ResponseEntity<>("Bad Credentials.", HttpStatus.BAD_REQUEST);
     }
 
@@ -170,11 +166,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
-        System.out.println("inside changePassword");
         try {
-            System.out.println("inside changePassword try");
             Optional<UserEntity> optionalUser = userRepository.findByEmail(jwtFilter.currentUser());
-
             if (optionalUser.isPresent()) {
                 UserEntity user = optionalUser.get();
                 if (passwordEncoder.matches(requestMap.get("oldPassword"), user.getPassword())) {
@@ -201,13 +194,52 @@ public class UserServiceImpl implements UserService {
             Optional<UserEntity> optionalUser = userRepository.findByEmail(requestMap.get("email"));
             if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
                 UserEntity user = optionalUser.get();
-                emailUtils.forgotMail(user.getEmail(), "Credentials by Restaurant Management System", user.getPassword());
+                emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
             }
-            return RestaurantUtils.getResponseEntity("Check your email for credentials.", HttpStatus.OK);
+            return RestaurantUtils.getResponseEntity("Check your email for link to reset password.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("SERVICE");
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    public String passwordResetToken(String email) throws MessagingException {
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+        String resetUrl = "";
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            String token = UUID.randomUUID().toString();
+            PasswordResetToken resetToken = new PasswordResetToken();
+            resetToken.setToken(token);
+            resetToken.setUser(user);
+            resetToken.setExpiryDate(new Date(System.currentTimeMillis() + 3600000)); // 1 hour expiry
+            tokenRepository.save(resetToken);
+            resetUrl = "http://localhost:4200/reset-password?token=" + token;
+        }
+        return resetUrl;
+    }
+
+
+    public boolean validatePasswordResetToken(String token) {
+        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+        if (tokenOpt.isPresent()) {
+            PasswordResetToken resetToken = tokenOpt.get();
+            return !resetToken.isExpired();
+        }
+        return false;
+    }
+
+    @Override
+    public void updatePassword(String token, String newPassword) {
+        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+        if (tokenOpt.isPresent()) {
+            PasswordResetToken resetToken = tokenOpt.get();
+            UserEntity user = resetToken.getUser();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            System.out.println(newPassword);
+            userRepository.save(user);
+            tokenRepository.delete(resetToken);
+        }
+    }
 }
+
