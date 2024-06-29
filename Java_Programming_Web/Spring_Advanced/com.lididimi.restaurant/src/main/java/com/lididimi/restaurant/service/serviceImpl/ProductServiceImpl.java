@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +48,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<List<ProductWrapper>> getAllProducts() {
+        try {
+            return new ResponseEntity<>(productRepository.getAllProducts(), HttpStatus.OK);
 
-
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
