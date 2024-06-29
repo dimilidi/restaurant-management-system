@@ -32,7 +32,7 @@ public class CategoryController {
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-     @GetMapping("/get")
+    @GetMapping("/get")
     public ResponseEntity<List<CategoryEntity>> getAllCategories(@RequestParam(required = false) String filterValue) {
         try {
             return categoryService.getAllCategories(filterValue);
@@ -40,16 +40,16 @@ public class CategoryController {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-     }
+    }
 
-     @PostMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<String> updateCategory(@RequestBody(required = true) Map<String, String> requestMap) {
-         try {
-             return categoryService.updateCategory(requestMap);
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
-         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-     }
+        try {
+            return categoryService.updateCategory(requestMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

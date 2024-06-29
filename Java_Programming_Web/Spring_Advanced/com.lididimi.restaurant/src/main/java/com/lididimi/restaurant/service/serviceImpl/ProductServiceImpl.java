@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -57,7 +58,6 @@ public class ProductServiceImpl implements ProductService {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     private boolean validateProductMap(Map<String, String> requestMap, boolean validateId) {
         if (requestMap.containsKey("name")) {
             if (requestMap.containsKey("id") && validateId) {
@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity product = new ProductEntity();
 
         if(isAdd) {
-            product.setId(Long.parseLong(requestMap.get("productId")));
+            product.setId(Long.parseLong(requestMap.get("id")));
         } else {
             product.setStatus("true");
         }
@@ -86,5 +86,34 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(requestMap.get("description"));
         product.setPrice(new BigDecimal(requestMap.get("price")));
         return product;
+    }
+
+
+    @Override
+    public ResponseEntity<String> updateProduct(Map<String, String> requestMap) {
+        try {
+            if (jwtFilter.isAdmin()) {
+                if (validateProductMap(requestMap, true)) {
+                    Optional<ProductEntity> optionalProduct = productRepository.findById(Long.parseLong(requestMap.get("id")));
+
+                    if(optionalProduct.isPresent()) {
+                        ProductEntity product= getProductFromMap(requestMap, true);
+                        product.setStatus(optionalProduct.get().getStatus());
+                        productRepository.save(product);
+                        return RestaurantUtils.getResponseEntity("Successfully updated product.", HttpStatus.OK);
+                    } else {
+                        return RestaurantUtils.getResponseEntity("Product not found.", HttpStatus.OK);
+                    }
+                }
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+            } else {
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+
+
     }
 }
