@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
 
-    @Query("SELECT c FROM CategoryEntity c")
+    @Query("SELECT c FROM CategoryEntity c WHERE c.id IN(SELECT p.category FROM ProductEntity p WHERE p.status='true')")
     List<CategoryEntity> getAllCategories();
 
 }

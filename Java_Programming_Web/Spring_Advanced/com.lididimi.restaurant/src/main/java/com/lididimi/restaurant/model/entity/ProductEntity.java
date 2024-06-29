@@ -1,19 +1,19 @@
 package com.lididimi.restaurant.model.entity;
 
-
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Data
 @DynamicUpdate
 @DynamicInsert
-@Table(name = "categories")
-public class CategoryEntity implements Serializable {
+@Table(name = "products")
+public class ProductEntity implements Serializable {
     private static long serialVersionUID = 1L;
 
     @Id
@@ -22,4 +22,17 @@ public class CategoryEntity implements Serializable {
 
     @Column(nullable = false)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CategoryEntity category;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private String status;
+
 }
