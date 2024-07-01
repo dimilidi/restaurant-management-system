@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             return new ResponseEntity<>(productRepository.getAllProducts(), HttpStatus.OK);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity product = new ProductEntity();
 
-        if(isAdd) {
+        if (isAdd) {
             product.setId(Long.parseLong(requestMap.get("id")));
         } else {
             product.setStatus("true");
@@ -96,8 +96,8 @@ public class ProductServiceImpl implements ProductService {
                 if (validateProductMap(requestMap, true)) {
                     Optional<ProductEntity> optionalProduct = productRepository.findById(Long.parseLong(requestMap.get("id")));
 
-                    if(optionalProduct.isPresent()) {
-                        ProductEntity product= getProductFromMap(requestMap, true);
+                    if (optionalProduct.isPresent()) {
+                        ProductEntity product = getProductFromMap(requestMap, true);
                         product.setStatus(optionalProduct.get().getStatus());
                         productRepository.save(product);
                         return RestaurantUtils.getResponseEntity("Successfully updated product.", HttpStatus.OK);
@@ -113,7 +113,66 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
+    @Override
+    public ResponseEntity<String> deleteProduct(Long id) {
+        try {
+            if (jwtFilter.isAdmin()) {
+                Optional<ProductEntity> optionalProduct = productRepository.findById(id);
+                if (optionalProduct.isPresent()) {
+                    productRepository.deleteById(id);
+                    return RestaurantUtils.getResponseEntity("Successfully deleted product.", HttpStatus.OK);
+                }
+                    return RestaurantUtils.getResponseEntity("Product does not exist.", HttpStatus.OK);
 
+            } else {
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> updateStatus(Map<String, String> requestMap) {
+        try {
+            if (jwtFilter.isAdmin()) {
+                Long id = Long.parseLong(requestMap.get("id"));
+                Optional<ProductEntity> optionalProduct = productRepository.findById(id);
+                if(optionalProduct.isPresent()) {
+                    productRepository.updateProductStatus(requestMap.get("status"), id);
+                    return RestaurantUtils.getResponseEntity("Successfully updated product status.", HttpStatus.OK);
+                } else {
+                   return RestaurantUtils.getResponseEntity("Product does not exist.", HttpStatus.OK);
+                }
+            } else {
+                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<List<ProductWrapper>> getByCategory(Long id) {
+        try {
+            return new ResponseEntity<>(productRepository.getProductByCategory(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<ProductWrapper> getProductByCategory(Long id) {
+        try {
+            return new ResponseEntity<>(productRepository.getProductById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ProductWrapper(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

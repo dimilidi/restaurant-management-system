@@ -1,7 +1,5 @@
 package com.lididimi.restaurant.utils;
 
-import com.lididimi.restaurant.model.entity.PasswordResetToken;
-import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

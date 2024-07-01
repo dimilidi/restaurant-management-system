@@ -28,5 +28,15 @@ public class ProductWrapper {
         this.categoryName = categoryName;
     }
 
+    public ProductWrapper(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
+    public ProductWrapper(Long id, String name, String description, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 }
