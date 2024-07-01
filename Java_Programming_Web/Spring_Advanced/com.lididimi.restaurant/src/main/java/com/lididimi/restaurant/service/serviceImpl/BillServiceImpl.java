@@ -11,14 +11,18 @@ import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
+import java.io.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 
@@ -39,7 +43,7 @@ public class BillServiceImpl implements BillService {
         try {
             String fileName;
             if (validateRequestMap(requestMap)) {
-                if(requestMap.containsKey("isGenerate") && !((Boolean) requestMap.get("isGenerate"))) {
+                if (requestMap.containsKey("isGenerate") && !((Boolean) requestMap.get("isGenerate"))) {
                     fileName = (String) requestMap.get("uuid");
                 } else {
                     fileName = RestaurantUtils.getUUID();
@@ -78,7 +82,7 @@ public class BillServiceImpl implements BillService {
 
                 JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) requestMap.get("productDetails"));
 
-                for (int i = 0; i < jsonArray.length() ; i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
                 }
                 document.add(table);
@@ -133,7 +137,7 @@ public class BillServiceImpl implements BillService {
     }
 
     private void insertBill(Map<String, Object> requestMap) {
-        try{
+        try {
             BillEntity bill = new BillEntity();
             bill.setUuid((String) requestMap.get("uuid"));
             bill.setName((String) requestMap.get("name"));
@@ -164,16 +168,74 @@ public class BillServiceImpl implements BillService {
 
         switch (type) {
             case "Header":
-                Font headerFont =  FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE, 18, BaseColor.BLACK);
+                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE, 18, BaseColor.BLACK);
                 headerFont.setStyle(Font.BOLD);
                 return headerFont;
             case "Data":
-                Font headerData =  FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
+                Font headerData = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
                 headerData.setStyle(Font.BOLD);
                 return headerData;
             default:
                 return new Font();
         }
     }
+
+    @Override
+    public ResponseEntity<List<BillEntity>> getBills() {
+        List<BillEntity> list = new ArrayList<>();
+        if (jwtFilter.isAdmin()) {
+            list = billRepository.getAllBills();
+        } else {
+            list = billRepository.getBillsByUsername(jwtFilter.currentUser());
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) throws IOException {
+        log.info("Inside getPdf : requestMap {}", requestMap);
+
+        byte[] byteArray = new byte[0];
+        if (!requestMap.containsKey("uuid") && validateRequestMap(requestMap)) {
+            return new ResponseEntity<>(byteArray, HttpStatus.BAD_REQUEST);
+        }
+        String filePath = RestaurantConstants.STORE_LOCATION + "\\" + (String) requestMap.get("uuid") + ".pdf";
+
+        if (!RestaurantUtils.isFileExist(filePath)) {
+            requestMap.put("isGenerate", false);
+            generateReport(requestMap);
+        }
+        byteArray = getByteArray(filePath);
+        return new ResponseEntity<>(byteArray, HttpStatus.OK);
+    }
+
+
+    private byte[] getByteArray(String filePath) throws IOException {
+        File initialFile = new File(filePath);
+
+        InputStream targetStream = new FileInputStream(initialFile);
+        byte[] byteArray = IOUtils.toByteArray(targetStream);
+        targetStream.close();
+        return byteArray;
+    }
+
+    @Override
+    public ResponseEntity<String> delete(Long id) {
+        try {
+            Optional<BillEntity> optionalBill = billRepository.findById(id);
+
+            if (optionalBill.isPresent()) {
+                billRepository.deleteById(id);
+                return RestaurantUtils.getResponseEntity("Successfully deleted bill", HttpStatus.OK);
+
+            } else {
+                return RestaurantUtils.getResponseEntity("Bill does not exist", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }
