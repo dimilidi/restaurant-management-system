@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html'
+  templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent  implements OnDestroy {
   mobileQuery: MediaQueryList;
