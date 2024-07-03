@@ -74,8 +74,6 @@ export class RegisterComponent implements OnInit {
         this.ngxService.stop();
         this.dialogRef.close();
         this.responseMessage = response?.message;
-        console.log(response);
-        
         this.snackbarService.openSnackBar(this.responseMessage, "");
         this.router.navigateByUrl('/');
       },
