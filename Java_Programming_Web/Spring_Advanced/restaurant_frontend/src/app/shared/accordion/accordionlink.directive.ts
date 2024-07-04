@@ -45,6 +45,8 @@ import {
     }
   
     toggle(): any {
+    console.log("++++++++++ TOGGLE ´++++++++++");
+
       this.selected = !this.selected;
     }
   }

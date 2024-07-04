@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { FullComponent } from './layouts/full/full.component';
 import { HeaderComponent } from './layouts/full/header/header.component';
-import { SidebarComponent } from './layouts/full/sidebar/sidebar.component';
+import { AppSidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
@@ -18,6 +18,8 @@ import { NgxUiLoaderConfig, NgxUiLoaderModule, SPINNER } from 'ngx-ui-loader';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
 import { TokenInterceptor } from './services/token-interceptor.interceptor';
+import { SharedModule } from './shared/shared.module';
+import { MaterialComponentsModule } from './material-component/material.module';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   text: 'Loading...',
@@ -25,7 +27,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   textPosition: 'center-center',
   bgsColor: '#721fa2',
   fgsColor: '#721fa2',
-  fgsType: SPINNER.ballSpin,
+  fgsType: SPINNER.squareJellyBox,
   fgsSize: 100,
   hasProgressBar: false,
 };
@@ -37,7 +39,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     BestSellerComponent,
     FullComponent,
     HeaderComponent,
-    SidebarComponent,
+    AppSidebarComponent,
     RegisterComponent,
     ForgotPasswordComponent,
     LoginComponent,
@@ -52,6 +54,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     FlexLayoutModule,
     HttpClientModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
+    SharedModule,
+    MaterialComponentsModule
   ],
   providers: [
     HttpClientModule,

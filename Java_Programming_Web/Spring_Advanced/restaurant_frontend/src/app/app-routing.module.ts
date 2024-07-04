@@ -6,7 +6,7 @@
 // import { RouteGuardService } from './services/route-guard.service';
 
 // const routes: Routes = [
-//   { path: '', component: HomeComponent, },  
+//   { path: '', component: HomeComponent, },
 //   {
 //     path: 'restaurant',
 //     component: FullComponent,
@@ -59,7 +59,7 @@ const routes: Routes = [
     path: 'restaurant',
     component: FullComponent,
     canActivate: [RouteGuardService],
-    data: { expectedRole: ['admin', 'user'] }, 
+    data: { expectedRole: ['admin', 'user'] },
     children: [
       {
         path: '',
@@ -72,6 +72,15 @@ const routes: Routes = [
           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
         canActivate: [RouteGuardService],
         data: { expectedRole: ['admin', 'user'] },
+      },
+      {
+        path: 'categories',
+        loadChildren: () =>
+          import('./material-component/material.module').then(
+            (m) => m.MaterialComponentsModule
+          ),
+        canActivate: [RouteGuardService],
+        data: { expectedRole: ['admin'] },
       },
     ],
   },

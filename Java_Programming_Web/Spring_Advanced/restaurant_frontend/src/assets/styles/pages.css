@@ -25,7 +25,7 @@ File: scss
   }
   
   .mat-drawer-container {
-    background: #f0f0f0; /* Replace with actual $bodycolor value */
+    background: var(--bodycolor); 
   }
   
   html .page-wrapper {
@@ -44,11 +44,11 @@ File: scss
    Chartist chart css
   ******************/
   .barchrt .ct-series-a .ct-bar {
-    stroke: #28a745; /* Replace with actual $success value */
+    stroke: var(--success);
   }
   
   .barchrt .ct-series-b .ct-bar {
-    stroke: #17a2b8; /* Replace with actual $info value */
+    stroke: var(--info) 
   }
   
   .piechart .ct-series-a .ct-slice-donut {

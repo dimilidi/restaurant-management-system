@@ -9,7 +9,7 @@ File: scss
 Main sidebar
 ******************/
 
-mat-sidenav {
+::ng-deep mat-sidenav {
     width: 240px;
     padding-top: 0px;
   }
@@ -18,28 +18,28 @@ mat-sidenav {
     box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
   }
   
-  #snav .mat-list-item {
+ mat-list-item {
     height: auto;
   }
   
-  #snav .mat-list-item:hover {
+.mat-list-item:hover {
     background: none;
   }
   
-  #snav .mat-list-item .mat-list-item-content {
+.mat-list-item-content {
     display: block;
     padding: 0px 15px;
   }
   
-  #snav .mat-list-item .mat-list-item-content:hover {
+  mat-list-item .mat-list-item-content:hover {
     background: none;
   }
   
-  #snav .mat-list-item .mat-list-item-content:hover > a {
-   color: var(--themecolor); 
+ mat-list-item .mat-list-item-content:hover > a {
+   color: pink; 
   }
   
-  #snav mat-list-item a {
+a {
     height: 45px;
     padding: 0 10px;
     margin-bottom: 10px;
@@ -47,18 +47,18 @@ mat-sidenav {
     display: flex;
     font-size: 15px;
     white-space: nowrap;
-   color: var(--sidebar-text); 
+   color: purple; 
   }
   
-  #snav mat-list-item a mat-icon:not(.dd-icon) {
+a mat-icon:not(.dd-icon) {
     margin-right: 8px;
   }
   
-  #snav mat-list-item a mat-icon {
+a mat-icon {
     color: var(--sidebar-icons); 
   }
   
-  #snav mat-list-item  a .dd-icon {
+a .dd-icon {
     font-size: 16px;
     width: 16px;
     transition: 0.2s ease-in;
@@ -66,29 +66,25 @@ mat-sidenav {
     height: 16px;
   }
   
-  #snav mat-list-item  a{
+  #snav .mat-list-item.selected > .mat-list-item-content > a {
    background: var(--themecolor-alt);
     border-radius: var(--radius);
     color: var(--white); 
   }
   
-  #snav a .mat-icon {
+  #snav .mat-list-item.selected > .mat-list-item-content > a mat-icon {
     color: var(--white); 
   }
   
-  #snav mat-list-item.selected > mat-list-item-content > a .dd-icon {
+  #snav .mat-list-item.selected > .mat-list-item-content > a .dd-icon {
     -webkit-transform: rotate(-180deg);
     transform: rotate(-180deg);
   }
-
-  #snav  mat-list-item.selected  a {
+  
+  #snav .mat-list-item.selected .sub-item .mat-list-item-content a.selected {
     background: transparent;
-    color: var(--themecolor-alt); 
+    color: var(--inverse); 
     font-weight: 500;
-  }
-
-  #snav  mat-list-item.selected  a mat-icon {
-    color: var(--themecolor-alt); 
   }
   
   /*******************

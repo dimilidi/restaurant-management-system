@@ -40,7 +40,7 @@ File: scss
     .card-group .mat-card {
       margin: 15px 0;
       flex: 1 0 0%;
-      border-left: 1px solid #ddd; /* Replace with actual $border value */
+      border-left: 1px solid #ddd; 
     }
     .card-group .mat-card:first-child {
       border: 0;
@@ -53,7 +53,7 @@ File: scss
     }
     .card-group .mat-card {
       margin: 0 15px;
-      border-top: 1px solid #ddd; /* Replace with actual $border value */
+      border-top: 1px solid #ddd; 
     }
     .card-group .mat-card:first-child {
       border: 0;

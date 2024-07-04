@@ -50,13 +50,15 @@ export class RegisterComponent implements OnInit {
       confirmPassword: [null, [Validators.required]],
     });
 
-     this.registerForm.valueChanges.subscribe(() => {
-    this.validateSubmit();
-  });
+    this.registerForm.valueChanges.subscribe(() => {
+      this.validateSubmit();
+    });
   }
 
   validateSubmit(): void {
-    this.passwordMismatch = this.registerForm.value.password !== this.registerForm.value.confirmPassword;
+    this.passwordMismatch =
+      this.registerForm.value.password !==
+      this.registerForm.value.confirmPassword;
   }
 
   handleSubmit() {
@@ -74,19 +76,21 @@ export class RegisterComponent implements OnInit {
         this.ngxService.stop();
         this.dialogRef.close();
         this.responseMessage = response?.message;
-        this.snackbarService.openSnackBar(this.responseMessage, "");
+        this.snackbarService.openSnackBar(this.responseMessage, '');
         this.router.navigateByUrl('/');
       },
       (error) => {
         this.ngxService.stop();
-        if(error.error?.message) {
-          this.responseMessage = error.error?.message
-        }  else {
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
           this.responseMessage = GlobalConstants.genericError;
         }
 
-        this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
-
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
     );
   }
