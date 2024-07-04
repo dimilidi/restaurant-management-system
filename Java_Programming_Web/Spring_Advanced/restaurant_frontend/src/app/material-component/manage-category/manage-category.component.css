@@ -1,6 +1,8 @@
+
 .float-right {
-    float: right;
+    margin-left: auto;
 }
+
 
 mat-card {
     padding: 20px;
@@ -9,8 +11,12 @@ mat-card {
 table {
     width: 100%;
 }
-
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+   text-align: center;
+}
 ::ng-deep .highlight {
     color: white;
     background: #673ab7;
 }
+
