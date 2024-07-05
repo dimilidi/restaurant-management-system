@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
             if (jwtFilter.isAdmin()) {
                 if (validateProductMap(requestMap, false)) {
                     productRepository.save(getProductFromMap(requestMap, false));
-                    return RestaurantUtils.getResponseEntity("Successfully added product.", HttpStatus.CREATED);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully added product.\"}", HttpStatus.CREATED);
                 }
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
             } else {
@@ -100,9 +100,9 @@ public class ProductServiceImpl implements ProductService {
                         ProductEntity product = getProductFromMap(requestMap, true);
                         product.setStatus(optionalProduct.get().getStatus());
                         productRepository.save(product);
-                        return RestaurantUtils.getResponseEntity("Successfully updated product.", HttpStatus.OK);
+                        return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK); //"{\"message\": \"Product not found.\"}"
                     } else {
-                        return RestaurantUtils.getResponseEntity("Product not found.", HttpStatus.OK);
+                        return RestaurantUtils.getResponseEntity("{\"message\": \"Product not found.\"}", HttpStatus.OK);
                     }
                 }
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
@@ -122,9 +122,9 @@ public class ProductServiceImpl implements ProductService {
                 Optional<ProductEntity> optionalProduct = productRepository.findById(id);
                 if (optionalProduct.isPresent()) {
                     productRepository.deleteById(id);
-                    return RestaurantUtils.getResponseEntity("Successfully deleted product.", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully deleted product.\"}", HttpStatus.OK);
                 }
-                    return RestaurantUtils.getResponseEntity("Product does not exist.", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
 
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
@@ -143,9 +143,9 @@ public class ProductServiceImpl implements ProductService {
                 Optional<ProductEntity> optionalProduct = productRepository.findById(id);
                 if(optionalProduct.isPresent()) {
                     productRepository.updateProductStatus(requestMap.get("status"), id);
-                    return RestaurantUtils.getResponseEntity("Successfully updated product status.", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK);
                 } else {
-                   return RestaurantUtils.getResponseEntity("Product does not exist.", HttpStatus.OK);
+                   return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
                 }
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
