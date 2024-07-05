@@ -22,7 +22,7 @@ export class ManageOrderComponent implements OnInit {
     'total',
     'edit',
   ];
-  dataSource: any;
+  dataSource: any = [];
   manageOrderForm: any = FormGroup;
   categories: any = [];
   products: any = [];
@@ -65,6 +65,9 @@ export class ManageOrderComponent implements OnInit {
       price: [null, [Validators.required]],
       total: [0, [Validators.required]],
     });
+
+
+    
   }
 
   getCategories() {
@@ -123,7 +126,6 @@ export class ManageOrderComponent implements OnInit {
         this.manageOrderForm.controls['total'].setValue(this.price * 1);
       },
       (error: any) => {
-        console.log(error);
         if (error.error?.message) {
           this.responseMessage = error.error?.message;
         } else {
@@ -139,50 +141,57 @@ export class ManageOrderComponent implements OnInit {
   }
 
   setQuantity(value: any) {
-    var temp = this.manageOrderForm.controls['qnatity'].value;
+    var temp = this.manageOrderForm.controls['quantity'].value;
 
     if (temp > 0) {
       this.manageOrderForm.controls['total'].setValue(
-        this.manageOrderForm.controls['qnatity'].value *
+        this.manageOrderForm.controls['quantity'].value *
           this.manageOrderForm.controls['price'].value
       );
     } else if (temp != '') {
-      this.manageOrderForm.controls['qnatity'].setValue('1');
+      this.manageOrderForm.controls['quantity'].setValue('1');
       this.manageOrderForm.controls['total'].setValue(
-        this.manageOrderForm.controls['qnatity'].value *
+        this.manageOrderForm.controls['quantity'].value *
           this.manageOrderForm.controls['price'].value
       );
     }
+    
   }
 
+ 
+
   validateProductAdd() {
-    var total = this.manageOrderForm.controls['total'];
-    var quantity = this.manageOrderForm.controls['quantity'];
-    return total === 0 || total === null || quantity <= 0;
+    var total = this.manageOrderForm.controls['total'].value;
+    var quantity = this.manageOrderForm.controls['quantity'].value;
+    console.log(total > 0 && total !== null && quantity > 0);
+    
+
+    return (total <= 0 || total === null || quantity <= 0);
   }
 
   validateSubmit() {
     return (
-      this.totalAmount === 0 ||
+      this.totalAmount <= 0 ||
       this.manageOrderForm.controls['name'].value === null ||
       this.manageOrderForm.controls['contactNumber'].value === null ||
       this.manageOrderForm.controls['paymentMethod'].value === null
     );
   }
 
+
   add() {
     var formData = this.manageOrderForm.value;
     var productName = this.dataSource.find(
       (e: { id: number }) => e.id === formData.product.id
     );
-
-    if (productName === undefined) {
       this.totalAmount = this.totalAmount + formData.total;
+    if (productName === undefined || productName === null) {
+
       this.dataSource.push({
         id: formData.product.id,
-        name: formData.name,
+        name: formData.product.name,
         category: formData.category.name,
-        quantity: formData.qnatity,
+        quantity: formData.quantity,
         price: formData.price,
         total: formData.total,
       });
@@ -198,6 +207,7 @@ export class ManageOrderComponent implements OnInit {
         GlobalConstants.error
       );
     }
+    
   }
 
   handleDeleteAction(value: any, element: any) {

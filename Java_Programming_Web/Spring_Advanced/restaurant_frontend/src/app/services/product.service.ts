@@ -39,10 +39,10 @@ export class ProductService {
   }
 
   getProductsByCategory(id: any) {
-    return this.httpClient.get(this.url + "/product/getByCategory/" + id);
+    return this.httpClient.get(this.url + "/products/getByCategory/" + id);
   }
 
   getProductsById(id: any) {
-    return this.httpClient.get(this.url + "/product/getById" + id);
+    return this.httpClient.get(this.url + "/products/getById/" + id);
   }
 }

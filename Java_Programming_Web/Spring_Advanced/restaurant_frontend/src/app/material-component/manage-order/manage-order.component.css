@@ -18,3 +18,7 @@ mat-card {
     padding-bottom: 30px !important;
 }
 
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
