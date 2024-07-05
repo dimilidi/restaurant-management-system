@@ -37,7 +37,6 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody(required = true) Map<String, String> requestMap) {
         try {
             return userService.login(requestMap);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,9 +48,8 @@ public class UserController {
     public ResponseEntity<List<UserWrapper>> getAllUsers() {
         try {
             return userService.getAllUsers();
-
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return new ResponseEntity<List<UserWrapper>>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,7 +59,6 @@ public class UserController {
     public ResponseEntity<String> updateUser(@RequestBody(required = true) Map<String, String> requestMap) {
         try {
             return userService.update(requestMap);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,7 +69,6 @@ public class UserController {
     public ResponseEntity<String> checkToken() {
         try {
             userService.checkToken();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,9 +88,7 @@ public class UserController {
     @PostMapping("/forgotPassword")
     public ResponseEntity<String> forgotPassword(@RequestBody(required = true) Map<String, String> requestMap) {
         try {
-            System.out.println("In Controller try forgotPassword");
             return userService.forgotPassword(requestMap);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,7 +117,5 @@ public class UserController {
             return RestaurantUtils.getResponseEntity("{\"message\": \"Failed to update password.\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 }

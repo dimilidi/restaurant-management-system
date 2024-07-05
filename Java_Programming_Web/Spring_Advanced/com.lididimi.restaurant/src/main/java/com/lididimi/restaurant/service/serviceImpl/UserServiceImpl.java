@@ -62,9 +62,9 @@ public class UserServiceImpl implements UserService {
                     userEntity.setStatus("false");
                     userEntity.setRole("user");
                     userRepository.save(userEntity);
-                    return RestaurantUtils.getResponseEntity("Successfully registered", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully registered.\"}", HttpStatus.OK);
                 } else {
-                    return RestaurantUtils.getResponseEntity("Email already exists", HttpStatus.BAD_REQUEST);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Email already exists.\"}", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.BAD_REQUEST);
@@ -98,16 +98,16 @@ public class UserServiceImpl implements UserService {
                 if (customerUserDetailsService.getUserDetails().getStatus().equalsIgnoreCase("true")) {
                     String token = jwtUtils.generateToken(customerUserDetailsService.getUserDetails().getEmail(),
                             customerUserDetailsService.getUserDetails().getRole());
-                    return new ResponseEntity<>(token, HttpStatus.OK);
+                    return new ResponseEntity<>(String.format("{\"token\": \"%s\"}", token), HttpStatus.OK);
                 } else {
                     log.info("Wait for admin approval");
-                    return new ResponseEntity<>("Wait for admin approval", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("{\"message\": \"Wait for admin approval.\"}", HttpStatus.BAD_REQUEST);
                 }
             }
         } catch (Exception e) {
             log.error("{}", e);
         }
-        return new ResponseEntity<>("Bad Credentials.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -134,12 +134,12 @@ public class UserServiceImpl implements UserService {
                 if (optionalUser.isPresent()) {
                     userRepository.updateStatus(requestMap.get("status"), Long.parseLong(requestMap.get("id")));
                     sendMailToAllAdmins(requestMap.get("status"), optionalUser.get().getEmail(), userRepository.getAllAdmins());
-                    return RestaurantUtils.getResponseEntity("Successfully updated user status", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated user status.\"}", HttpStatus.OK);
                 } else {
-                    return RestaurantUtils.getResponseEntity("User does not exist", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"User does not exist.\"}", HttpStatus.OK);
                 }
             } else {
-                return new ResponseEntity<>("Bad Credentials.", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.UNAUTHORIZED);
             }
 
         } catch (Exception e) {
@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
                 UserEntity user = optionalUser.get();
                 emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
             }
-            return RestaurantUtils.getResponseEntity("Check your email for link to reset password.", HttpStatus.OK);
+            return RestaurantUtils.getResponseEntity("{\"message\": \"Check your email for link to reset password.\"}", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
         }

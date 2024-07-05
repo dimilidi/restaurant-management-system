@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -91,7 +92,7 @@ public class BillServiceImpl implements BillService {
                 document.add(footer);
 
                 document.close();
-                return RestaurantUtils.getResponseEntity(fileName, HttpStatus.BAD_REQUEST);
+                return RestaurantUtils.getResponseEntity((String.format("{\"uuid\": \"%s\"}", fileName)), HttpStatus.OK);
             } else {
                 return RestaurantUtils.getResponseEntity("{\"message\": \"Required data not found.\"}", HttpStatus.BAD_REQUEST);
             }
@@ -152,6 +153,28 @@ public class BillServiceImpl implements BillService {
 
         }
     }
+
+  /*  private void insertBill(Map<String, Object> requestMap) {
+        try {
+            BillEntity bill = new BillEntity();
+            bill.setUuid((String) requestMap.get("uuid"));
+            bill.setName((String) requestMap.get("name"));
+            bill.setEmail((String) requestMap.get("email"));
+            bill.setContactNumber((String) requestMap.get("contactNumber"));
+            bill.setPaymentMethod((String) requestMap.get("paymentMethod"));
+            bill.setTotal(new BigDecimal((String) requestMap.get("totalAmount")));
+
+            // Convert productDetails ArrayList to JSON string
+            String productDetailsJson = new ObjectMapper().writeValueAsString(requestMap.get("productDetails"));
+            bill.setProductDetails(productDetailsJson);
+
+            bill.setCreatedBy((String) jwtFilter.currentUser());
+            billRepository.save(bill);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+
 
     private boolean validateRequestMap(Map<String, Object> requestMap) {
         return requestMap.containsKey("name") &&
