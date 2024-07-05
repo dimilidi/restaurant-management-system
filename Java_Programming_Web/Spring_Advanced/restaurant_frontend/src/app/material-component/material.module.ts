@@ -15,6 +15,10 @@ import { ChangePasswordComponent } from './dialog/change-password/change-passwor
 import { ManageCategoryComponent } from './manage-category/manage-category.component';
 import { CategoryComponent } from './dialog/category/category.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ManageProductComponent } from './manage-product/manage-product.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ProductComponent } from './dialog/product/product.component';
+import { ManageOrderComponent } from './manage-order/manage-order.component';
 
 @NgModule({
   imports: [
@@ -26,7 +30,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactiveFormsModule,
     FlexLayoutModule,
     CdkTableModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSlideToggleModule,
   ],
   providers: [],
   declarations: [
@@ -34,8 +39,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ConfirmationComponent,
     ChangePasswordComponent,
     ManageCategoryComponent,
-    CategoryComponent
-    
-  ]
+    CategoryComponent,
+    ManageProductComponent,
+    ProductComponent,
+    ManageOrderComponent,
+  ],
 })
 export class MaterialComponentsModule {}

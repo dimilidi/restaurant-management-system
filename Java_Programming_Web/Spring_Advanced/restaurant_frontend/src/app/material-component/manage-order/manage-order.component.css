@@ -1,0 +1,20 @@
+mat-form-field {
+    padding: 5px;
+}
+
+.mat-mdc-card {
+    padding: 24px !important;
+}
+
+.float-right {
+    margin-left: auto;
+}
+
+table {
+    width: 100%;
+}
+
+mat-card {
+    padding-bottom: 30px !important;
+}
+

@@ -74,6 +74,11 @@ const routes: Routes = [
         data: { expectedRole: ['admin', 'user'] },
       },
       {
+        path: '',
+        loadChildren:
+          () => import('./material-component/material.module').then(m => m.MaterialComponentsModule),
+      },
+      {
         path: 'categories',
         loadChildren: () =>
           import('./material-component/material.module').then(
@@ -81,6 +86,24 @@ const routes: Routes = [
           ),
         canActivate: [RouteGuardService],
         data: { expectedRole: ['admin'] },
+      },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('./material-component/material.module').then(
+            (m) => m.MaterialComponentsModule
+          ),
+        canActivate: [RouteGuardService],
+        data: { expectedRole: ['admin'] },
+      },
+      {
+        path: 'orders',
+        loadChildren: () =>
+          import('./material-component/material.module').then(
+            (m) => m.MaterialComponentsModule
+          ),
+        canActivate: [RouteGuardService],
+        data: { expectedRole: ['admin', 'user'] },
       },
     ],
   },
