@@ -4,6 +4,7 @@ import com.lididimi.restaurant.jwt.CustomerUserDetailsService;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +31,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(CustomerUserDetailsService customerUserDetailsService, JwtFilter jwtFilter) {
         this.customerUserDetailsService = customerUserDetailsService;
         this.jwtFilter = jwtFilter;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 
    /* @Bean
@@ -71,12 +90,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
-                .and()
-                .csrf().disable()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/users/login", "/users/register", "/users/forgotPassword", "/users/reset-password")
                 .permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -88,10 +106,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //   auth.userDetailsService(customerUserDetailsService);
-       auth.userDetailsService(customerUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(customerUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
 

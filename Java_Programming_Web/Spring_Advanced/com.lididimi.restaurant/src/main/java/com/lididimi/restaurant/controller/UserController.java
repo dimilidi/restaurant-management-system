@@ -112,15 +112,15 @@ public class UserController {
         String newPassword = requestMap.get("newPassword");
 
         if (token == null || newPassword == null) {
-            return new ResponseEntity<>("Token and new password must be provided", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>( "{\"message\": \"Token and new password must be provided.\"}", HttpStatus.BAD_REQUEST); // "{\"message\": \"Failed to update password.\"}"
         }
 
         try {
             userService.updatePassword(token, newPassword);
-            return ResponseEntity.ok("Password updated successfully");
+            return ResponseEntity.ok("{\"message\": \"Password updated successfully\"}");
         } catch (Exception e) {
             e.printStackTrace();
-            return RestaurantUtils.getResponseEntity("Failed to update password", HttpStatus.INTERNAL_SERVER_ERROR);
+            return RestaurantUtils.getResponseEntity("{\"message\": \"Failed to update password.\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

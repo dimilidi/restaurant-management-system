@@ -93,7 +93,7 @@ public class BillServiceImpl implements BillService {
                 document.close();
                 return RestaurantUtils.getResponseEntity(fileName, HttpStatus.BAD_REQUEST);
             } else {
-                return RestaurantUtils.getResponseEntity("Required data not found", HttpStatus.BAD_REQUEST);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Required data not found.\"}", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,10 +226,10 @@ public class BillServiceImpl implements BillService {
 
             if (optionalBill.isPresent()) {
                 billRepository.deleteById(id);
-                return RestaurantUtils.getResponseEntity("Successfully deleted bill", HttpStatus.OK);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully deleted bill.\"}", HttpStatus.OK);
 
             } else {
-                return RestaurantUtils.getResponseEntity("Bill does not exist", HttpStatus.OK);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Bill does not exist.\"}", HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();

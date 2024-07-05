@@ -173,9 +173,9 @@ public class UserServiceImpl implements UserService {
                 if (passwordEncoder.matches(requestMap.get("oldPassword"), user.getPassword())) {
                     user.setPassword(passwordEncoder.encode(requestMap.get("newPassword")));
                     userRepository.save(user);
-                    return RestaurantUtils.getResponseEntity("Successfully updated password", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated password.\"}", HttpStatus.OK);
                 } else {
-                    return RestaurantUtils.getResponseEntity("Incorrect old password", HttpStatus.BAD_REQUEST);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Incorrect old password.\"}", HttpStatus.BAD_REQUEST);
                 }
 
             } else {

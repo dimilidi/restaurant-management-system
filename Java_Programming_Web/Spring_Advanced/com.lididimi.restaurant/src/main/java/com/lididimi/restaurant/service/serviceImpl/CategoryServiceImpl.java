@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
             if (jwtFilter.isAdmin()) {
                 if (validateCategoryMap(requestMap, false)) {
                     categoryRepository.save(getCategoryFromMap(requestMap, false));
-                    return RestaurantUtils.getResponseEntity("Category added successfully.", HttpStatus.CREATED);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Category added successfully.\"}", HttpStatus.CREATED);
                 }
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
@@ -89,9 +89,9 @@ public class CategoryServiceImpl implements CategoryService {
                     Optional<CategoryEntity> categoryOptional = categoryRepository.findById(Long.parseLong(requestMap.get("id")));
                     if(categoryOptional.isPresent()) {
                         categoryRepository.save(getCategoryFromMap(requestMap, true));
-                        return RestaurantUtils.getResponseEntity("Category updated successfully.", HttpStatus.OK);
+                        return RestaurantUtils.getResponseEntity("{\"message\": \"Category updated successfully.\"}", HttpStatus.OK);
                     } else {
-                        return RestaurantUtils.getResponseEntity("Category does not exist", HttpStatus.OK);
+                        return RestaurantUtils.getResponseEntity("{\"message\": \"Category does not exist.\"}", HttpStatus.OK);
                     }
                 }
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
