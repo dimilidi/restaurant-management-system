@@ -13,29 +13,43 @@ mat-sidenav {
     width: 240px;
     padding-top: 0px;
   }
+
+  .navbar-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-header b span {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-header .heading {
+    margin-left: 10px;
+  }
   
   #snav {
     box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
   }
   
-  #snav .mat-list-item {
+  #snav mat-list-item {
     height: auto;
   }
   
-  #snav .mat-list-item:hover {
+  #snav mat-list-item:hover {
     background: none;
   }
   
-  #snav .mat-list-item .mat-list-item-content {
+  #snav mat-list-item mat-list-item-content {
     display: block;
     padding: 0px 15px;
   }
   
-  #snav .mat-list-item .mat-list-item-content:hover {
+  #snav mat-list-item mat-list-item-content:hover {
     background: none;
   }
   
-  #snav .mat-list-item .mat-list-item-content:hover > a {
+  #snav mat-list-item mat-list-item-content:hover > a {
    color: var(--themecolor); 
   }
   
@@ -67,13 +81,13 @@ mat-sidenav {
   }
   
   #snav mat-list-item  a{
-   background: var(--themecolor-alt);
+   background: transparent;
     border-radius: var(--radius);
-    color: var(--white); 
+    color: var(--themecolor-alt); 
   }
   
   #snav a .mat-icon {
-    color: var(--white); 
+    color: var(--themecolor-alt); 
   }
   
   #snav mat-list-item.selected > mat-list-item-content > a .dd-icon {
@@ -82,13 +96,13 @@ mat-sidenav {
   }
 
   #snav  mat-list-item.selected  a {
-    background: transparent;
-    color: var(--themecolor-alt); 
+    background: var(--themecolor-alt); 
+    color: var(--white); 
     font-weight: 500;
   }
 
   #snav  mat-list-item.selected  a mat-icon {
-    color: var(--themecolor-alt); 
+    color: var(--white); 
   }
   
   /*******************
