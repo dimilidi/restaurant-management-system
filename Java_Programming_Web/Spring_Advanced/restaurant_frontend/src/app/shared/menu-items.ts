@@ -18,24 +18,38 @@ const MENUITEMS = [
   },
   {
     state: 'categories',
-    name: 'Manage Category',
+    name: 'Manage Categories',
     type: 'link',
     icon: 'category',
     role: 'admin',
   },
   {
     state: 'products',
-    name: 'Manage Product',
+    name: 'Manage Products',
     type: 'link',
     icon: 'inventory_2',
     role: 'admin',
   },
   {
     state: 'orders',
-    name: 'Manage Order',
+    name: 'Manage Orders',
     type: 'link',
     icon: 'shopping_cart',
     role: '',
+  },
+  {
+    state: 'bills',
+    name: 'View Bills',
+    type: 'link',
+    icon: 'backup_table',
+    role: '',
+  },
+  {
+    state: 'users',
+    name: 'Manage Users',
+    type: 'link',
+    icon: 'people',
+    role: 'admin',
   },
 ];
 

@@ -54,12 +54,10 @@ import { FullComponent } from './layouts/full/full.component';
 import { RouteGuardService } from './services/route-guard.service';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [RouteGuardService] },
+  { path: '', component: HomeComponent },
   {
     path: 'restaurant',
     component: FullComponent,
-    canActivate: [RouteGuardService],
-    data: { expectedRole: ['admin', 'user'] },
     children: [
       {
         path: '',
@@ -67,48 +65,95 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'dashboard',
-        loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-        canActivate: [RouteGuardService],
-        data: { expectedRole: ['admin', 'user'] },
-      },
-      {
         path: '',
         loadChildren:
           () => import('./material-component/material.module').then(m => m.MaterialComponentsModule),
       },
       {
-        path: 'categories',
-        loadChildren: () =>
-          import('./material-component/material.module').then(
-            (m) => m.MaterialComponentsModule
-          ),
-        canActivate: [RouteGuardService],
-        data: { expectedRole: ['admin'] },
-      },
-      {
-        path: 'products',
-        loadChildren: () =>
-          import('./material-component/material.module').then(
-            (m) => m.MaterialComponentsModule
-          ),
-        canActivate: [RouteGuardService],
-        data: { expectedRole: ['admin'] },
-      },
-      {
-        path: 'orders',
-        loadChildren: () =>
-          import('./material-component/material.module').then(
-            (m) => m.MaterialComponentsModule
-          ),
-        canActivate: [RouteGuardService],
-        data: { expectedRole: ['admin', 'user'] },
-      },
-    ],
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
+      }
+    ]
   },
-  { path: '**', redirectTo: '/' },
+  { path: '**', component: HomeComponent }
 ];
+
+
+// const routes: Routes = [
+//   { path: '', component: HomeComponent, canActivate: [RouteGuardService] },
+//   {
+//     path: 'restaurant',
+//     component: FullComponent,
+//     canActivate: [RouteGuardService],
+//     data: { expectedRole: ['admin', 'user'] },
+//     children: [
+//       {
+//         path: '',
+//         redirectTo: '/restaurant/dashboard',
+//         pathMatch: 'full',
+//       },
+//       {
+//         path: 'dashboard',
+//         loadChildren: () =>
+//           import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin', 'user'] },
+//       },
+//       {
+//         path: '',
+//         loadChildren:
+//           () => import('./material-component/material.module').then(m => m.MaterialComponentsModule),
+//           canActivate: [RouteGuardService],
+//       },
+//       {
+//         path: 'categories',
+//         loadChildren: () =>
+//           import('./material-component/material.module').then(
+//             (m) => m.MaterialComponentsModule
+//           ),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin'] },
+//       },
+//       {
+//         path: 'products',
+//         loadChildren: () =>
+//           import('./material-component/material.module').then(
+//             (m) => m.MaterialComponentsModule
+//           ),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin'] },
+//       },
+//       {
+//         path: 'orders',
+//         loadChildren: () =>
+//           import('./material-component/material.module').then(
+//             (m) => m.MaterialComponentsModule
+//           ),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin', 'user'] },
+//       },
+//       {
+//         path: 'bills',
+//         loadChildren: () =>
+//           import('./material-component/material.module').then(
+//             (m) => m.MaterialComponentsModule
+//           ),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin', 'user'] },
+//       },
+//       {
+//         path: 'users',
+//         loadChildren: () =>
+//           import('./material-component/material.module').then(
+//             (m) => m.MaterialComponentsModule
+//           ),
+//         canActivate: [RouteGuardService],
+//         data: { expectedRole: ['admin'] },
+//       },
+//     ],
+//   },
+//   { path: '**', redirectTo: '/' },
+// ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
