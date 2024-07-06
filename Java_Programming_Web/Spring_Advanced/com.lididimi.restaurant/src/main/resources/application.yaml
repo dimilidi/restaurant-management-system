@@ -1,10 +1,4 @@
 spring:
-  web:
-    cors:
-      allowed-origins: "http://localhost:4200"
-      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-      allowed-headers: "*"
-      allow-credentials: true
   jpa:
     properties:
       hibernate:
