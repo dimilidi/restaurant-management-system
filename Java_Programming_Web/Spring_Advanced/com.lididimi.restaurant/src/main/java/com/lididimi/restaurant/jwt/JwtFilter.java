@@ -1,72 +1,85 @@
 package com.lididimi.restaurant.jwt;
 
-import io.jsonwebtoken.Claims;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
     private final JwtUtils jwtUtils;
-    private final CustomerUserDetailsService service;
+    private final UserDetailsService userDetailsService;
+    private String username;
 
-    public JwtFilter(JwtUtils jwtUtils, CustomerUserDetailsService service) {
+    public JwtFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
         this.jwtUtils = jwtUtils;
-        this.service = service;
+        this.userDetailsService = userDetailsService;
     }
 
-    Claims claims = null;
-    private String username = null;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if (httpServletRequest.getServletPath().matches("/users/login|/users/register|/users/forgotPasword|/users/reset-password")) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        } else {
-            String authorizationHeader = httpServletRequest.getHeader("Authorization");
-            String token = null;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                token = authorizationHeader.substring(7);
-                username = jwtUtils.extractUsername(token);
-                claims = jwtUtils.extractAllClaims(token);
-            }
+        final String authorizationHeader = request.getHeader("Authorization");
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = service.loadUserByUsername(username);
-                if (jwtUtils.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwt = authorizationHeader.substring(7);
+
+            if (jwt.isEmpty()) {
+                log.warn("JWT token is empty");
+            } else {
+                try {
+                    username = jwtUtils.extractUsername(jwt);
+                    log.info("JWT token received in request: {}", jwt);
+
+                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+                        if (jwtUtils.validateToken(jwt, userDetails)) {
+                            // Set up Spring Security context.
+                            UsernamePasswordAuthenticationToken authenticationToken =
+                                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        } else {
+                            log.warn("Invalid JWT token received: {}", jwt);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Error extracting username from JWT: {}", e.getMessage());
                 }
             }
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
+        } else {
+            log.warn("Authorization header is missing or does not start with Bearer");
         }
+
+        filterChain.doFilter(request, response);
     }
 
+
     public boolean isAdmin() {
-        return "admin".equalsIgnoreCase((String) claims.get("role"));
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_admin"));
     }
 
     public boolean isUser() {
-        return "user".equalsIgnoreCase((String) claims.get("role"));
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_user"));
     }
 
     public String currentUser() {
         return username;
     }
+
 }

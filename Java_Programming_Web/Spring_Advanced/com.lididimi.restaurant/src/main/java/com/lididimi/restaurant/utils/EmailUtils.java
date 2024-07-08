@@ -9,8 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.util.List;
 
 
@@ -58,7 +58,6 @@ public class EmailUtils {
         helper.setFrom(fromAddress);
         helper.setTo(to);
         helper.setSubject(subject);
-       // String htmlMsg = "<p><b>Your Login details for Restaurant Management System</b><br><b>Email: </b> " + to + " <br><b>Password: </b> " + resetUrl + "<br><a href=\"http://localhost:4200/\">Click here to login</a></p>";
         String htmlMsg = "<p><b>To reset your password, click the link below:</b><br>" +
                 "<a href=\"" + resetUrl + "\">Reset Password</a></p>";
         message.setContent(htmlMsg, "text/html");

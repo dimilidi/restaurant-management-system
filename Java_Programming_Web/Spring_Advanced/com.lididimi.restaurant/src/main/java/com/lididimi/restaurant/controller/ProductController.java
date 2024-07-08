@@ -40,7 +40,7 @@ public class ProductController {
     @GetMapping("/get")
     public ResponseEntity<List<ProductWrapper>> getAllProducts() {
         try {
-           return productService.getAllProducts();
+            return productService.getAllProducts();
         }catch (Exception e) {
             e.printStackTrace();
         }

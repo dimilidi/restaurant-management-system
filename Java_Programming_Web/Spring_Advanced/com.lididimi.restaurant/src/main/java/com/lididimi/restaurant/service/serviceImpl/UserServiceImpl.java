@@ -1,17 +1,20 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.jwt.CustomerUserDetailsService;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
+import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
 import com.lididimi.restaurant.model.entity.PasswordResetToken;
+import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
+import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import com.lididimi.restaurant.wrapper.UserWrapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,9 +24,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.util.*;
+
 
 @Slf4j
 @Service
@@ -31,37 +34,47 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
-    private final CustomerUserDetailsService customerUserDetailsService;
+    public final RestaurantUserDetailsService restaurantUserDetailsService;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final JwtFilter jwtFilter;
     private final EmailUtils emailUtils;
     private final PasswordResetTokenRepository tokenRepository;
+    private final RoleRepository roleRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, CustomerUserDetailsService customerUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, RestaurantUserDetailsService restaurantUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
-        this.customerUserDetailsService = customerUserDetailsService;
+        this.restaurantUserDetailsService = restaurantUserDetailsService;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.jwtFilter = jwtFilter;
         this.emailUtils = emailUtils;
         this.tokenRepository = tokenRepository;
+        this.roleRepository = roleRepository;
     }
 
+    @Transactional
     @Override
     public ResponseEntity<String> register(Map<String, String> requestMap) {
         log.info("Inside register {}", requestMap);
         try {
             if (validateRegister(requestMap)) {
                 Optional<UserEntity> userOptional = userRepository.findByEmail(requestMap.get("email"));
+
                 if (userOptional.isEmpty()) {
+                    Optional<RoleEntity>  optionalRole = roleRepository.findByName("user");
                     UserEntity userEntity = modelMapper.map(requestMap, UserEntity.class);
                     userEntity.setPassword(passwordEncoder.encode(requestMap.get("password")));
                     userEntity.setStatus("false");
-                    userEntity.setRole("user");
+                    if(optionalRole.isPresent()) {
+                        RoleEntity userRole = optionalRole.get();
+                        userEntity.setRoles(List.of(userRole));
+                        roleRepository.save(userRole);
+                    }
                     userRepository.save(userEntity);
+
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully registered.\"}", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Email already exists.\"}", HttpStatus.BAD_REQUEST);
@@ -86,6 +99,7 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
         log.info("Inside login");
@@ -95,9 +109,12 @@ public class UserServiceImpl implements UserService {
             );
 
             if (auth.isAuthenticated()) {
-                if (customerUserDetailsService.getUserDetails().getStatus().equalsIgnoreCase("true")) {
-                    String token = jwtUtils.generateToken(customerUserDetailsService.getUserDetails().getEmail(),
-                            customerUserDetailsService.getUserDetails().getRole());
+                UserEntity userEntity = restaurantUserDetailsService.getUserDetails();
+                if ("true".equalsIgnoreCase(userEntity.getStatus())) {
+                    List<String> roles = userEntity.getRoles().stream()
+                            .map(RoleEntity::getName)
+                            .toList();
+                    String token = jwtUtils.generateToken(userEntity.getEmail(), roles);
                     return new ResponseEntity<>(String.format("{\"token\": \"%s\"}", token), HttpStatus.OK);
                 } else {
                     log.info("Wait for admin approval");
@@ -109,6 +126,7 @@ public class UserServiceImpl implements UserService {
         }
         return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.BAD_REQUEST);
     }
+
 
     @Override
     public ResponseEntity<List<UserWrapper>> getAllUsers() {

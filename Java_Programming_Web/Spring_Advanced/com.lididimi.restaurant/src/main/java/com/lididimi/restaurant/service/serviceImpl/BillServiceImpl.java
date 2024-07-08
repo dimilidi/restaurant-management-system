@@ -154,27 +154,6 @@ public class BillServiceImpl implements BillService {
         }
     }
 
-  /*  private void insertBill(Map<String, Object> requestMap) {
-        try {
-            BillEntity bill = new BillEntity();
-            bill.setUuid((String) requestMap.get("uuid"));
-            bill.setName((String) requestMap.get("name"));
-            bill.setEmail((String) requestMap.get("email"));
-            bill.setContactNumber((String) requestMap.get("contactNumber"));
-            bill.setPaymentMethod((String) requestMap.get("paymentMethod"));
-            bill.setTotal(new BigDecimal((String) requestMap.get("totalAmount")));
-
-            // Convert productDetails ArrayList to JSON string
-            String productDetailsJson = new ObjectMapper().writeValueAsString(requestMap.get("productDetails"));
-            bill.setProductDetails(productDetailsJson);
-
-            bill.setCreatedBy((String) jwtFilter.currentUser());
-            billRepository.save(bill);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
 
     private boolean validateRequestMap(Map<String, Object> requestMap) {
         return requestMap.containsKey("name") &&
@@ -183,7 +162,6 @@ public class BillServiceImpl implements BillService {
                 requestMap.containsKey("paymentMethod") &&
                 requestMap.containsKey("productDetails") &&
                 requestMap.containsKey("totalAmount");
-
     }
 
     private Font getFont(String type) {
@@ -207,6 +185,7 @@ public class BillServiceImpl implements BillService {
     public ResponseEntity<List<BillEntity>> getBills() {
         List<BillEntity> list = new ArrayList<>();
         if (jwtFilter.isAdmin()) {
+            log.info("Inside getBills");
             list = billRepository.getAllBills();
         } else {
             list = billRepository.getBillsByUsername(jwtFilter.currentUser());
@@ -259,6 +238,5 @@ public class BillServiceImpl implements BillService {
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 
 }

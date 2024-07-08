@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
                     productRepository.deleteById(id);
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully deleted product.\"}", HttpStatus.OK);
                 }
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
 
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
@@ -145,7 +145,7 @@ public class ProductServiceImpl implements ProductService {
                     productRepository.updateProductStatus(requestMap.get("status"), id);
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK);
                 } else {
-                   return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);
                 }
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
