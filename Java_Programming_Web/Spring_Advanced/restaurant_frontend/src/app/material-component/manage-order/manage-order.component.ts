@@ -163,9 +163,6 @@ export class ManageOrderComponent implements OnInit {
   validateProductAdd() {
     var total = this.manageOrderForm.controls['total'].value;
     var quantity = this.manageOrderForm.controls['quantity'].value;
-    console.log(total > 0 && total !== null && quantity > 0);
-    
-
     return (total <= 0 || total === null || quantity <= 0);
   }
 

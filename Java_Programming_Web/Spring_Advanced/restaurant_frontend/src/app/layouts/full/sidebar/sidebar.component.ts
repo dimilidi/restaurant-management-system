@@ -1,19 +1,16 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { MenuItems } from 'src/app/shared/menu-items';
+import { MenuItems, Menu } from 'src/app/shared/menu-items';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: []
+  styleUrls: [],
 })
-export class AppSidebarComponent  implements OnDestroy {
+export class AppSidebarComponent implements OnDestroy {
   mobileQuery: MediaQueryList;
-  userRole: any;
-  token: any = localStorage.getItem('token');
-  tokenPayload: any; 
-
+  userRoles: string[];
   private _mobileQueryListener: () => void;
 
   constructor(
@@ -21,11 +18,24 @@ export class AppSidebarComponent  implements OnDestroy {
     media: MediaMatcher,
     public menuItems: MenuItems
   ) {
-    this.tokenPayload = jwtDecode(this.token);
-    this.userRole = this.tokenPayload.role;
+    const token = localStorage.getItem('token');
+    if (token) {
+      const tokenPayload: any = jwtDecode(token);
+      const userRoles = tokenPayload.roles.map((role: string) => role.replace('ROLE_', ''));
+      this.userRoles = tokenPayload.roles.map((role: string) =>
+        role.replace('ROLE_', '')
+      );
+    } else {
+      this.userRoles = [];
+    }
+
     this.mobileQuery = media.matchMedia('(min-width: 768px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+  hasRole(requiredRole: string): boolean {
+    return requiredRole === '' || this.userRoles.includes(requiredRole);
   }
 
   ngOnDestroy(): void {

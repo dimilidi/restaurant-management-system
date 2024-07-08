@@ -36,7 +36,10 @@ export class RouteGuardService {
       }
 
       const expectedRoles: string[] = route.data['expectedRole'];
-      if (expectedRoles.includes(tokenPayload.role)) {
+      const userRoles = tokenPayload.roles.map((role: string) => role.replace('ROLE_', ''));
+      const roleMatch = userRoles.some((role: string) => expectedRoles.includes(role));
+      
+      if (roleMatch) {
         return true; // Allow access if user role matches expected roles
       } else {
         this.snackbarServise.openSnackBar(
