@@ -1,0 +1,20 @@
+<mat-form-field appearance="outline">
+  <mat-select matInput [(ngModel)]="selectedLanguage" (selectionChange)="changeLanguage($event.value)">
+    
+    <!-- Custom trigger for the selected item -->
+    <mat-select-trigger>
+      <span class="fi flag" [ngClass]="getFlagClass(selectedLanguage)"></span>
+      {{ getLanguageName(selectedLanguage) }}
+    </mat-select-trigger>
+
+    <mat-option value="us">
+      <span class="fi fi-us flag"></span> English
+    </mat-option>
+    <mat-option value="fr">
+      <span class="fi fi-fr flag"></span> French
+    </mat-option>
+    <mat-option value="de">
+      <span class="fi fi-de flag"></span> German
+    </mat-option>
+  </mat-select>
+</mat-form-field>

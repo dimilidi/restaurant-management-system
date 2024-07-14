@@ -12,14 +12,21 @@ import { FullComponent } from './layouts/full/full.component';
 import { HeaderComponent } from './layouts/full/header/header.component';
 import { AppSidebarComponent } from './layouts/full/sidebar/sidebar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, SPINNER } from 'ngx-ui-loader';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
 import { TokenInterceptor } from './services/token-interceptor.interceptor';
+import { CustomLoaderService } from './services/custom-loader.service';
 import { SharedModule } from './shared/shared.module';
 import { MaterialComponentsModule } from './material-component/material.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslationSwitcherComponent } from './material-component/translation/translation-switcher/translation-switcher.component';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   text: 'Loading...',
@@ -55,7 +62,14 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     HttpClientModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     SharedModule,
-    MaterialComponentsModule
+    MaterialComponentsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: CustomLoaderService,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [
     HttpClientModule,

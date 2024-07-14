@@ -15,15 +15,30 @@
     background: #1abc9c;
     color: white;
   }
+
   
   /* Style the top navigation bar */
+
+  .wrapper {
+    z-index: 10;
+  }
   .navbar {
     display: flex;
     background-color: #333;
   }
+
+  nav, ul, li {
+    display: flex;
+    align-items: center;
+
+  }
+
+  li {
+    height: 40px;
+  }
   
   /* Style the navigation bar links */
-  .navbar a {
+  .navbar a, .translation-switcher-wrapper {
     color: white;
     padding: 14px 20px;
     text-decoration: none;
@@ -40,6 +55,7 @@
   .row {  
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
   }
   
   /* Create two unequal columns that sits next to each other */
@@ -63,14 +79,22 @@
     width: 100%;
     padding: 20px;
   }
+
   
   /* Footer */
   .footer {
-    padding: 6px;
-    text-align: center;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
-    background: #7b1fa2;
+    background-color: #673ab7;
   }
+
+  .footer h3 {
+    margin: 0;
+  }
+
   
   /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
   @media screen and (max-width: 700px) {
@@ -111,18 +135,22 @@
     display: flex;
     align-items: center;
     justify-content:center;
-    background-color: #7b1fa2;
+    background-color: #673ab7;
   }
+/* background-color: #7b1fa2; */
   
   nav {
     display: flex;
     width: 90%;
   }
-  
-  ul li a {
-    margin-left: 1.5em;
+  app-translation-switcher {
+    height: 55px;
   }
   
+  ul li a {
+    padding: 10px;
+  }
+
   a.logo {
     margin-right: auto;
   }
@@ -193,6 +221,7 @@
     top: 0;
     left: 0;
     width: 100% !important;
+    z-index: 10;
   }
   
   .mat-icon {

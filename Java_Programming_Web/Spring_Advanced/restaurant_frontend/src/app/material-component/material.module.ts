@@ -21,6 +21,7 @@ import { ProductComponent } from './dialog/product/product.component';
 import { ManageOrderComponent } from './manage-order/manage-order.component';
 import { ViewBillComponent } from './view-bill/view-bill.component';
 import { ManageUserComponent } from './manage-user/manage-user.component';
+import { TranslationSwitcherComponent } from './translation/translation-switcher/translation-switcher.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,8 @@ import { ManageUserComponent } from './manage-user/manage-user.component';
     ManageOrderComponent,
     ViewBillComponent,
     ManageUserComponent,
+    TranslationSwitcherComponent,
   ],
+  exports: [TranslationSwitcherComponent],
 })
 export class MaterialComponentsModule {}

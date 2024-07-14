@@ -4,17 +4,20 @@
 <div class="wrapper sticky">
   <nav class="navbar-fixed-top">
     <a href="#" class="logo">
-      <mat-icon>storefront</mat-icon> Cafe Management System
+      <mat-icon>storefront</mat-icon> {{ 'nav.logo' | translate }}
     </a>
     <ul>
       <li>
-        <a (click)="handleLoginAction()">Login</a>
-        <a (click)="handleRegisterAction()">Register</a>
-        <a (click)="handleForgotPasswordAction()">Forgot Password</a>
+        <a (click)="handleLoginAction()">{{ 'nav.login' | translate }}</a>
+        <a (click)="handleRegisterAction()">{{ 'nav.register' | translate }}</a>
+        <a (click)="handleForgotPasswordAction()">{{ 'nav.forgotPassword' | translate }}</a>
+      </li>
+      <li class="translation-switcher-wrapper">
+        <app-translation-switcher></app-translation-switcher>
       </li>
     </ul>
   </nav>
 </div>
 <div class="footer" id="signup">
-  <h2>All right reserved @LiDDiM</h2>
+  <h3>2024 &copy; LiDDim</h3>
 </div>
