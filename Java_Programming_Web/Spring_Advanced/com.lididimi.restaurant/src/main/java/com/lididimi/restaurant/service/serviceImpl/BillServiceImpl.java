@@ -11,15 +11,18 @@ import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -238,5 +241,32 @@ public class BillServiceImpl implements BillService {
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    @Scheduled(cron = "0 0 2 * * ?") // Runs every day at 2 AM
+    @Transactional
+    public void cleanupOldBillsTask() {
+        log.info("Starting cleanup of old bills at {}", Instant.now());
+        System.out.println("Current Time Zone: " + java.util.TimeZone.getDefault().getID());
+        cleanupOldBills();
+    }
+
+
+    @Transactional
+    public void cleanupOldBills() {
+        //Instant cutoffDate = Instant.now().minusSeconds(30L * 24 * 60 * 60); // cutoff date (30 days ago)
+        Instant cutoffDate = Instant.now().minusSeconds(60);
+        billRepository.deleteBillsOlderThan(cutoffDate);
+    }
+
+    // Test scheduled task
+   /* @Override
+    @Scheduled(cron = "0 * * * * ?") // Runs every minute
+    @Transactional
+    public void cleanupOldBillsTask() {
+        Instant cutoffDate = Instant.now().minusSeconds(60); // 1 minute ago
+        billRepository.deleteBillsOlderThan(cutoffDate);
+        log.info("Old bills cleaned up");
+    }*/
 
 }

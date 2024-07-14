@@ -1,12 +1,14 @@
 package com.lididimi.restaurant.model.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -36,4 +38,7 @@ public class BillEntity implements Serializable {
     private String productDetails;
 
     private String createdBy;
+
+    @CreationTimestamp
+    private Instant createdDate;
 }

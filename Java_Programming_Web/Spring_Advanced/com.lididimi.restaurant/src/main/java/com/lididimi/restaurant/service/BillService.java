@@ -15,4 +15,6 @@ public interface BillService {
     ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) throws IOException;
 
     ResponseEntity<String> delete(Long id);
+
+    void cleanupOldBillsTask();
 }
