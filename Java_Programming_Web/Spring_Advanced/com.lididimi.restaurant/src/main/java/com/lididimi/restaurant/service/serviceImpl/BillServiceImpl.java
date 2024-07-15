@@ -1,6 +1,10 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -25,8 +29,12 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -254,8 +262,8 @@ public class BillServiceImpl implements BillService {
 
     @Transactional
     public void cleanupOldBills() {
-        //Instant cutoffDate = Instant.now().minusSeconds(30L * 24 * 60 * 60); // cutoff date (30 days ago)
-        Instant cutoffDate = Instant.now().minusSeconds(60);
+        Instant cutoffDate = Instant.now().minusSeconds(30L * 24 * 60 * 60); // cutoff date (30 days ago)
+        // Instant cutoffDate = Instant.now().minusSeconds(60);
         billRepository.deleteBillsOlderThan(cutoffDate);
     }
 
@@ -300,8 +308,6 @@ public class BillServiceImpl implements BillService {
         // Sort the list by sales in descending order
         bestSellers.sort((a, b) -> (int) b.get("sales") - (int) a.get("sales"));
 
-        log.info(bestSellers.toString());
-
         return bestSellers;
     }
 
@@ -310,4 +316,58 @@ public class BillServiceImpl implements BillService {
         return billRepository.findTopEmployees();
     }
 
+
+
+    public List<Map<String, Object>> findRegularGuestsWithFavoriteProducts() {
+        LocalDate lastYearDate = LocalDate.now().minusYears(1);
+        Instant lastYear = lastYearDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        List<Map<String, Object>> regularGuests = billRepository.findRegularGuestsWithAtLeast365Bills(lastYear);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Map<String, Object> guest : regularGuests) {
+            String email = (String) guest.get("email");
+            List<BillEntity> billsByEmail = billRepository.findByEmail(email);
+
+            // Extract product names from bills
+            Map<String, Long> productCountMap = new HashMap<>();
+            Gson gson = new Gson();
+
+            for (BillEntity bill : billsByEmail) {
+                try {
+                    String productDetailsJson = bill.getProductDetails();
+                    JsonArray productArray = gson.fromJson(productDetailsJson, JsonArray.class);
+
+                    for (JsonElement productElement : productArray) {
+                        JsonObject productNode = productElement.getAsJsonObject();
+                        String productName = productNode.get("name").getAsString();
+                        productCountMap.put(productName, productCountMap.getOrDefault(productName, 0L) + productNode.get("quantity").getAsInt());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Get top 3 products by count
+            List<Map.Entry<String, Long>> topProducts = productCountMap.entrySet().stream()
+                    .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            List<Map<String, Object>> topProductsList = new ArrayList<>();
+            for (Map.Entry<String, Long> entry : topProducts) {
+                Map<String, Object> productData = new HashMap<>();
+                productData.put("productName", entry.getKey());
+                productData.put("orderCount", entry.getValue());
+                topProductsList.add(productData);
+            }
+
+            Map<String, Object> guestData = new HashMap<>();
+            guestData.put("email", email);
+            guestData.put("name", guest.get("name"));
+            guestData.put("billCount", guest.get("billCount"));
+            guestData.put("topProducts", topProductsList);
+            result.add(guestData);
+        }
+        return result;
+    }
 }

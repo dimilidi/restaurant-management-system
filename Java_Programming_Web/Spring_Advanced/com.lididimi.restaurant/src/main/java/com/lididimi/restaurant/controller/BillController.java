@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.Max;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,4 +73,27 @@ public class BillController {
         return ResponseEntity.ok(topEmployees);
     }
 
+
+
+/*    @GetMapping("/regular-guests-with-top-products")
+    public ResponseEntity<List<Map<String, Object>>> getRegularGuestsWithTopProducts() {
+        LocalDate lastYear = LocalDate.now().minusYears(1);
+        List<Map<String, Object>> result = billService.getRegularGuestsWithTopProducts(lastYear);
+        return ResponseEntity.ok(result);
+    }*/
+
+/*    @GetMapping("/top-products")
+    public List<Map<String, Object>> getTopProductsByEmail(@RequestParam String email) {
+        return billService.findTopProductsByEmail(email);
+    }
+*/
+
+    @GetMapping("/regular-guests")
+    public List<Map<String, Object>> getRegularGuestsWithFavoriteProducts() {
+        return billService.findRegularGuestsWithFavoriteProducts();
+    }
+
+
 }
+
+

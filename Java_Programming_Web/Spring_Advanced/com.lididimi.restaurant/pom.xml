@@ -151,6 +151,24 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.1</version>
         </dependency>
+
+        <!--Faker: A Java library that can generate fake data (names, emails, etc.) easily.
+        java-->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.15</version>
+        </dependency>
+
+       <!-- Spring calls the methods annotated with @PostConstruct only once, just after the initialization of bean properties.-->
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
