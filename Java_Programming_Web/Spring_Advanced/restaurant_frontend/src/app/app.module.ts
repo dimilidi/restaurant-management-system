@@ -26,7 +26,7 @@ import { CustomLoaderService } from './services/custom-loader.service';
 import { SharedModule } from './shared/shared.module';
 import { MaterialComponentsModule } from './material-component/material.module';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslationSwitcherComponent } from './material-component/translation/translation-switcher/translation-switcher.component';
+
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   text: 'Loading...',

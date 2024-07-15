@@ -11,13 +11,13 @@ export const MaterialRoutes: Routes = [
     path: 'categories',
     component: ManageCategoryComponent,
     canActivate: [RouteGuardService],
-    data: { expectedRole: ['admin'] },
+    data: { expectedRole: ['admin',  'user'] },
   },
   {
     path: 'products',
     component: ManageProductComponent,
     canActivate: [RouteGuardService],
-    data: { expectedRole: ['admin'] },
+    data: { expectedRole: ['admin',  'user'] },
   },
   {
     path: 'orders',

@@ -8,6 +8,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/global-constants';
 import { ProductComponent } from '../dialog/product/product.component';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
+import { RouteGuardService } from 'src/app/services/route-guard.service';
 
 @Component({
   selector: 'app-manage-product',
@@ -20,19 +21,28 @@ export class ManageProductComponent implements OnInit {
     'categoryName',
     'description',
     'price',
-    'edit',
+   
   ];
   dataSource: any;
   length: any;
   responseMessage: any;
+  isAdmin: boolean = this.routeGuardService.isAdmin;
 
   constructor(
     private productService: ProductService,
     private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private routeGuardService: RouteGuardService
+  ) {
+    this.isAdmin = this.routeGuardService.isAdmin;
+    if (this.isAdmin) {
+      this.displayedColumns.push('edit');
+    }
+    console.log(this.isAdmin);
+  
+  }
 
   ngOnInit(): void {
     this.ngxService.start();

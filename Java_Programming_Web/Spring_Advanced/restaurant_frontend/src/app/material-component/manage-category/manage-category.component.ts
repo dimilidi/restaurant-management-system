@@ -7,6 +7,7 @@ import { CategoryService } from 'src/app/services/category.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/global-constants';
 import { CategoryComponent } from '../dialog/category/category.component';
+import { RouteGuardService } from 'src/app/services/route-guard.service';
 
 @Component({
   selector: 'app-manage-category',
@@ -14,17 +15,26 @@ import { CategoryComponent } from '../dialog/category/category.component';
   styleUrls: ['./manage-category.component.css'],
 })
 export class ManageCategoryComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'edit'];
+  displayedColumns: string[] = ['name'];
   dataSource: any;
   responseMessage: any;
+  isAdmin: boolean = this.routeGuardService.isAdmin;
 
   constructor(
     private categoryService: CategoryService,
     private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private routeGuardService: RouteGuardService
+  ) {
+    this.isAdmin = this.routeGuardService.isAdmin;
+    if (this.isAdmin) {
+      this.displayedColumns.push('edit');
+    }
+    console.log(this.isAdmin);
+  
+  }
 
   ngOnInit(): void {
     this.ngxService.start();

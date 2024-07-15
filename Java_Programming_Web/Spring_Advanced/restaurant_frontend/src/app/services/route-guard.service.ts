@@ -9,6 +9,8 @@ import { GlobalConstants } from '../shared/global-constants';
   providedIn: 'root',
 })
 export class RouteGuardService {
+
+  isAdmin: boolean = false;
   constructor(
     public authService: AuthService,
     public router: Router,
@@ -38,6 +40,7 @@ export class RouteGuardService {
       const expectedRoles: string[] = route.data['expectedRole'];
       const userRoles = tokenPayload.roles.map((role: string) => role.replace('ROLE_', ''));
       const roleMatch = userRoles.some((role: string) => expectedRoles.includes(role));
+      this.isAdmin = userRoles.includes("admin");
       
       if (roleMatch) {
         return true; // Allow access if user role matches expected roles

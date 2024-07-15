@@ -9,6 +9,7 @@ import { GlobalConstants } from 'src/app/shared/global-constants';
 import { ViewBillProductsComponent } from '../dialog/view-bill-products/view-bill-products.component';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { saveAs } from 'file-saver';
+import { RouteGuardService } from 'src/app/services/route-guard.service';
 
 @Component({
   selector: 'app-view-bill',
@@ -19,21 +20,32 @@ export class ViewBillComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'email',
-    'contactNumber',
+    'createdDate',
     'paymentMethod',
     'total',
     'view',
   ];
   dataSource: any;
   responseMessage: any;
+  isAdmin: boolean = this.routeGuaredService.isAdmin;
+
 
   constructor(
     private billService: BillService,
     private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private routeGuaredService: RouteGuardService,)
+    {
+      this.isAdmin = this.routeGuaredService.isAdmin;
+      if (this.isAdmin) {
+        this.displayedColumns.push('edit');
+      }
+      console.log(this.isAdmin);
+    
+    }
+
   ngOnInit(): void {
     this.ngxService.start();
     this.tableData();

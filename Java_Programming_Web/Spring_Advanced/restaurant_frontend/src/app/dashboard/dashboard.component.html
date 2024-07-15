@@ -1,13 +1,15 @@
 <body>
   <mat-card>
-    <b><span>Dashboard</span></b>
+    <mat-icon>dashboard</mat-icon>
+    <b><span class="heading">Dashboard</span></b>
   </mat-card>
   <br />
   <div class="row">
     <div class="column">
       <div class="card">
-        <div class="container">
-          <h2 class="title">Total Categories:</h2>
+        <div class="container primary">
+          <mat-icon>category</mat-icon>
+          <h2 class="title">Categories</h2>
           <h1 class="title">{{ data?.category }}</h1>
           <p>
             <button class="button" [routerLink]="['/restaurant/categories']">
@@ -20,9 +22,10 @@
 
     <div class="column">
       <div class="card">
-        <div class="container">
-          <h2 class="title">Total Products:</h2>
-          <h1 class="title">{{ data?.product }}</h1>
+        <div class="container primary">
+          <mat-icon>inventory_2</mat-icon>
+          <h2 class="title">Products</h2>
+          <h1 class="title primary">{{ data?.product }}</h1>
           <p>
             <button class="button" [routerLink]="['/restaurant/products']">
               View Products
@@ -34,8 +37,9 @@
 
     <div class="column">
       <div class="card">
-        <div class="container">
-          <h2 class="title">Total Bills:</h2>
+        <div class="container primary">
+          <mat-icon>backup_table</mat-icon>
+          <h2 class="title">Bills</h2>
           <h1 class="title">{{ data?.bill }}</h1>
           <p>
             <button class="button" [routerLink]="['/restaurant/bills']">
@@ -45,5 +49,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="chart-box">
+    <app-best-seller-chart></app-best-seller-chart>
+    <app-best-seller-chart></app-best-seller-chart>
   </div>
 </body>

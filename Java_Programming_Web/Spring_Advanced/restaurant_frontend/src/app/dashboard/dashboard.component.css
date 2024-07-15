@@ -8,6 +8,19 @@
     top: 57px;
 }
 
+mat-card {
+  height: 55px;
+  padding: 20px; 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.heading {
+  padding: 5px;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
@@ -41,7 +54,8 @@ body {
   }
   
   .container {
-    padding: 0 16px;
+    padding: 16px;
+   text-align: center;
   }
   
   .container::after, .row::after {
@@ -51,8 +65,11 @@ body {
   }
   
   .title {
-    color: black;
     text-align: center !important;
+  }
+
+  .primary {
+    color: var(--themecolor-alt);
   }
   
   .button {
@@ -71,6 +88,11 @@ body {
   
   .button:hover {
     background-color: #555;
+  }
+
+  .chart-box {
+    display: flex;
+    justify-content: space-around;
   }
   
   @media screen and (max-width: 650px) {

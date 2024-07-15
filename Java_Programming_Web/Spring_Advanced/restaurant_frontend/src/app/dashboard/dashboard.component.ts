@@ -1,22 +1,29 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DashboardService } from '../services/dashboard.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { GlobalConstants } from '../shared/global-constants';
+import { ProductService } from '../services/product.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements AfterViewInit {
+export class DashboardComponent implements OnInit {
   responseMessage: any;
   data: any;
+  bestSellers: any;
 
-  ngAfterViewInit() {}
+  ngOnInit() {
+    this.productService.getBestSellers().subscribe(d => {
+      this.bestSellers = d;
+    });
+  }
 
   constructor(
     private dashboardService: DashboardService,
+    private productService: ProductService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService
   ) {
