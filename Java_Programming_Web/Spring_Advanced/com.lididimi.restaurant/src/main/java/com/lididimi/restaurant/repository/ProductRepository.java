@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
@@ -26,4 +27,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query("SELECT new com.lididimi.restaurant.wrapper.ProductWrapper(p.id, p.name, p.description, p.price) FROM ProductEntity p WHERE p.id=:id")
     ProductWrapper getProductById(@Param("id") Long id);
+
 }

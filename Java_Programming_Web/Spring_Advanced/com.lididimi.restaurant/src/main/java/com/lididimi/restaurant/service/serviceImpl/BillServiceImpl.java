@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,10 +25,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 
@@ -268,5 +268,41 @@ public class BillServiceImpl implements BillService {
         billRepository.deleteBillsOlderThan(cutoffDate);
         log.info("Old bills cleaned up");
     }*/
+
+    public List<Map<String, Object>> findBestSellers() {
+        List<BillEntity> bills = billRepository.getAllBills();
+        Map<String, Integer> productSales = new HashMap<>();
+
+        for (BillEntity bill : bills) {
+            try {
+                JSONArray products = new JSONArray(bill.getProductDetails());
+                for (int i = 0; i < products.length(); i++) {
+                    JSONObject product = products.getJSONObject(i);
+                    String productName = product.getString("name");
+                    int quantity = product.getInt("quantity");
+
+                    productSales.put(productName, productSales.getOrDefault(productName, 0) + quantity);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Convert to a list of maps for returning
+        List<Map<String, Object>> bestSellers = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : productSales.entrySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", entry.getKey());
+            map.put("sales", entry.getValue());
+            bestSellers.add(map);
+        }
+
+        // Sort the list by sales in descending order
+        bestSellers.sort((a, b) -> (int) b.get("sales") - (int) a.get("sales"));
+
+        log.info(bestSellers.toString());
+
+        return bestSellers;
+    }
 
 }

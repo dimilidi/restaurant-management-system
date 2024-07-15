@@ -20,4 +20,6 @@ public interface ProductService {
     ResponseEntity<List<ProductWrapper>> getByCategory(Long id);
 
     ResponseEntity<ProductWrapper> getProductByCategory(Long id);
+
+
 }

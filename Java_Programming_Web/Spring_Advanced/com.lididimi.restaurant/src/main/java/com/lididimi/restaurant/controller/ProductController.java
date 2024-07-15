@@ -4,6 +4,7 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.ProductService;
+import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
 import com.lididimi.restaurant.service.serviceImpl.ProductServiceImpl;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import com.lididimi.restaurant.wrapper.ProductWrapper;
@@ -21,10 +22,12 @@ public class ProductController {
 
     private final ProductRepository productRepository;
     private final ProductService productService;
+    private final BillServiceImpl billService;
 
-    public ProductController(ProductRepository productRepository, ProductServiceImpl productServiceImpl, ProductService productService) {
+    public ProductController(ProductRepository productRepository, ProductServiceImpl productServiceImpl, ProductService productService, BillServiceImpl billService) {
         this.productRepository = productRepository;
         this.productService = productService;
+        this.billService = billService;
     }
 
     @PostMapping("/add")
@@ -96,5 +99,12 @@ public class ProductController {
         }
         return new ResponseEntity<>(new ProductWrapper(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/best-sellers")
+    public ResponseEntity<List<Map<String, Object>>> getBestSellers() {
+        List<Map<String, Object>> bestSellers = billService.findBestSellers();
+        return ResponseEntity.ok(bestSellers);
+    }
+
 
 }

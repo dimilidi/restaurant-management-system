@@ -17,4 +17,6 @@ public interface BillService {
     ResponseEntity<String> delete(Long id);
 
     void cleanupOldBillsTask();
+
+    List<Map<String, Object>> findBestSellers();
 }
