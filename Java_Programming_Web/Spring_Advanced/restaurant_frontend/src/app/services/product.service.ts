@@ -49,6 +49,6 @@ export class ProductService {
 
   getBestSellers(): Observable<any> {
     return this.httpClient.get(`${this.url}/products/best-sellers`);
-}
+  }
 
 }

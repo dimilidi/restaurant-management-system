@@ -32,4 +32,9 @@ export class BillService {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
+
+  getTopEmployees(): Observable<any> {
+    return this.httpClient.get(`${this.url}/bills/top-employees`);
+}
+
 }
