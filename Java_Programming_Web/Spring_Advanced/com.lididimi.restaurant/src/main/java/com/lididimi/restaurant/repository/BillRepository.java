@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface BillRepository extends JpaRepository<BillEntity, Long> {
@@ -21,4 +22,11 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
     @Modifying
     @Query("DELETE FROM BillEntity b WHERE b.createdDate < :cutoffDate")
     void deleteBillsOlderThan(@Param("cutoffDate") Instant cutoffDate);
+
+    @Query("SELECT e.name AS employeeName, COUNT(b.id) AS billCount " +
+        "FROM BillEntity b " +
+        "JOIN UserEntity e ON b.createdBy = e.email " +
+        "GROUP BY e.name " +
+        "ORDER BY billCount DESC")
+    List<Map<String, Object>> findTopEmployees();
 }

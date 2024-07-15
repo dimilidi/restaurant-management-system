@@ -19,4 +19,6 @@ public interface BillService {
     void cleanupOldBillsTask();
 
     List<Map<String, Object>> findBestSellers();
+
+    List<Map<String, Object>> getTopEmployees();
 }

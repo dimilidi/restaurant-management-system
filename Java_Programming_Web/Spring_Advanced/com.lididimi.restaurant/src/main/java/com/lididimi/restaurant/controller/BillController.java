@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.Max;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -61,4 +63,11 @@ public class BillController {
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/top-employees")
+    public ResponseEntity<List<Map<String, Object>>> getTopEmployees() {
+        List<Map<String, Object>> topEmployees = billService.getTopEmployees();
+        return ResponseEntity.ok(topEmployees);
+    }
+
 }

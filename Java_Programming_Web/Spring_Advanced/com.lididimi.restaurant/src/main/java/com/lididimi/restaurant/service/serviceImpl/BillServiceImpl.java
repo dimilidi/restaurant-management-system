@@ -305,4 +305,9 @@ public class BillServiceImpl implements BillService {
         return bestSellers;
     }
 
+    @Override
+    public List<Map<String, Object>> getTopEmployees() {
+        return billRepository.findTopEmployees();
+    }
+
 }
