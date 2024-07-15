@@ -35,6 +35,10 @@ export class BillService {
 
   getTopEmployees(): Observable<any> {
     return this.httpClient.get(`${this.url}/bills/top-employees`);
-}
+  }
+
+  getRegularGuests(): Observable<any> {
+    return this.httpClient.get(`${this.url}/bills/regular-guests`);
+  }
 
 }

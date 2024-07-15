@@ -7,12 +7,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '../shared/material-module';
 import { BestSellerChartComponent } from '../best-seller-chart/best-seller-chart.component';
 import { TopEmployeeChartComponent } from '../top-employee-chart/top-employee-chart.component';
+import { RegularGuestsComponent } from '../regular-guests/regular-guests.component';
+
 
 @NgModule({
   declarations: [
     DashboardComponent,
     BestSellerChartComponent,
     TopEmployeeChartComponent,
+    RegularGuestsComponent
   ],
   imports: [
     CommonModule,

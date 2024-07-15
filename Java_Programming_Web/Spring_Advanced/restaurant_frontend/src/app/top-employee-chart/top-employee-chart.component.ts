@@ -22,6 +22,11 @@ export class TopEmployeeChartComponent implements OnInit {
   fetchTopEmployees() {
     this.billService.getTopEmployees().subscribe(data => {
       this.chartData = data;
+      console.log("TOP EMPLOYEE");
+      
+
+      console.log(data);
+      
     
       if (this.chartData != null) {
         for (let i = 0; i < this.chartData.length; i++) {

@@ -39,9 +39,9 @@ export class ViewBillComponent implements OnInit {
     private routeGuaredService: RouteGuardService,)
     {
       this.isAdmin = this.routeGuaredService.isAdmin;
-      if (this.isAdmin) {
-        this.displayedColumns.push('edit');
-      }
+    // if (this.isAdmin) {
+    //   this.displayedColumns.push('edit');
+    // }
       console.log(this.isAdmin);
     
     }

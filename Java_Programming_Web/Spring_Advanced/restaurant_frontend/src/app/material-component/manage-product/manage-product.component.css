@@ -28,3 +28,7 @@ padding: 5px;
 table {
     width: 100%;
 }
+
+th, tr {
+    text-align: center;
+}
