@@ -21,11 +21,11 @@ public class SeedDataServiceImpl implements SeedDataService {
 
     private Faker faker = new Faker();
 
-       /*@Override
+       @Override
     @PostConstruct
     public void generateSeedData() {
-     String name = "Alice Johnson";
-        String email = "alice.johnson@example.com";
+     String name = "Sara Smith";
+        String email = "sara.smith@example.com";
 
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.minusDays(404); // 365 days back
@@ -35,8 +35,8 @@ public class SeedDataServiceImpl implements SeedDataService {
             String contactNumber = "1231231234";
             String paymentMethod = "DEBIT_CARD";
             BigDecimal total = BigDecimal.valueOf(2.29).multiply(BigDecimal.valueOf(20));
-            String productDetails = "[{\"id\": 1, \"name\": \"Tomato Salad\", \"price\": 2.29, \"total\": 44.80, \"category\": \"Salad\", \"quantity\": \"20\"}]";
-            String createdBy = "tobi@mail.de";
+            String productDetails = "[{\"id\": 1, \"name\": \"Dark Cappuccino\", \"price\": 3.00, \"total\": 44.80, \"category\": \"Cappuccino\", \"quantity\": \"22\"}]";
+            String createdBy = "user@mail.de";
 
             BillEntity bill = new BillEntity();
             bill.setUuid(uuid);
@@ -54,6 +54,6 @@ public class SeedDataServiceImpl implements SeedDataService {
             bill.setCreatedDate(createdDate);
 
             billRepository.save(bill);
-
-    }}*/
+        }
+    }
 }

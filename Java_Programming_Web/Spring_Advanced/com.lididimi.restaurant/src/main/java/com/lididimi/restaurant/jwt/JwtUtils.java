@@ -43,8 +43,9 @@ public class JwtUtils {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String email, List<String> roles) {
+    public String generateToken(String email, String name, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(email);
+        claims.put("name", name);
         claims.put("roles", roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList()));
 
         Date now = new Date();

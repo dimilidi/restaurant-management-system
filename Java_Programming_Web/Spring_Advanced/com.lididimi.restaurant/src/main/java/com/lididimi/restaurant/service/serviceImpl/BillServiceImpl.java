@@ -21,6 +21,8 @@ import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -277,6 +279,7 @@ public class BillServiceImpl implements BillService {
         log.info("Old bills cleaned up");
     }*/
 
+
     public List<Map<String, Object>> findBestSellers() {
         List<BillEntity> bills = billRepository.getAllBills();
         Map<String, Integer> productSales = new HashMap<>();
@@ -308,12 +311,13 @@ public class BillServiceImpl implements BillService {
         // Sort the list by sales in descending order
         bestSellers.sort((a, b) -> (int) b.get("sales") - (int) a.get("sales"));
 
-        return bestSellers;
+        return bestSellers.stream().limit(5).collect(Collectors.toList());
     }
 
     @Override
     public List<Map<String, Object>> getTopEmployees() {
-        return billRepository.findTopEmployees();
+        Pageable limit = PageRequest.of(0, 5);
+        return billRepository.findTopEmployees(limit);
     }
 
 

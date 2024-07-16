@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.repository;
 
 import com.lididimi.restaurant.model.entity.BillEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,7 +34,7 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
         "JOIN UserEntity e ON b.createdBy = e.email " +
         "GROUP BY e.name " +
         "ORDER BY billCount DESC")
-    List<Map<String, Object>> findTopEmployees();
+    List<Map<String, Object>> findTopEmployees(Pageable pageable);
 
     @Query("SELECT b.email AS email, b.name AS name, COUNT(b.id) AS billCount " +
             "FROM BillEntity b " +

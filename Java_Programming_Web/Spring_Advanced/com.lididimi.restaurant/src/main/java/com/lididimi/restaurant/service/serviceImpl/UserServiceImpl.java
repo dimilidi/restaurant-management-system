@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
                     List<String> roles = userEntity.getRoles().stream()
                             .map(RoleEntity::getName)
                             .toList();
-                    String token = jwtUtils.generateToken(userEntity.getEmail(), roles);
+                    String token = jwtUtils.generateToken(userEntity.getEmail(), userEntity.getName(), roles);
                     return new ResponseEntity<>(String.format("{\"token\": \"%s\"}", token), HttpStatus.OK);
                 } else {
                     log.info("Wait for admin approval");
