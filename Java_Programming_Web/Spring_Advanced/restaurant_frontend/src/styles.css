@@ -56,6 +56,46 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex: 1 auto;
 }
 
+.profile-box {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.logo {
+  width: 75px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+  border-radius: 30%;
+  padding: 0px;
+  color: white;
+  background-color: var(--themecolor-alt);
+  font-size: 14px;
+}
+
+.logo-pipe {
+  height: 25px;
+  font-size: 22px;
+  line-height: 25px;
+
+}
+
+.logo-heading {
+  margin-left: 3px;
+}
+
+.logo-icon {
+  font-size: 18px;
+ 
+}
+
+.logo .mat-icon {
+   height: 18px;
+}
+
 
 
 

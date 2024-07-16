@@ -1,0 +1,35 @@
+
+.chart-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+    width: 400px;
+}
+
+.chart-box h2 {
+    margin: 0;
+}
+
+mat-card {
+    height: 55px;
+    padding: 20px; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+
+  }
+  
+  .heading {
+    margin: 0 0 0 5px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 32px;
+  }
+
+  #topEmployeesChart {
+    width: 400px;
+    height: 400px;
+}

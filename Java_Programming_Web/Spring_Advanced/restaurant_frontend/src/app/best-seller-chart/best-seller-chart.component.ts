@@ -19,6 +19,8 @@ export class BestSellerChartComponent implements OnInit {
   ngOnInit(): void {
     this.productService.getBestSellers().subscribe((response) => {
       this.chartData = response;
+      console.log(response);
+      
 
       if (this.chartData != null) {
         for (let i = 0; i < this.chartData.length; i++) {

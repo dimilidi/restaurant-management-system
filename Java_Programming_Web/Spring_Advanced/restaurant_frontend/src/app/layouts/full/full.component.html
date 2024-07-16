@@ -1,6 +1,7 @@
 <div class="main-container">
-  <mat-toolbar color="primary" class="topbar telative">
+  <mat-toolbar color="primary" class="topbar relative">
     <div class="navbar-header">
+
       <button
         mat-icon-button
         (click)="snav.toggle()"
@@ -9,12 +10,13 @@
       >
         <mat-icon>menu</mat-icon>
       </button>
-      <b>
-        <span style="vertical-align: middle">
-          <mat-icon>storefront</mat-icon>
-        </span>
-      </b>
-      <span class="heading" fxShow="false" fxShow.gt-xs> Restaurant Management System </span>
+
+      <div class="logo">
+        <mat-icon class="logo-icon">storefront</mat-icon>
+        <span class="logo-pipe">|</span>
+        <span class="logo-heading" fxShow="false" fxShow.gt-xs> RMS </span>
+      </div>
+      
     </div>
     <span fxFlex></span>
     <app-header></app-header>

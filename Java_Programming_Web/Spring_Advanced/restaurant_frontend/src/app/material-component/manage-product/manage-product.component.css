@@ -29,6 +29,12 @@ table {
     width: 100%;
 }
 
-th, tr {
+th, td {
     text-align: center;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

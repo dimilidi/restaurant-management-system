@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ChangePasswordComponent } from 'src/app/material-component/dialog/change-password/change-password.component';
 import { ConfirmationComponent } from 'src/app/material-component/dialog/confirmation/confirmation.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,12 @@ import { ConfirmationComponent } from 'src/app/material-component/dialog/confirm
 })
 export class HeaderComponent {
   role: any;
-  constructor(private router: Router, private dialog: MatDialog) {} 
+  username: string = this.authService.getCurrentUserName();
+  constructor(
+    private router: Router,
+    private dialog: MatDialog,
+    private authService: AuthService
+  ) {}
 
   logout() {
     const dialogConfig = new MatDialogConfig();
@@ -21,16 +27,18 @@ export class HeaderComponent {
     };
 
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
-      dialogRef.close();
-      localStorage.clear();
-      this.router.navigate(['/']);
-    })
+    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe(
+      (response) => {
+        dialogRef.close();
+        localStorage.clear();
+        this.router.navigate(['/']);
+      }
+    );
   }
 
   changePassword() {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width="550px";
+    dialogConfig.width = '550px';
     this.dialog.open(ChangePasswordComponent, dialogConfig);
   }
 }

@@ -21,7 +21,7 @@ export class RouteGuardService {
     const token: any = localStorage.getItem('token');
     var tokenPayload: any;
     try {
-      tokenPayload = jwtDecode(token);
+      tokenPayload = jwtDecode(token);      
     } catch (error) {
       localStorage.clear();
       if (route.routeConfig?.path === '') {
@@ -41,6 +41,7 @@ export class RouteGuardService {
       const userRoles = tokenPayload.roles.map((role: string) => role.replace('ROLE_', ''));
       const roleMatch = userRoles.some((role: string) => expectedRoles.includes(role));
       this.isAdmin = userRoles.includes("admin");
+      //console.log("NAME USER -> " + JSON.stringify(tokenPayload.name));
       
       if (roleMatch) {
         return true; // Allow access if user role matches expected roles
