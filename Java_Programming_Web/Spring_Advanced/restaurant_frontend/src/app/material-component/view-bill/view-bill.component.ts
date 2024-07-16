@@ -29,22 +29,14 @@ export class ViewBillComponent implements OnInit {
   responseMessage: any;
   isAdmin: boolean = this.routeGuaredService.isAdmin;
 
-
   constructor(
     private billService: BillService,
     private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
     private router: Router,
-    private routeGuaredService: RouteGuardService,)
-    {
-      this.isAdmin = this.routeGuaredService.isAdmin;
-    // if (this.isAdmin) {
-    //   this.displayedColumns.push('edit');
-    // }
-      console.log(this.isAdmin);
-    
-    }
+    private routeGuaredService: RouteGuardService
+  ) {}
 
   ngOnInit(): void {
     this.ngxService.start();
@@ -136,16 +128,19 @@ export class ViewBillComponent implements OnInit {
     this.ngxService.start();
     var data = {
       uuid: values.uuid,
-    };
-
+    }
     this.downloadFile(data);
   }
 
-
   downloadFile(data: any) {
+    console.log(data);
+    
     this.billService.getPdf(data).subscribe((response: any) => {
-      saveAs(response, data.fileName + '.pdf');
+      console.log(response);
+      
+      saveAs(response, data.uuid + '.pdf');
       this.ngxService.stop();
     });
   }
+
 }

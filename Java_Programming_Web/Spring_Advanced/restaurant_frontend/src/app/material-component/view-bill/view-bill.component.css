@@ -29,3 +29,9 @@ table {
 table th, td {
     text-align: center;
 }
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
