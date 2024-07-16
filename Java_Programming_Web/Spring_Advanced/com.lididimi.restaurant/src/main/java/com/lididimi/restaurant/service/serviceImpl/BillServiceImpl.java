@@ -361,8 +361,6 @@ public class BillServiceImpl implements BillService {
             for (Map.Entry<String, Long> entry : topProducts) {
                 Map<String, Object> productData = new HashMap<>();
                 productData.put("productName", entry.getKey());
-              //  productData.put("orderCount", entry.getValue());
-                //topProductsList.add(productData);
                 topProductsList.add(entry.getKey());
             }
 
