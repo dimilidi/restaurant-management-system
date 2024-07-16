@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BillService } from '../services/bill.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { ProductService } from '../services/product.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { GlobalConstants } from '../shared/global-constants';
@@ -24,17 +21,6 @@ export class RegularGuestsComponent implements OnInit {
     private snackbarService: SnackbarService,
   ) {}
 
-// ngOnInit() {
-//   this.billService.getRegularGuests().subscribe(
-//     (data) => {
-//       this.dataSource = data;
-//     },
-//     (error: any) => {
-//       console.error('Error fetching regular guests:', error);
-//     }
-//   );
-  // }
-
   ngOnInit(): void {
     this.ngxService.start();
     this.tableData();
@@ -45,6 +31,8 @@ export class RegularGuestsComponent implements OnInit {
       (response: any) => {
         this.ngxService.stop();
         this.dataSource = new MatTableDataSource(response);
+        console.log(response);
+        
       },
       (error: any) => {
         this.ngxService.stop();
