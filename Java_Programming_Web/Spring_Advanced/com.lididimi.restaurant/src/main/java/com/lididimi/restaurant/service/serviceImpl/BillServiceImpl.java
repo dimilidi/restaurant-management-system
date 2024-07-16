@@ -357,12 +357,13 @@ public class BillServiceImpl implements BillService {
                     .limit(3)
                     .collect(Collectors.toList());
 
-            List<Map<String, Object>> topProductsList = new ArrayList<>();
+            List<String> topProductsList = new ArrayList<>();
             for (Map.Entry<String, Long> entry : topProducts) {
                 Map<String, Object> productData = new HashMap<>();
                 productData.put("productName", entry.getKey());
-                productData.put("orderCount", entry.getValue());
-                topProductsList.add(productData);
+              //  productData.put("orderCount", entry.getValue());
+                //topProductsList.add(productData);
+                topProductsList.add(entry.getKey());
             }
 
             Map<String, Object> guestData = new HashMap<>();
