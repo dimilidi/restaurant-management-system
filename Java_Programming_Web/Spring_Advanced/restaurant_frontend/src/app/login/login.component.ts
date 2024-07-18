@@ -10,7 +10,7 @@ import { GlobalConstants } from '../shared/global-constants';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   hide = true;
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
         null,
         [Validators.required, Validators.pattern(GlobalConstants.emailRegex)],
       ],
-      password: [null, [Validators.required]]
+      password: [null, [Validators.required]],
     });
   }
 
@@ -52,15 +52,43 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl('/restaurant/dashboard');
       },
       (error) => {
+        console.log(error);
         this.ngxService.stop();
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message
-        }  else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
 
-        this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+        if (error.status === 400 ) {
+          const errors = error.error;
+          console.log(errors);
+
+          Object.keys(errors).forEach((field) => {
+            const control = this.loginForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] });
+            } else{
+              this.responseMessage = errors.message;
+            }
+            
+          });
+        } else {
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;   
+     
+        }
+            this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
+      // (error) => {
+      //   this.ngxService.stop();
+      //   if (error.error?.message) {
+      //     this.responseMessage = error.error?.message
+      //   }  else {
+      //     this.responseMessage = GlobalConstants.genericError;
+      //   }
+
+      //   this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      // }
     );
   }
 }

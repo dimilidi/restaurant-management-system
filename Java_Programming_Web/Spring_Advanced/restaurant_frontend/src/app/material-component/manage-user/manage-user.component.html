@@ -36,7 +36,7 @@
         <mat-slide-toggle
           (change)="onChange($event.checked, element.id)"
           matTooltip="Activate or Deactivate User"
-          [checked]="element.status"
+          [checked]="element.status === 'ACTIVE'"
         ></mat-slide-toggle>
       </td>
     </ng-container>

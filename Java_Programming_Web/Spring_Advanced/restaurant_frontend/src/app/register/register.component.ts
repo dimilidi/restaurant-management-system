@@ -69,6 +69,7 @@ export class RegisterComponent implements OnInit {
       email: formData.email,
       contactNumber: formData.contactNumber,
       password: formData.password,
+      confirmPassword: formData.confirmPassword,
     };
 
     this.userService.register(data).subscribe(
@@ -80,18 +81,30 @@ export class RegisterComponent implements OnInit {
         this.router.navigateByUrl('/');
       },
       (error) => {
+        console.log(error);
         this.ngxService.stop();
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
+        
+         if (error.status === 400) {
+          const errors = error.error;
+          console.log(errors); 
+  
+          Object.keys(errors).forEach((field) => {
+            const control = this.registerForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] }); 
+            }
+          });
+        } else  {
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;
+            this.snackbarService.openSnackBar(
+              this.responseMessage,
+              GlobalConstants.error
+            );
         }
-
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
       }
     );
   }
 }
+

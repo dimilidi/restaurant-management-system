@@ -155,8 +155,10 @@ export class ManageProductComponent implements OnInit {
 
   onChage(status: any, id: any): void {
     this.ngxService.start();
+    const productStatus: string = status == true ? 'ACTIVE' : 'INACTIVE';
+
     var data = {
-      status: status.toString(),
+      status: productStatus.toString(),
       id: id,
     };
     this.productService.updateStatus(data).subscribe(

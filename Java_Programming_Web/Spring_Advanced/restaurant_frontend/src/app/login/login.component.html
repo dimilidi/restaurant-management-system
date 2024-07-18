@@ -14,10 +14,15 @@
         <mat-form-field appearance="outline" fxFlex>
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" required />
-          <mat-error *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
+          <mat-error>
             <span *ngIf="loginForm.controls.email.errors?.required">This field is mandatory.</span>
             <span *ngIf="loginForm.controls.email.errors?.pattern">This field is invalid.</span>
+            <span  *ngIf="loginForm.controls.email.hasError('serverError')">{{ loginForm.controls.email.errors?.serverError }}</span>
           </mat-error>
+          <!-- <mat-error *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
+            <span *ngIf="loginForm.controls.email.errors?.required">This field is mandatory.</span>
+            <span *ngIf="loginForm.controls.email.errors?.pattern">This field is invalid.</span>
+          </mat-error> -->
         </mat-form-field>
   
         <mat-form-field appearance="outline" fxFlex>
@@ -26,9 +31,14 @@
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="hide ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hide">
             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-          <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+          <mat-error>
             <span *ngIf="loginForm.controls.password.errors?.required">This field is mandatory.</span>
+            <span *ngIf="loginForm.controls.password.errors?.pattern">This field is invalid.</span>
+            <span  *ngIf="loginForm.controls.password.hasError('serverError')">{{ loginForm.controls.password.errors?.serverError }}</span>
           </mat-error>
+          <!-- <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+            <span *ngIf="loginForm.controls.password.errors?.required">This field is mandatory.</span>
+          </mat-error> -->
         </mat-form-field>
 
       </div>

@@ -40,7 +40,7 @@ export class RouteGuardService {
       const expectedRoles: string[] = route.data['expectedRole'];
       const userRoles = tokenPayload.roles.map((role: string) => role.replace('ROLE_', ''));
       const roleMatch = userRoles.some((role: string) => expectedRoles.includes(role));
-      this.isAdmin = userRoles.includes("admin");
+      this.isAdmin = userRoles.includes("ADMIN");
       //console.log("NAME USER -> " + JSON.stringify(tokenPayload.name));
       
       if (roleMatch) {

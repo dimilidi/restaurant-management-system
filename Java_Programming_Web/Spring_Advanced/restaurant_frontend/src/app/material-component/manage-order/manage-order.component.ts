@@ -42,6 +42,7 @@ export class ManageOrderComponent implements OnInit {
   ngOnInit(): void {
     this.ngxService.start();
     this.getCategories();
+
     this.manageOrderForm = this.formBuilder.group({
       name: [
         null,
@@ -94,6 +95,7 @@ export class ManageOrderComponent implements OnInit {
   }
 
   getProductsByCategory(value: any) {
+    
     this.productService.getProductsByCategory(value.id).subscribe(
       (response: any) => {
         this.products = response;

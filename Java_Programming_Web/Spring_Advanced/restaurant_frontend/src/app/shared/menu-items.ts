@@ -21,14 +21,14 @@ const MENUITEMS = [
     name: 'Categories',
     type: 'link',
     icon: 'category',
-    role: 'admin',
+    role: 'ADMIN',
   },
   {
     state: 'products',
     name: 'Products',
     type: 'link',
     icon: 'inventory_2',
-    role: 'admin',
+    role: '',
   },
   {
     state: 'orders',
@@ -49,7 +49,7 @@ const MENUITEMS = [
     name: 'Employees',
     type: 'link',
     icon: 'people',
-    role: 'admin',
+    role: 'ADMIN',
   },
 ];
 

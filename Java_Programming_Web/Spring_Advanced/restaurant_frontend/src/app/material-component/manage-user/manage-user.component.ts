@@ -31,6 +31,8 @@ export class ManageUserComponent implements OnInit {
       (response: any) => {
         this.ngxService.stop();
         this.dataSource = new MatTableDataSource(response);
+        console.log(response);
+        
       },
       (error) => {
         this.ngxService.stop();
@@ -55,10 +57,13 @@ export class ManageUserComponent implements OnInit {
 
   onChange(status: any, id: any) {
     this.ngxService.start();
+    const userStatus:string = status == true ? 'ACTIVE' : 'INACTIVE';
     var data = {
-      status: status.toString(),
+      status: userStatus.toString(),
       id: id,
     };
+    console.log(data);
+    
 
     this.userService.update(data).subscribe(
       (response: any) => {

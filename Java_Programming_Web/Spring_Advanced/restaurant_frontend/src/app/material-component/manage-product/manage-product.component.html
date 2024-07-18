@@ -70,7 +70,7 @@
           <mat-slide-toggle
             (change)="onChage($event.checked, element.id)"
             matTooltip="Activate or Deactivate Product"
-            [checked]="element.status"
+            [checked]="element.status === 'ACTIVE'"
           ></mat-slide-toggle>
         </td>
       </ng-container>
