@@ -3,7 +3,7 @@
     "logo": "Restaurant-Management-System",
     "login": "Login",
     "register": "Register",
-    "forgotPassword": "Forgot Password"
+    "forgotPassword": "Forgot Password",
   },
   "bestSeller": {
     "title": "Best Seller",
