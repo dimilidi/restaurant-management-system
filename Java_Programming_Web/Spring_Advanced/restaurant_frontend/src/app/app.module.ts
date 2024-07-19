@@ -26,6 +26,7 @@ import { CustomLoaderService } from './services/custom-loader.service';
 import { SharedModule } from './shared/shared.module';
 import { MaterialComponentsModule } from './material-component/material.module';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
@@ -50,6 +51,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     RegisterComponent,
     ForgotPasswordComponent,
     LoginComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

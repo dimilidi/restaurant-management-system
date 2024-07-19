@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -16,12 +17,6 @@ export class UserService {
     });
   }
 
-  forgotPassword(data: any) {
-    return this.httpClient.post(this.url + '/users/forgotPassword', data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
-    });
-  }
-
   login(data: any) {
     return this.httpClient.post(this.url + '/users/login', data, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
@@ -29,7 +24,7 @@ export class UserService {
   }
 
   checkToken() {
-    return this.httpClient.get(this.url + "/users/checkToken");
+    return this.httpClient.get(this.url + '/users/checkToken');
   }
 
   changePassword(data: any) {
@@ -38,13 +33,26 @@ export class UserService {
     });
   }
 
-  getUsers(){
-    return this.httpClient.get(this.url + "/users/get")
+  forgotPassword(data: any) {
+    return this.httpClient.post(this.url + '/users/forgotPassword', data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    });
   }
 
-  update(data: any){
-    return this.httpClient.post(this.url + "/users/update", data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.httpClient.post(`${this.url}/users/reset-password`, {
+      token,
+      newPassword,
+    });
+  }
+
+  getUsers() {
+    return this.httpClient.get(this.url + '/users/get');
+  }
+
+  update(data: any) {
+    return this.httpClient.post(this.url + '/users/update', data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 }

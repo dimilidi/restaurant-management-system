@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SnackbarService } from '../services/snackbar.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef,  MatDialog } from '@angular/material/dialog';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { GlobalConstants } from '../shared/global-constants';
+import { RegisterComponent } from '../register/register.component';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +25,7 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private snackbarService: SnackbarService,
     public dialogRef: MatDialogRef<LoginComponent>,
+    private dialog: MatDialog,
     private ngxService: NgxUiLoaderService
   ) {}
 
@@ -79,16 +82,20 @@ export class LoginComponent implements OnInit {
           GlobalConstants.error
         );
       }
-      // (error) => {
-      //   this.ngxService.stop();
-      //   if (error.error?.message) {
-      //     this.responseMessage = error.error?.message
-      //   }  else {
-      //     this.responseMessage = GlobalConstants.genericError;
-      //   }
-
-      //   this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
-      // }
     );
+  }
+
+  openRegisterDialog() {
+    this.dialogRef.close(); 
+    this.dialog.open(RegisterComponent, {
+      width: '600px',
+    });
+  }
+
+  openForgottenPasswordDialog() {
+    this.dialogRef.close(); 
+    this.dialog.open(ForgotPasswordComponent, {
+      width: '600px',
+    });
   }
 }

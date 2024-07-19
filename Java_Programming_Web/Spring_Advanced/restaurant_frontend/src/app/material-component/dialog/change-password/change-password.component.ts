@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import {  NgxUiLoaderService } from 'ngx-ui-loader';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 import { GlobalConstants } from 'src/app/shared/global-constants';
@@ -11,7 +11,7 @@ import { GlobalConstants } from 'src/app/shared/global-constants';
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.css'],
 })
-export class ChangePasswordComponent implements OnInit{
+export class ChangePasswordComponent implements OnInit {
   oldPassword = true;
   newPassword = true;
   confirmPassword = true;
@@ -27,7 +27,6 @@ export class ChangePasswordComponent implements OnInit{
     private snackbarService: SnackbarService
   ) {}
 
-
   ngOnInit(): void {
     this.changePasswordForm = this.formBuilder.group({
       oldPassword: [null, Validators.required],
@@ -35,14 +34,15 @@ export class ChangePasswordComponent implements OnInit{
       confirmPassword: [null, Validators.required],
     });
 
-    
     this.changePasswordForm.valueChanges.subscribe(() => {
       this.validateSubmit();
     });
   }
 
   validateSubmit(): void {
-    this.passwordMismatch = this.changePasswordForm.value.newPassword !== this.changePasswordForm.value.confirmPassword;
+    this.passwordMismatch =
+      this.changePasswordForm.value.newPassword !==
+      this.changePasswordForm.value.confirmPassword;
   }
 
   handlePasswordChangeSubmit() {
@@ -51,26 +51,41 @@ export class ChangePasswordComponent implements OnInit{
     var data = {
       oldPassword: formData.oldPassword,
       newPassword: formData.newPassword,
-      confirmPassword: formData.confirmPassword
-    }
+      confirmPassword: formData.confirmPassword,
+    };
 
-    this.userService.changePassword(data).subscribe((response: any)=> {
-      this.ngxService.stop();
-      this.responseMessage = response.message;
-      this.dialogRef.close();
-      this.snackbarService.openSnackBar(this.responseMessage, "success");
-    }, (error) => {
-      console.log(error);
-      this.ngxService.stop();
+    this.userService.changePassword(data).subscribe(
+      (response: any) => {
+        this.ngxService.stop();
+        this.responseMessage = response.message;
+        this.dialogRef.close();
+        this.snackbarService.openSnackBar(this.responseMessage, 'success');
+      },
+      (error) => {
+        console.log(error);
+        this.ngxService.stop();
 
-      if(error.error?.message) {
-        this.responseMessage = error.error?.message;
-      } else {
-        this.responseMessage = GlobalConstants.genericError;
+        if (error.status === 400) {
+          const errors = error.error;
+          console.log(errors);
+
+          Object.keys(errors).forEach((field) => {
+            const control = this.changePasswordForm.get(field);
+            if (control) {
+              control.setErrors({ serverError: errors[field] });
+            }
+            this.responseMessage = errors.message;
+          });
+        } else {
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;
+        }
+
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
-
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalConstants.error);
-      
-    })
+    );
   }
 }
