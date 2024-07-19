@@ -51,7 +51,6 @@ public class EmailUtils {
         return cc;
     }
 
-
     public void forgotMail(String to, String subject, String resetUrl) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -64,5 +63,4 @@ public class EmailUtils {
         message.setContent(htmlMsg, "text/html");
         emailSender.send(message);
     }
-
 }

@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.model.entity;
 
+import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -33,6 +34,7 @@ public class ProductEntity implements Serializable {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusNameEnum status;
 
 }

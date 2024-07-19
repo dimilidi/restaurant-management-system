@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.wrapper;
 
+import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,14 +12,14 @@ public class ProductWrapper {
     private String name;
     private String description;
     private BigDecimal price;
-    private String status;
+    private StatusNameEnum status;
     private Long categoryId;
     private String categoryName;
 
     public ProductWrapper() {
     }
 
-    public ProductWrapper(Long id, String name, String description, BigDecimal price, String status, Long categoryId, String categoryName) {
+    public ProductWrapper(Long id, String name, String description, BigDecimal price, StatusNameEnum status, Long categoryId, String categoryName) {
         this.id = id;
         this.name = name;
         this.description = description;

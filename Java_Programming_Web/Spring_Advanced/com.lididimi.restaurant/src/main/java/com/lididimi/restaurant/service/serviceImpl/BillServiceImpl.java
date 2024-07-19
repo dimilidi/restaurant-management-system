@@ -12,6 +12,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.entity.BillEntity;
+import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
@@ -157,16 +158,18 @@ public class BillServiceImpl implements BillService {
             bill.setName((String) requestMap.get("name"));
             bill.setEmail((String) requestMap.get("email"));
             bill.setContactNumber((String) requestMap.get("contactNumber"));
-            bill.setPaymentMethod((String) requestMap.get("paymentMethod"));
-            bill.setTotal(new BigDecimal((String) requestMap.get("totalAmount")));
+
+            String paymentMethodStr = (String) requestMap.get("paymentMethod");
+            bill.setPaymentMethod(PaymentMethodNameEnum.valueOf(paymentMethodStr.toUpperCase()));
+
+            bill.setTotal(new BigDecimal(requestMap.get("totalAmount").toString()));
             bill.setProductDetails((String) requestMap.get("productDetails"));
             bill.setCreatedBy((String) jwtFilter.currentUser());
             billRepository.save(bill);
         } catch (Exception e) {
-
+            log.error(e.getMessage(), e);
         }
     }
-
 
     private boolean validateRequestMap(Map<String, Object> requestMap) {
         return requestMap.containsKey("name") &&

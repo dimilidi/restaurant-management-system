@@ -4,16 +4,21 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
+import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
+import com.lididimi.restaurant.model.dto.UserDTO;
+import com.lididimi.restaurant.model.dto.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.UserRegisterDTO;
 import com.lididimi.restaurant.model.entity.PasswordResetToken;
 import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
+import com.lididimi.restaurant.model.enums.StatusNameEnum;
+import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
 import com.lididimi.restaurant.utils.RestaurantUtils;
-import com.lididimi.restaurant.wrapper.UserWrapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -57,64 +63,51 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public ResponseEntity<String> register(Map<String, String> requestMap) {
-        log.info("Inside register {}", requestMap);
+    public ResponseEntity<String> register(UserRegisterDTO userRegisterDTO) {
+        log.info("Inside register {}", userRegisterDTO);
+
         try {
-            if (validateRegister(requestMap)) {
-                Optional<UserEntity> userOptional = userRepository.findByEmail(requestMap.get("email"));
+            Optional<UserEntity> userOptional = userRepository.findByEmail(userRegisterDTO.getEmail());
 
-                if (userOptional.isEmpty()) {
-                    Optional<RoleEntity>  optionalRole = roleRepository.findByName("user");
-                    UserEntity userEntity = modelMapper.map(requestMap, UserEntity.class);
-                    userEntity.setPassword(passwordEncoder.encode(requestMap.get("password")));
-                    userEntity.setStatus("false");
-                    if(optionalRole.isPresent()) {
-                        RoleEntity userRole = optionalRole.get();
-                        userEntity.setRoles(List.of(userRole));
-                        roleRepository.save(userRole);
-                    }
-                    userRepository.save(userEntity);
-
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully registered.\"}", HttpStatus.OK);
-                } else {
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Email already exists.\"}", HttpStatus.BAD_REQUEST);
+            if (userOptional.isEmpty()) {
+                Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
+                UserEntity userEntity = modelMapper.map(userRegisterDTO, UserEntity.class);
+                userEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+                userEntity.setStatus(StatusNameEnum.ACTIVE);
+                if(optionalRole.isPresent()) {
+                    RoleEntity userRole = optionalRole.get();
+                    userEntity.setRoles(List.of(userRole));
+                    roleRepository.save(userRole);
                 }
+                userRepository.save(userEntity);
+
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully registered.\"}", HttpStatus.OK);
             } else {
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.BAD_REQUEST);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Email already exists.\"}", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    private boolean validateRegister(Map<String, String> requestMap) {
-        if (requestMap.containsKey("name")
-                && requestMap.containsKey("contactNumber")
-                && requestMap.containsKey("password")
-                && requestMap.containsKey("email")) {
-            return true;
-        }
-        return false;
-    }
-
 
     @Override
-    public ResponseEntity<String> login(Map<String, String> requestMap) {
+    public ResponseEntity<String> login(UserLoginDTO userLoginDTO) {
         log.info("Inside login");
         try {
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(requestMap.get("email"), requestMap.get("password"))
+                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
             );
 
             if (auth.isAuthenticated()) {
                 UserEntity userEntity = restaurantUserDetailsService.getUserDetails();
-                if ("true".equalsIgnoreCase(userEntity.getStatus())) {
+                if (StatusNameEnum.ACTIVE.equals(userEntity.getStatus())) {
                     List<String> roles = userEntity.getRoles().stream()
-                            .map(RoleEntity::getName)
-                            .toList();
+                            .map(roleEntity -> roleEntity.getName().name())
+                            .collect(Collectors.toList());
+
                     String token = jwtUtils.generateToken(userEntity.getEmail(), userEntity.getName(), roles);
+
                     return new ResponseEntity<>(String.format("{\"token\": \"%s\"}", token), HttpStatus.OK);
                 } else {
                     log.info("Wait for admin approval");
@@ -129,29 +122,37 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ResponseEntity<List<UserWrapper>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         try {
             if (jwtFilter.isAdmin()) {
-                return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
+                List<UserEntity> users = userRepository.getAllUsers(UserRoleNameEnum.USER);
+                List<UserDTO> allUsers = users.stream()
+                        .map(this::convertToDto)
+                        .collect(Collectors.toList());
+                return new ResponseEntity<>(allUsers, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
             }
-
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    private UserDTO convertToDto(UserEntity user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
     @Override
-    public ResponseEntity<String> update(Map<String, String> requestMap) {
+    public ResponseEntity<String> update(UserDTO userDTO) {
         try {
             if (jwtFilter.isAdmin()) {
-                Optional<UserEntity> optionalUser = userRepository.findById(Long.parseLong(requestMap.get("id")));
+                Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
                 if (optionalUser.isPresent()) {
-                    userRepository.updateStatus(requestMap.get("status"), Long.parseLong(requestMap.get("id")));
-                    sendMailToAllAdmins(requestMap.get("status"), optionalUser.get().getEmail(), userRepository.getAllAdmins());
+                    StatusNameEnum status = userDTO.getStatus();
+                    userRepository.updateStatus(status, userDTO.getId());
+                    sendMailToAllAdmins(status, optionalUser.get().getEmail(), userRepository.getAllAdmins(UserRoleNameEnum.ADMIN));
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated user status.\"}", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("{\"message\": \"User does not exist.\"}", HttpStatus.OK);
@@ -159,47 +160,48 @@ public class UserServiceImpl implements UserService {
             } else {
                 return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.UNAUTHORIZED);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void sendMailToAllAdmins(String status, String user, List<String> allAdmins) {
+    private void sendMailToAllAdmins(StatusNameEnum status, String user, List<String> allAdmins) {
+        log.info("Send mail to all admins");
         allAdmins.remove(jwtFilter.currentUser());
 
-        if (status != null && status.equalsIgnoreCase("true")) {
+        if (status != null && status.equals(StatusNameEnum.ACTIVE)) {
             emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account approved.", "User: " + user + "\nis approved by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
         } else {
             emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account disabled.", "User: " + user + "\nis disabled by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
-
         }
     }
 
     @Override
     public ResponseEntity<String> checkToken() {
-        return RestaurantUtils.getResponseEntity("true", HttpStatus.OK);
+        return RestaurantUtils.getResponseEntity("ACTIVE", HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+    public ResponseEntity<String> changePassword(UserChangePasswordDTO userChangePasswordDTO) {
         try {
             Optional<UserEntity> optionalUser = userRepository.findByEmail(jwtFilter.currentUser());
             if (optionalUser.isPresent()) {
                 UserEntity user = optionalUser.get();
-                if (passwordEncoder.matches(requestMap.get("oldPassword"), user.getPassword())) {
-                    user.setPassword(passwordEncoder.encode(requestMap.get("newPassword")));
+                if (userChangePasswordDTO.getOldPassword() == null || userChangePasswordDTO.getNewPassword() == null) {
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Password fields cannot be null.\"}", HttpStatus.BAD_REQUEST);
+                }
+
+                if (passwordEncoder.matches(userChangePasswordDTO.getOldPassword(), user.getPassword())) {
+                    user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
                     userRepository.save(user);
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated password.\"}", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Incorrect old password.\"}", HttpStatus.BAD_REQUEST);
                 }
-
             } else {
                 return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,9 +209,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+    public ResponseEntity<String> forgotPassword(UserDTO userDTO) {
         try {
-            Optional<UserEntity> optionalUser = userRepository.findByEmail(requestMap.get("email"));
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(userDTO.getEmail());
             if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
                 UserEntity user = optionalUser.get();
                 emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
@@ -247,16 +249,27 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+
     @Override
-    public void updatePassword(String token, String newPassword) {
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
-        if (tokenOpt.isPresent()) {
-            PasswordResetToken resetToken = tokenOpt.get();
-            UserEntity user = resetToken.getUser();
-            user.setPassword(passwordEncoder.encode(newPassword));
-            System.out.println(newPassword);
-            userRepository.save(user);
-            tokenRepository.delete(resetToken);
+    public ResponseEntity<String> updatePassword(String token, String newPassword) {
+        try {
+            Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+            if (tokenOpt.isPresent()) {
+                PasswordResetToken resetToken = tokenOpt.get();
+                if (resetToken.isExpired()) {
+                    return RestaurantUtils.getResponseEntity("{\"message\": \"Token has expired.\"}", HttpStatus.BAD_REQUEST);
+                }
+                UserEntity user = resetToken.getUser();
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                tokenRepository.delete(resetToken);
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Password reset successful.\"}", HttpStatus.OK);
+            } else {
+                return RestaurantUtils.getResponseEntity("{\"message\": \"Invalid token.\"}", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

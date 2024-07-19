@@ -55,10 +55,4 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
 */
 
 
-
-
-
-
-
-
 }

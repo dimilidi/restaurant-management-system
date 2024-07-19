@@ -70,12 +70,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public boolean isAdmin() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_admin"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
 
     public boolean isUser() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_user"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"));
     }
 
     public String currentUser() {

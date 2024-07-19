@@ -4,6 +4,7 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.entity.CategoryEntity;
 import com.lididimi.restaurant.model.entity.ProductEntity;
+import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.ProductService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
@@ -79,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         if (isAdd) {
             product.setId(Long.parseLong(requestMap.get("id")));
         } else {
-            product.setStatus("true");
+            product.setStatus(StatusNameEnum.ACTIVE);
         }
         product.setCategory(category);
         product.setName(requestMap.get("name"));
@@ -100,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
                         ProductEntity product = getProductFromMap(requestMap, true);
                         product.setStatus(optionalProduct.get().getStatus());
                         productRepository.save(product);
-                        return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK); //"{\"message\": \"Product not found.\"}"
+                        return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK);
                     } else {
                         return RestaurantUtils.getResponseEntity("{\"message\": \"Product not found.\"}", HttpStatus.OK);
                     }
@@ -142,7 +143,8 @@ public class ProductServiceImpl implements ProductService {
                 Long id = Long.parseLong(requestMap.get("id"));
                 Optional<ProductEntity> optionalProduct = productRepository.findById(id);
                 if(optionalProduct.isPresent()) {
-                    productRepository.updateProductStatus(requestMap.get("status"), id);
+                    StatusNameEnum status = StatusNameEnum.valueOf(requestMap.get("status"));
+                    productRepository.updateProductStatus(status, id);
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated product.\"}", HttpStatus.OK);
                 } else {
                     return RestaurantUtils.getResponseEntity("{\"message\": \"Product does not exist.\"}", HttpStatus.OK);

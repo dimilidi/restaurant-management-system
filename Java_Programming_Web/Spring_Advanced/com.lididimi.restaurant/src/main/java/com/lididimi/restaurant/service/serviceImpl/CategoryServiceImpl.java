@@ -69,6 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<List<CategoryEntity>> getAllCategories(String filterValue) {
+        log.info(filterValue);
         try {
             if(filterValue != null && filterValue.equalsIgnoreCase("true")) {
                 log.info("Inside getAllCategories filter");

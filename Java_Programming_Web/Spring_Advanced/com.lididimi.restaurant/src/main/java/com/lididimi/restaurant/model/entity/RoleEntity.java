@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.model.entity;
 
+import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,7 +20,8 @@ public class RoleEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name; // TODO -- make use of enum
+    @Enumerated(EnumType.STRING)
+    private UserRoleNameEnum name;
 
     @ManyToMany(mappedBy = "roles")
     private List<UserEntity> users;

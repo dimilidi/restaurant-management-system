@@ -1,5 +1,7 @@
+/*
 package com.lididimi.restaurant.wrapper;
 
+import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,11 +16,11 @@ public class UserWrapper {
 
     private String contactNumber;
 
-    private String status;
+    private StatusNameEnum status;
 
     public UserWrapper() {}
 
-    public UserWrapper(Long id, String name, String email, String contactNumber, String status) {
+    public UserWrapper(Long id, String name, String email, String contactNumber, StatusNameEnum status) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -26,3 +28,4 @@ public class UserWrapper {
         this.status = status;
     }
 }
+*/
