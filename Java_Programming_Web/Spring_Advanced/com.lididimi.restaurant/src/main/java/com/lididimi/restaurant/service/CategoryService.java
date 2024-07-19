@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.service;
 
+import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.entity.CategoryEntity;
 import org.springframework.http.ResponseEntity;
 
@@ -9,9 +10,9 @@ import java.util.Map;
 public interface CategoryService {
 
 
-    ResponseEntity<String> addNewCategory(Map<String, String> requestMap);
+    ResponseEntity<String> addNewCategory(CategoryDTO categoryDTO);
 
-    ResponseEntity<List<CategoryEntity>> getAllCategories(String filterValue);
+    ResponseEntity<List<CategoryDTO>> getAllCategories(String filterValue);
 
-    ResponseEntity<String> updateCategory(Map<String, String> requestMap);
+    ResponseEntity<String> updateCategory(CategoryDTO categoryDTO);
 }

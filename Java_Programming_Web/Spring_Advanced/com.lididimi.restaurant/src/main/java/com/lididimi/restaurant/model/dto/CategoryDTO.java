@@ -1,13 +1,15 @@
 package com.lididimi.restaurant.model.dto;
 
-import com.lididimi.restaurant.model.validation.UniqueCategoryName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class CategoryDTO {
 
-    @NotNull
+    private Long id;
+
+    @NotNull(message = "Name is mandatory")
     @NotBlank(message = "Name is mandatory")
-    @UniqueCategoryName
     private String name;
 }

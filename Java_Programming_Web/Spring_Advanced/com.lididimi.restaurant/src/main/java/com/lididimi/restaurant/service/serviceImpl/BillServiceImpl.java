@@ -11,12 +11,14 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
@@ -28,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -53,30 +56,30 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<String> generateReport(Map<String, Object> requestMap) {
+    public ResponseEntity<String> generateReport(@Valid BillDTO billDTO, BindingResult bindingResult) {
         log.info("Inside generateReport");
         try {
             String fileName;
-            if (validateRequestMap(requestMap)) {
-                if (requestMap.containsKey("isGenerate") && !((Boolean) requestMap.get("isGenerate"))) {
-                    fileName = (String) requestMap.get("uuid");
+            if (!bindingResult.hasErrors()) {
+                if (billDTO.isGenerate()) {
+                    fileName = billDTO.getUuid();
                 } else {
                     fileName = RestaurantUtils.getUUID();
-                    requestMap.put("uuid", fileName);
-                    insertBill(requestMap);
+                    billDTO.setUuid(fileName);
+                    insertBill(billDTO);
                 }
                 StringBuilder data = new StringBuilder();
                 data.append("Name: ");
-                data.append(requestMap.get("name"));
+                data.append(billDTO.getName());
                 data.append(System.lineSeparator());
                 data.append("Contact Number: ");
-                data.append(requestMap.get("contactNumber"));
+                data.append(billDTO.getContactNumber());
                 data.append(System.lineSeparator());
                 data.append("Email: ");
-                data.append(requestMap.get("email"));
+                data.append(billDTO.getEmail());
                 data.append(System.lineSeparator());
                 data.append("Payment Method: ");
-                data.append(requestMap.get("paymentMethod"));
+                data.append(billDTO.getPaymentMethod());
 
                 Document document = new Document();
                 PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
@@ -95,14 +98,14 @@ public class BillServiceImpl implements BillService {
                 table.setWidthPercentage(100);
                 addTableHeader(table);
 
-                JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) requestMap.get("productDetails"));
+                JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
                 }
                 document.add(table);
 
-                Paragraph footer = new Paragraph("Total: " + requestMap.get("totalAmount") + "\n" + "Thank you for visiting Restaurant Management System.");
+                Paragraph footer = new Paragraph("Total: " + billDTO.getTotal() + "\n" + "Thank you for visiting Restaurant Management System.");
                 document.add(footer);
 
                 document.close();
@@ -151,19 +154,16 @@ public class BillServiceImpl implements BillService {
         document.add(rectangle);
     }
 
-    private void insertBill(Map<String, Object> requestMap) {
+    private void insertBill(BillDTO billDTO) {
         try {
             BillEntity bill = new BillEntity();
-            bill.setUuid((String) requestMap.get("uuid"));
-            bill.setName((String) requestMap.get("name"));
-            bill.setEmail((String) requestMap.get("email"));
-            bill.setContactNumber((String) requestMap.get("contactNumber"));
-
-            String paymentMethodStr = (String) requestMap.get("paymentMethod");
-            bill.setPaymentMethod(PaymentMethodNameEnum.valueOf(paymentMethodStr.toUpperCase()));
-
-            bill.setTotal(new BigDecimal(requestMap.get("totalAmount").toString()));
-            bill.setProductDetails((String) requestMap.get("productDetails"));
+            bill.setUuid(billDTO.getUuid());
+            bill.setName(billDTO.getName());
+            bill.setEmail(billDTO.getEmail());
+            bill.setContactNumber(billDTO.getContactNumber());
+            bill.setPaymentMethod(billDTO.getPaymentMethod());
+            bill.setTotal(billDTO.getTotal());
+            bill.setProductDetails(billDTO.getProductDetails());
             bill.setCreatedBy((String) jwtFilter.currentUser());
             billRepository.save(bill);
         } catch (Exception e) {
@@ -171,14 +171,14 @@ public class BillServiceImpl implements BillService {
         }
     }
 
-    private boolean validateRequestMap(Map<String, Object> requestMap) {
+/*    private boolean validateRequestMap(Map<String, Object> requestMap) {
         return requestMap.containsKey("name") &&
                 requestMap.containsKey("contactNumber") &&
                 requestMap.containsKey("email") &&
                 requestMap.containsKey("paymentMethod") &&
                 requestMap.containsKey("productDetails") &&
                 requestMap.containsKey("totalAmount");
-    }
+    }*/
 
     private Font getFont(String type) {
         log.info("Inside getFont");
@@ -214,7 +214,7 @@ public class BillServiceImpl implements BillService {
         log.info("Inside getPdf : requestMap {}", requestMap);
 
         byte[] byteArray = new byte[0];
-        if (!requestMap.containsKey("uuid") && validateRequestMap(requestMap)) {
+        if (!requestMap.containsKey("uuid")) { // && validateRequestMap(requestMap)
             return new ResponseEntity<>(byteArray, HttpStatus.BAD_REQUEST);
         }
         String filePath = RestaurantConstants.STORE_LOCATION + "\\" + (String) requestMap.get("uuid") + ".pdf";
@@ -323,8 +323,7 @@ public class BillServiceImpl implements BillService {
         return billRepository.findTopEmployees(limit);
     }
 
-
-
+    @Override
     public List<Map<String, Object>> findRegularGuestsWithFavoriteProducts() {
         LocalDate lastYearDate = LocalDate.now().minusYears(1);
         Instant lastYear = lastYearDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
