@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.repository;
 
+import com.lididimi.restaurant.model.dto.ProductDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.wrapper.ProductWrapper;
@@ -15,18 +16,21 @@ import java.util.Map;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
-    @Query("SELECT new com.lididimi.restaurant.wrapper.ProductWrapper(p.id, p.name, p.description, p.price, p.status, p.category.id, p.category.name) FROM ProductEntity p")
-    List<ProductWrapper> getAllProducts();
+
+    boolean existsByName(String name);
+
+    @Query("SELECT p FROM ProductEntity p")
+    List<ProductEntity> getAllProducts();
 
     @Modifying
     @Transactional
     @Query("UPDATE ProductEntity p set p.status=:status WHERE p.id=:id")
     Integer updateProductStatus(@Param("status") StatusNameEnum status, @Param("id") Long id);
 
-    @Query("SELECT new com.lididimi.restaurant.wrapper.ProductWrapper(p.id, p.name) FROM ProductEntity p WHERE p.category.id=:id and p.status='ACTIVE'")
-    List<ProductWrapper> getProductByCategory(@Param("id") Long id);
+    @Transactional
+    @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:id and p.status='ACTIVE'")
+    List<ProductDTO> getProductByCategory(@Param("id") Long id);
 
-    @Query("SELECT new com.lididimi.restaurant.wrapper.ProductWrapper(p.id, p.name, p.description, p.price) FROM ProductEntity p WHERE p.id=:id")
-    ProductWrapper getProductById(@Param("id") Long id);
-
+    @Query("SELECT p FROM ProductEntity p WHERE p.id=:id")
+    ProductDTO getProductById(@Param("id") Long id);
 }

@@ -1,6 +1,8 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.model.dto.ProductDTO;
+import com.lididimi.restaurant.model.dto.ProductNewDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.ProductService;
@@ -8,11 +10,15 @@ import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
 import com.lididimi.restaurant.service.serviceImpl.ProductServiceImpl;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import com.lididimi.restaurant.wrapper.ProductWrapper;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +37,14 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addNewProduct(@RequestBody Map<String, String> requestMap) {
+    public ResponseEntity<?> addNewProduct(@RequestBody @Valid ProductDTO productDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
+        }
         try {
-            return productService.addNewProduct(requestMap);
+            return productService.addNewProduct(productDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,7 +52,7 @@ public class ProductController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<ProductWrapper>> getAllProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
         try {
             return productService.getAllProducts();
         }catch (Exception e) {
@@ -51,9 +62,14 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateProduct(@RequestBody(required = true) Map<String, String> requestMap) {
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductDTO productDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
+        }
         try {
-            return productService.updateProduct(requestMap);
+            return productService.updateProduct(productDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,9 +87,9 @@ public class ProductController {
     }
 
     @PatchMapping ("/updateStatus")
-    public ResponseEntity<String> updateStatus(@RequestBody Map<String, String> requestMap) {
+    public ResponseEntity<String> updateStatus(@RequestBody ProductDTO productDTO) {
         try {
-            return productService.updateStatus(requestMap);
+            return productService.updateStatus(productDTO);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +97,7 @@ public class ProductController {
     }
 
     @GetMapping("/getByCategory/{id}")
-    public ResponseEntity<List<ProductWrapper>> getByCategory(@PathVariable Long id) {
+    public ResponseEntity<List<ProductDTO>> getByCategory(@PathVariable Long id) {
         try {
             return productService.getByCategory(id);
         } catch(Exception e) {
@@ -91,13 +107,14 @@ public class ProductController {
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<ProductWrapper> getById(@PathVariable Long id) {
+    @Transactional
+    public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
         try {
             return productService.getProductByCategory(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(new ProductWrapper(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/best-sellers")
@@ -105,6 +122,4 @@ public class ProductController {
         List<Map<String, Object>> bestSellers = billService.findBestSellers();
         return ResponseEntity.ok(bestSellers);
     }
-
-
 }

@@ -1,30 +1,24 @@
 package com.lididimi.restaurant.model.dto;
 
-import com.lididimi.restaurant.model.entity.CategoryEntity;
-import com.lididimi.restaurant.model.enums.StatusNameEnum;
-import com.lididimi.restaurant.model.validation.Unique;
-import com.lididimi.restaurant.repository.ProductRepository;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Data
-public class ProductDTO {
-
+public class ProductNewDTO {
     private Long id;
 
     @NotNull
     @NotBlank(message = "Product name is mandatory")
     private String name;
 
+    @NotNull(message = "Category id is mandatory")
     private Long categoryId;
 
+    @NotNull(message = "Category name is mandatory")
+    @NotBlank(message = "Category name is mandatory")
     private String categoryName;
 
     @NotNull
@@ -36,5 +30,7 @@ public class ProductDTO {
     @Positive(message = "Price must be positive number")
     private BigDecimal price;
 
+    @NotNull(message = "Status is mandatory")
+    @NotBlank(message = "Status is mandatory")
     private String status;
 }
