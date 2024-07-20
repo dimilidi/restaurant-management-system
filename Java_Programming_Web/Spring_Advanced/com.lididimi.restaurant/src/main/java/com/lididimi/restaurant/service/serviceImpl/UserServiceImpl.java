@@ -1,13 +1,11 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.exception.user.*;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
-import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserLoginDTO;
-import com.lididimi.restaurant.model.dto.UserRegisterDTO;
+import com.lididimi.restaurant.model.dto.*;
 import com.lididimi.restaurant.model.entity.PasswordResetToken;
 import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
@@ -19,6 +17,7 @@ import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
 import com.lididimi.restaurant.utils.RestaurantUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,6 +31,8 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 
 @Slf4j
@@ -47,8 +48,9 @@ public class UserServiceImpl implements UserService {
     private final EmailUtils emailUtils;
     private final PasswordResetTokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+    private final HttpServletRequest request;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, RestaurantUserDetailsService restaurantUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, RestaurantUserDetailsService restaurantUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository, RoleRepository roleRepository, HttpServletRequest request) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
@@ -59,111 +61,162 @@ public class UserServiceImpl implements UserService {
         this.emailUtils = emailUtils;
         this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
+        this.request = request;
     }
 
     @Transactional
     @Override
-    public ResponseEntity<String> register(UserRegisterDTO userRegisterDTO) {
-        log.info("Inside register {}", userRegisterDTO);
+    public UserDTO register(UserRegisterDTO userRegisterDTO) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(userRegisterDTO.getEmail());
 
-        try {
-            Optional<UserEntity> userOptional = userRepository.findByEmail(userRegisterDTO.getEmail());
-
-            if (userOptional.isEmpty()) {
-                Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
-                UserEntity userEntity = modelMapper.map(userRegisterDTO, UserEntity.class);
-                userEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
-                userEntity.setStatus(StatusNameEnum.ACTIVE);
-                if(optionalRole.isPresent()) {
-                    RoleEntity userRole = optionalRole.get();
-                    userEntity.setRoles(List.of(userRole));
-                    roleRepository.save(userRole);
-                }
-                userRepository.save(userEntity);
-
-                return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully registered.\"}", HttpStatus.OK);
-            } else {
-                return RestaurantUtils.getResponseEntity("{\"message\": \"Email already exists.\"}", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (userOptional.isPresent()) {
+            throw new EmailAlreadyExistsException("Email already exists.");
         }
+
+        Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
+        UserEntity userEntity = modelMapper.map(userRegisterDTO, UserEntity.class);
+        userEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        userEntity.setStatus(StatusNameEnum.ACTIVE);
+
+        if (optionalRole.isPresent()) {
+            RoleEntity userRole = optionalRole.get();
+            userEntity.setRoles(List.of(userRole));
+            roleRepository.save(userRole);
+        }
+
+        userRepository.save(userEntity);
+        return modelMapper.map(userEntity, UserDTO.class);
     }
 
     @Override
-    public ResponseEntity<String> login(UserLoginDTO userLoginDTO) {
-        log.info("Inside login");
+    public String login(UserLoginDTO userLoginDTO) {
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
             );
 
             if (auth.isAuthenticated()) {
+                log.info("Authentication Success");
                 UserEntity userEntity = restaurantUserDetailsService.getUserDetails();
                 if (StatusNameEnum.ACTIVE.equals(userEntity.getStatus())) {
+                    log.info("Active User");
                     List<String> roles = userEntity.getRoles().stream()
                             .map(roleEntity -> roleEntity.getName().name())
                             .collect(Collectors.toList());
 
                     String token = jwtUtils.generateToken(userEntity.getEmail(), userEntity.getName(), roles);
 
-                    return new ResponseEntity<>(String.format("{\"token\": \"%s\"}", token), HttpStatus.OK);
+                    return token;
                 } else {
                     log.info("Wait for admin approval");
-                    return new ResponseEntity<>("{\"message\": \"Wait for admin approval.\"}", HttpStatus.BAD_REQUEST);
+                    throw new InvalidCredentialsException("Wait for admin approval.");
                 }
+            } else {
+                log.error("Authentication Failed");
+                throw new InvalidCredentialsException("Bad Credentials.");
             }
+        } catch (InvalidCredentialsException e) {
+            log.error("Invalid credentials: {}", e.getMessage());
+            throw e; // Re-throw to ensure the global exception handler catches it
         } catch (Exception e) {
-            log.error("{}", e);
+            log.error("Unexpected error during authentication: {}", e.getMessage());
+            throw new InvalidCredentialsException("Bad Credentials.");
         }
-        return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.BAD_REQUEST);
     }
 
 
     @Override
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        try {
-            if (jwtFilter.isAdmin()) {
-                List<UserEntity> users = userRepository.getAllUsers(UserRoleNameEnum.USER);
-                List<UserDTO> allUsers = users.stream()
-                        .map(this::convertToDto)
-                        .collect(Collectors.toList());
-                return new ResponseEntity<>(allUsers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public List<UserDTO> getAllUsers() {
+        if (jwtFilter.isAdmin()) {
+            List<UserEntity> users = userRepository.getAllUsers(UserRoleNameEnum.USER);
+            List<UserDTO> allUsers = users.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+            return allUsers;
+        } else {
+            throw new InvalidCredentialsException("Unauthorized");
         }
-
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+    @Override
+    public String update(UserDTO userDTO) {
+        if (jwtFilter.isAdmin()) {
+            Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
+            if (optionalUser.isPresent()) {
+                StatusNameEnum status = userDTO.getStatus();
+                userRepository.updateStatus(status, userDTO.getId());
+                sendMailToAllAdmins(status, optionalUser.get().getEmail(), userRepository.getAllAdmins(UserRoleNameEnum.ADMIN));
+                return "User status updated successfully.";
+            } else {
+                throw new UserNotFoundException("User does not exist.");
+            }
+        } else {
+            throw new InvalidCredentialsException("Unauthorized");
+        }
+    }
+
+
+    @Override
+    public String changePassword(UserChangePasswordDTO userChangePasswordDTO) {
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(jwtFilter.currentUser());
+        if (optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+            if (passwordEncoder.matches(userChangePasswordDTO.getOldPassword(), user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
+                userRepository.save(user);
+                return "Password changed successfully.";
+            } else {
+                throw new InvalidCredentialsException("Incorrect old password.");
+            }
+        } else {
+            throw new UserNotFoundException("User does not exist.");
+        }
+    }
+
+
+    @Override
+    public String forgotPassword(EmailDTO emailDTO) throws MessagingException {
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(emailDTO.getEmail());
+        if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
+            UserEntity user = optionalUser.get();
+            emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
+            return "Check your email for link to reset password.";
+        } else {
+            throw new UserNotFoundException("Email not found.");
+        }
+    }
+
+    @Override
+    public boolean validatePasswordResetToken(String token) {
+        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+        if (tokenOpt.isPresent()) {
+            PasswordResetToken resetToken = tokenOpt.get();
+            return !resetToken.isExpired();
+        }
+        return false;
+    }
+
+    @Override
+    public String updatePassword(String token, String newPassword) {
+        Optional<PasswordResetToken> optionalToken = tokenRepository.findByToken(token);
+        if (optionalToken.isPresent()) {
+            PasswordResetToken resetToken = optionalToken.get();
+            UserEntity user = resetToken.getUser();
+            if (resetToken.isExpired()) {
+                throw new InvalidCredentialsException("Token expired.");
+            }
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return "Password reset successful.";
+        } else {
+            throw new InvalidCredentialsException("Invalid token.");
+        }
+    }
+
 
     private UserDTO convertToDto(UserEntity user) {
         return modelMapper.map(user, UserDTO.class);
-    }
-
-    @Override
-    public ResponseEntity<String> update(UserDTO userDTO) {
-        try {
-            if (jwtFilter.isAdmin()) {
-                Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
-                if (optionalUser.isPresent()) {
-                    StatusNameEnum status = userDTO.getStatus();
-                    userRepository.updateStatus(status, userDTO.getId());
-                    sendMailToAllAdmins(status, optionalUser.get().getEmail(), userRepository.getAllAdmins(UserRoleNameEnum.ADMIN));
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated user status.\"}", HttpStatus.OK);
-                } else {
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"User does not exist.\"}", HttpStatus.OK);
-                }
-            } else {
-                return new ResponseEntity<>("{\"message\": \"Bad Credentials.\"}", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void sendMailToAllAdmins(StatusNameEnum status, String user, List<String> allAdmins) {
@@ -177,53 +230,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public ResponseEntity<String> checkToken() {
-        return RestaurantUtils.getResponseEntity("ACTIVE", HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<String> changePassword(UserChangePasswordDTO userChangePasswordDTO) {
-        try {
-            Optional<UserEntity> optionalUser = userRepository.findByEmail(jwtFilter.currentUser());
-            if (optionalUser.isPresent()) {
-                UserEntity user = optionalUser.get();
-                if (userChangePasswordDTO.getOldPassword() == null || userChangePasswordDTO.getNewPassword() == null) {
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Password fields cannot be null.\"}", HttpStatus.BAD_REQUEST);
-                }
-
-                if (passwordEncoder.matches(userChangePasswordDTO.getOldPassword(), user.getPassword())) {
-                    user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
-                    userRepository.save(user);
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Successfully updated password.\"}", HttpStatus.OK);
-                } else {
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Incorrect old password.\"}", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    public ResponseEntity<String> forgotPassword(UserDTO userDTO) {
-        try {
-            Optional<UserEntity> optionalUser = userRepository.findByEmail(userDTO.getEmail());
-            if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
-                UserEntity user = optionalUser.get();
-                emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
-            }
-            return RestaurantUtils.getResponseEntity("{\"message\": \"Check your email for link to reset password.\"}", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    public String passwordResetToken(String email) throws MessagingException {
+    private String passwordResetToken(String email) throws MessagingException {
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         String resetUrl = "";
         if (userOpt.isPresent()) {
@@ -239,38 +246,6 @@ public class UserServiceImpl implements UserService {
         return resetUrl;
     }
 
-
-    public boolean validatePasswordResetToken(String token) {
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
-        if (tokenOpt.isPresent()) {
-            PasswordResetToken resetToken = tokenOpt.get();
-            return !resetToken.isExpired();
-        }
-        return false;
-    }
-
-
-    @Override
-    public ResponseEntity<String> updatePassword(String token, String newPassword) {
-        try {
-            Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
-            if (tokenOpt.isPresent()) {
-                PasswordResetToken resetToken = tokenOpt.get();
-                if (resetToken.isExpired()) {
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Token has expired.\"}", HttpStatus.BAD_REQUEST);
-                }
-                UserEntity user = resetToken.getUser();
-                user.setPassword(passwordEncoder.encode(newPassword));
-                userRepository.save(user);
-                tokenRepository.delete(resetToken);
-                return RestaurantUtils.getResponseEntity("{\"message\": \"Password reset successful.\"}", HttpStatus.OK);
-            } else {
-                return RestaurantUtils.getResponseEntity("{\"message\": \"Invalid token.\"}", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
+
 

@@ -32,4 +32,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Integer updateStatus(@Param("status") StatusNameEnum status, @Param("id") Long id);
 
 
+    boolean existsByEmail(String email);
 }

@@ -1,31 +1,27 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserLoginDTO;
-import com.lididimi.restaurant.model.dto.UserRegisterDTO;
+import com.lididimi.restaurant.model.dto.*;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    //ResponseEntity<String> register(Map<String, String> requestMap);
-    ResponseEntity<String> register(UserRegisterDTO userRegisterDTO);
 
-    ResponseEntity<String> login(UserLoginDTO userLoginDTO);
+    UserDTO register(UserRegisterDTO userRegisterDTO);
 
-    ResponseEntity<List<UserDTO>> getAllUsers();
+    String login(UserLoginDTO userLoginDTO);
 
-    ResponseEntity<String> update(UserDTO userDTO);
+    List<UserDTO> getAllUsers();
 
-    ResponseEntity<String> checkToken();
+    String update(UserDTO userDTO);
 
-    ResponseEntity<String> changePassword(UserChangePasswordDTO userChangePasswordDTO);
+    String changePassword(UserChangePasswordDTO userChangePasswordDTO);
 
-    ResponseEntity<String> forgotPassword(UserDTO userDTO);
+    String forgotPassword(EmailDTO emailDTO) throws MessagingException;
 
     boolean validatePasswordResetToken(String token);
 
-    ResponseEntity<String> updatePassword(String token, String newPassword);
+    String updatePassword(String token, String newPassword);
 }
