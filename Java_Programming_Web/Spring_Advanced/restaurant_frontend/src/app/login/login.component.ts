@@ -51,14 +51,14 @@ export class LoginComponent implements OnInit {
       (response: any) => {
         this.ngxService.stop();
         this.dialogRef.close();
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', response.data);
         this.router.navigateByUrl('/restaurant/dashboard');
       },
       (error) => {
         console.log(error);
         this.ngxService.stop();
 
-        if (error.status === 400 ) {
+        if (error.status === 400 || error.status === 401 ) {
           const errors = error.error;
           console.log(errors);
 

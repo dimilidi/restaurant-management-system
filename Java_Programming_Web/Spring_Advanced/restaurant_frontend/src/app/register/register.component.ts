@@ -83,8 +83,34 @@ export class RegisterComponent implements OnInit {
       (error) => {
         console.log(error);
         this.ngxService.stop();
+        console.log(error.status);
+        
+
+        if (error.status === 400 ) {
+          const errors = error.error;
+          console.log(errors);
+
+          Object.keys(errors).forEach((field) => {
+            const control = this.registerForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] });
+            } else{
+              this.responseMessage = errors.message;
+            }
+            
+          });
+        } else {
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;   
+            this.snackbarService.openSnackBar(
+              this.responseMessage,
+              GlobalConstants.error
+            );
+     
+        }
+        
       }
     );
   }
 }
-

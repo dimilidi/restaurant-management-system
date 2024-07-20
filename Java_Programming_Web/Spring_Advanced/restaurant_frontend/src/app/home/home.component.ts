@@ -17,32 +17,41 @@ export class HomeComponent implements OnInit {
     private dialog: MatDialog,
     private userService: UserService,
     private router: Router,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.userService.checkToken().subscribe(
-      (response: any) => {
-        this.router.navigate(['/restaurant/dashboard']);
-      },
-      (error: any) => {
-        console.log(error);
+    // this.userService.checkToken().subscribe(
+    //   (response: any) => {
+    //     console.log(response);
+        
+    //     console.log(response.message);
+        
+    //     console.log(response.message == "VALID");
+    //     if (response.message == "VALID") {
+    //       this.router.navigate(['/restaurant/dashboard']);
+    //     }
+    //   },
+    //   (error: any) => {
+    //     console.log(error);
+    //   }
+    // );
+
+    // Open dialog if token is present in the URL
+    this.route.queryParams.subscribe((params) => {
+      const token = params['token'];
+      if (token) {
+        this.dialog.open(ResetPasswordComponent, {
+          width: '400px',
+          data: { token: token },
+        });
+        // Clear token from URL to avoid opening the dialog again
+        this.router.navigate([], {
+          queryParams: { token: null },
+          queryParamsHandling: 'merge',
+        });
       }
-    );
-
-
-      // Open dialog if token is present in the URL
-      this.route.queryParams.subscribe(params => {
-        const token = params['token'];
-        if (token) {
-          this.dialog.open(ResetPasswordComponent, {
-            width: '400px',
-            data: { token: token }
-          });
-          // Clear token from URL to avoid opening the dialog again
-          this.router.navigate([], { queryParams: { token: null }, queryParamsHandling: 'merge' });
-        }
-      });
+    });
   }
 
   handleRegisterAction() {
