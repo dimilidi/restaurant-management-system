@@ -1,7 +1,6 @@
 package com.lididimi.restaurant.service;
 
 import com.lididimi.restaurant.model.dto.ProductDTO;
-import com.lididimi.restaurant.wrapper.ProductWrapper;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

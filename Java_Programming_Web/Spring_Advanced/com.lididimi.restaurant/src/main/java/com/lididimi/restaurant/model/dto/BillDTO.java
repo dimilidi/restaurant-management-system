@@ -1,16 +1,17 @@
 package com.lididimi.restaurant.model.dto;
 
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Data
 public class BillDTO {
 
-    @NotNull(message = "Uuid is mandatory")
-    @NotBlank(message = "Uuid is mandatory")
     private String uuid;
 
     @NotNull(message = "Name is mandatory")
@@ -25,16 +26,19 @@ public class BillDTO {
     private String contactNumber;
 
     @NotNull(message = "Payment method is mandatory")
-    @NotBlank(message = "Payment method is mandatory")
     private PaymentMethodNameEnum paymentMethod;
 
     @NotNull(message = "Total amount is mandatory")
     @Positive(message = "Total amount must be positive")
-    private BigDecimal total;
+    private BigDecimal totalAmount;
 
     @NotNull(message = "Product details are mandatory")
     @NotBlank(message = "Product details are mandatory")
     private String productDetails;
 
     private boolean isGenerate;
+
+    private String createdBy;
+
+    private Instant createdDate;
 }

@@ -43,16 +43,4 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
             "HAVING COUNT(b.id) >= 365")
     List<Map<String, Object>> findRegularGuestsWithAtLeast365Bills(@Param("lastYear") Instant lastYear);
 
-
- /*   @Query(value = "SELECT JSON_UNQUOTE(JSON_EXTRACT(p.product, '$.name')) AS productName, COUNT(*) AS orderCount " +
-            "FROM bills b, JSON_TABLE(b.product_details, '$[*]' COLUMNS(" +
-            "product JSON PATH '$')) AS p " +
-            "WHERE b.createdBy = :email AND JSON_UNQUOTE(JSON_EXTRACT(p.product, '$.product_type')) = 'compounded' " +
-            "GROUP BY productName " +
-            "ORDER BY orderCount DESC " +
-            "LIMIT 3", nativeQuery = true)
-    List<Map<String, Object>> findTopProductsByEmail(@Param("email") String email);
-*/
-
-
 }

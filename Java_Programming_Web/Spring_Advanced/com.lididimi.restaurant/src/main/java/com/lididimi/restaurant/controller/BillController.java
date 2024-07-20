@@ -1,11 +1,14 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.Max;
@@ -14,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +32,14 @@ public class BillController {
     }
 
     @PostMapping("/generateReport")
-    public ResponseEntity<String> generateReport(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<?> generateReport(@RequestBody @Valid BillDTO billDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
+        }
         try {
-            return billService.generateReport(requestMap);
+            return billService.generateReport(billDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,7 +47,7 @@ public class BillController {
     }
 
     @GetMapping("/getBills")
-    public ResponseEntity<List<BillEntity>> getBills() {
+    public ResponseEntity<List<BillDTO>> getBills() {
         try {
             return billService.getBills();
         } catch (Exception e) {
@@ -48,9 +57,9 @@ public class BillController {
     }
 
     @PostMapping("/getPdf")
-    public ResponseEntity<byte[]> getPdf(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<byte[]> getPdf(@RequestBody BillDTO billDTO) {
         try {
-            return billService.getPdf(requestMap);
+            return billService.getPdf(billDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +101,6 @@ public class BillController {
     public List<Map<String, Object>> getRegularGuestsWithFavoriteProducts() {
         return billService.findRegularGuestsWithFavoriteProducts();
     }
-
 
 }
 

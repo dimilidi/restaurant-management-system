@@ -1,19 +1,15 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.google.common.io.Files;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.ProductDTO;
-import com.lididimi.restaurant.model.dto.ProductNewDTO;
 import com.lididimi.restaurant.model.entity.CategoryEntity;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.ProductService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
-import com.lididimi.restaurant.wrapper.ProductWrapper;
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -190,25 +186,36 @@ public class ProductServiceImpl implements ProductService {
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
     @Override
+    @Transactional
     public ResponseEntity<List<ProductDTO>> getByCategory(Long id) {
         try {
-            return new ResponseEntity<>(productRepository.getProductByCategory(id), HttpStatus.OK);
+            List<ProductEntity> productEntities = productRepository.getProductByCategory(id);
+            List<ProductDTO> productDTOs = productEntities.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(productDTOs, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
-    @Transactional()
+    @Transactional
     public ResponseEntity<ProductDTO> getProductByCategory(Long id) {
         try {
-            return new ResponseEntity<>(productRepository.getProductById(id), HttpStatus.OK);
-            // Initialize the lazy-loaded association
+            ProductEntity productEntity = productRepository.getProductById(id);
+            ProductDTO productDTO = convertToDTO(productEntity);
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ProductDTO convertToDTO(ProductEntity productEntity) {
+        return modelMapper.map(productEntity, ProductDTO.class);
     }
 }

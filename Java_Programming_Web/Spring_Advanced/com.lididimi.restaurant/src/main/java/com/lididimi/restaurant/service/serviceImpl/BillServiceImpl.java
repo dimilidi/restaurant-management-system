@@ -1,6 +1,5 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -13,31 +12,27 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
-import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,70 +44,73 @@ import java.util.stream.Stream;
 public class BillServiceImpl implements BillService {
     private final JwtFilter jwtFilter;
     private final BillRepository billRepository;
+    private final ModelMapper modelMapper;
 
-    public BillServiceImpl(JwtFilter jwtFilter, BillRepository billRepository) {
+    public BillServiceImpl(JwtFilter jwtFilter, BillRepository billRepository, ModelMapper modelMapper) {
         this.jwtFilter = jwtFilter;
         this.billRepository = billRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public ResponseEntity<String> generateReport(@Valid BillDTO billDTO, BindingResult bindingResult) {
+    public ResponseEntity<String> generateReport(BillDTO billDTO) {
         log.info("Inside generateReport");
         try {
             String fileName;
-            if (!bindingResult.hasErrors()) {
-                if (billDTO.isGenerate()) {
-                    fileName = billDTO.getUuid();
-                } else {
-                    fileName = RestaurantUtils.getUUID();
-                    billDTO.setUuid(fileName);
-                    insertBill(billDTO);
-                }
-                StringBuilder data = new StringBuilder();
-                data.append("Name: ");
-                data.append(billDTO.getName());
-                data.append(System.lineSeparator());
-                data.append("Contact Number: ");
-                data.append(billDTO.getContactNumber());
-                data.append(System.lineSeparator());
-                data.append("Email: ");
-                data.append(billDTO.getEmail());
-                data.append(System.lineSeparator());
-                data.append("Payment Method: ");
-                data.append(billDTO.getPaymentMethod());
 
-                Document document = new Document();
-                PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
-
-                document.open();
-                setRectangleInPdf(document);
-
-                Paragraph chunk = new Paragraph("Restaurant Management System", getFont("Header"));
-                chunk.setAlignment(Element.ALIGN_CENTER);
-                document.add(chunk);
-
-                Paragraph paragraph = new Paragraph(data + "\n \n", getFont("Data"));
-                document.add(paragraph);
-
-                PdfPTable table = new PdfPTable(5);
-                table.setWidthPercentage(100);
-                addTableHeader(table);
-
-                JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
-                }
-                document.add(table);
-
-                Paragraph footer = new Paragraph("Total: " + billDTO.getTotal() + "\n" + "Thank you for visiting Restaurant Management System.");
-                document.add(footer);
-
-                document.close();
-                return RestaurantUtils.getResponseEntity((String.format("{\"uuid\": \"%s\"}", fileName)), HttpStatus.OK);
+            if (billDTO.isGenerate()) {
+                fileName = billDTO.getUuid();
             } else {
-                return RestaurantUtils.getResponseEntity("{\"message\": \"Required data not found.\"}", HttpStatus.BAD_REQUEST);
+                fileName = RestaurantUtils.getUUID();
+                billDTO.setUuid(fileName);
+                billDTO.setCreatedBy(jwtFilter.currentUser());
+                billDTO.setCreatedDate(Instant.now());
+                insertBill(billDTO);
             }
+            StringBuilder data = new StringBuilder();
+            data.append("Name: ");
+            data.append(billDTO.getName());
+            data.append(System.lineSeparator());
+            data.append("Contact Number: ");
+            data.append(billDTO.getContactNumber());
+            data.append(System.lineSeparator());
+            data.append("Email: ");
+            data.append(billDTO.getEmail());
+            data.append(System.lineSeparator());
+            data.append("Payment Method: ");
+            data.append(billDTO.getPaymentMethod());
+
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
+
+            document.open();
+            setRectangleInPdf(document);
+
+            Paragraph chunk = new Paragraph("Restaurant Management System", getFont("Header"));
+            chunk.setAlignment(Element.ALIGN_CENTER);
+            document.add(chunk);
+
+            Paragraph paragraph = new Paragraph(data + "\n \n", getFont("Data"));
+            document.add(paragraph);
+
+            PdfPTable table = new PdfPTable(5);
+            table.setWidthPercentage(100);
+            addTableHeader(table);
+
+            JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
+            }
+            document.add(table);
+
+            Paragraph footer = new Paragraph("Total: " + billDTO.getTotalAmount() + "\n" + "Thank you for visiting Restaurant Management System.");
+            document.add(footer);
+
+            document.close();
+            return RestaurantUtils.getResponseEntity((String.format("{\"uuid\": \"%s\"}", fileName)), HttpStatus.OK);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,23 +160,17 @@ public class BillServiceImpl implements BillService {
             bill.setEmail(billDTO.getEmail());
             bill.setContactNumber(billDTO.getContactNumber());
             bill.setPaymentMethod(billDTO.getPaymentMethod());
-            bill.setTotal(billDTO.getTotal());
+            bill.setTotal(billDTO.getTotalAmount());
             bill.setProductDetails(billDTO.getProductDetails());
-            bill.setCreatedBy((String) jwtFilter.currentUser());
+            bill.setCreatedBy(billDTO.getCreatedBy());
+            bill.setCreatedDate(billDTO.getCreatedDate());
             billRepository.save(bill);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
 
-/*    private boolean validateRequestMap(Map<String, Object> requestMap) {
-        return requestMap.containsKey("name") &&
-                requestMap.containsKey("contactNumber") &&
-                requestMap.containsKey("email") &&
-                requestMap.containsKey("paymentMethod") &&
-                requestMap.containsKey("productDetails") &&
-                requestMap.containsKey("totalAmount");
-    }*/
+
 
     private Font getFont(String type) {
         log.info("Inside getFont");
@@ -198,30 +190,36 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<List<BillEntity>> getBills() {
-        List<BillEntity> list = new ArrayList<>();
+    public ResponseEntity<List<BillDTO>> getBills() {
+        List<BillEntity> bills;
         if (jwtFilter.isAdmin()) {
-            log.info("Inside getBills");
-            list = billRepository.getAllBills();
+            log.info("Inside getBills as Admin");
+            bills = billRepository.getAllBills();
         } else {
-            list = billRepository.getBillsByUsername(jwtFilter.currentUser());
+            log.info("Inside getBills as User");
+            bills = billRepository.getBillsByUsername(jwtFilter.currentUser());
         }
-        return new ResponseEntity<>(list, HttpStatus.OK);
+
+        List<BillDTO> billDTOs = bills.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(billDTOs, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) throws IOException {
-        log.info("Inside getPdf : requestMap {}", requestMap);
+    public ResponseEntity<byte[]> getPdf(BillDTO billDTO) throws IOException {
+        log.info("Inside getPdf : requestMap {}", billDTO);
 
         byte[] byteArray = new byte[0];
-        if (!requestMap.containsKey("uuid")) { // && validateRequestMap(requestMap)
+        if (billDTO.getUuid() == null) { // && validateRequestMap(requestMap)
             return new ResponseEntity<>(byteArray, HttpStatus.BAD_REQUEST);
         }
-        String filePath = RestaurantConstants.STORE_LOCATION + "\\" + (String) requestMap.get("uuid") + ".pdf";
+        String filePath = RestaurantConstants.STORE_LOCATION + "\\" + (String) billDTO.getUuid() + ".pdf";
 
         if (!RestaurantUtils.isFileExist(filePath)) {
-            requestMap.put("isGenerate", false);
-            generateReport(requestMap);
+            billDTO.setGenerate(false);
+            generateReport(billDTO);
         }
         byteArray = getByteArray(filePath);
         return new ResponseEntity<>(byteArray, HttpStatus.OK);
@@ -254,33 +252,6 @@ public class BillServiceImpl implements BillService {
         }
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @Override
-    @Scheduled(cron = "0 0 2 * * ?") // Runs every day at 2 AM
-    @Transactional
-    public void cleanupOldBillsTask() {
-        log.info("Starting cleanup of old bills at {}", Instant.now());
-        System.out.println("Current Time Zone: " + java.util.TimeZone.getDefault().getID());
-        cleanupOldBills();
-    }
-
-
-    @Transactional
-    public void cleanupOldBills() {
-        Instant cutoffDate = Instant.now().minusSeconds(30L * 24 * 60 * 60); // cutoff date (30 days ago)
-        // Instant cutoffDate = Instant.now().minusSeconds(60);
-        billRepository.deleteBillsOlderThan(cutoffDate);
-    }
-
-    // Test scheduled task
-   /* @Override
-    @Scheduled(cron = "0 * * * * ?") // Runs every minute
-    @Transactional
-    public void cleanupOldBillsTask() {
-        Instant cutoffDate = Instant.now().minusSeconds(60); // 1 minute ago
-        billRepository.deleteBillsOlderThan(cutoffDate);
-        log.info("Old bills cleaned up");
-    }*/
 
 
     public List<Map<String, Object>> findBestSellers() {
@@ -334,11 +305,15 @@ public class BillServiceImpl implements BillService {
             String email = (String) guest.get("email");
             List<BillEntity> billsByEmail = billRepository.findByEmail(email);
 
+            List<BillDTO> billDTOs = billsByEmail.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+
             // Extract product names from bills
             Map<String, Long> productCountMap = new HashMap<>();
             Gson gson = new Gson();
 
-            for (BillEntity bill : billsByEmail) {
+            for (BillDTO bill : billDTOs) {
                 try {
                     String productDetailsJson = bill.getProductDetails();
                     JsonArray productArray = gson.fromJson(productDetailsJson, JsonArray.class);
@@ -361,8 +336,6 @@ public class BillServiceImpl implements BillService {
 
             List<String> topProductsList = new ArrayList<>();
             for (Map.Entry<String, Long> entry : topProducts) {
-                Map<String, Object> productData = new HashMap<>();
-                productData.put("productName", entry.getKey());
                 topProductsList.add(entry.getKey());
             }
 
@@ -374,5 +347,9 @@ public class BillServiceImpl implements BillService {
             result.add(guestData);
         }
         return result;
+    }
+
+    private BillDTO convertToDTO(BillEntity billEntity) {
+        return modelMapper.map(billEntity, BillDTO.class);
     }
 }
