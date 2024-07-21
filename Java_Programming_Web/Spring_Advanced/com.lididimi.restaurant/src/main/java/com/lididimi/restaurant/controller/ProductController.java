@@ -1,12 +1,11 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
 import com.lididimi.restaurant.repository.ProductRepository;
+import com.lididimi.restaurant.response.SuccessResponse;
 import com.lididimi.restaurant.service.ProductService;
 import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
-import com.lididimi.restaurant.service.serviceImpl.ProductServiceImpl;
-import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,35 +25,28 @@ public class ProductController {
     private final ProductService productService;
     private final BillServiceImpl billService;
 
-    public ProductController(ProductRepository productRepository, ProductServiceImpl productServiceImpl, ProductService productService, BillServiceImpl billService) {
+    public ProductController(ProductRepository productRepository, ProductService productService, BillServiceImpl billService) {
         this.productRepository = productRepository;
         this.productService = productService;
         this.billService = billService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewProduct(@RequestBody @Valid ProductDTO productDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> addNewProduct(@RequestBody @Valid ProductAddDTO productAddDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        try {
-            return productService.addNewProduct(productDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), productService.addNewProduct(productAddDTO), null);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        try {
-            return productService.getAllProducts();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> getAllProducts() {
+        List<ProductDTO> allProducts = productService.getAllProducts();
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", allProducts);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/update")
@@ -65,58 +56,47 @@ public class ProductController {
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        try {
-            return productService.updateProduct(productDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        String responseMessage = productService.updateProduct(productDTO);
+
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-        try {
-            return productService.deleteProduct(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        String responseMessage = productService.deleteProduct(id);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        return ResponseEntity.ok(response);
     }
 
-    @PatchMapping ("/updateStatus")
-    public ResponseEntity<String> updateStatus(@RequestBody ProductDTO productDTO) {
-        try {
-            return productService.updateStatus(productDTO);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    @PatchMapping("/updateStatus")
+    public ResponseEntity<?> updateStatus(@RequestBody ProductDTO productDTO) {
+        String responseMessage = productService.updateStatus(productDTO);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getByCategory/{id}")
-    public ResponseEntity<List<ProductDTO>> getByCategory(@PathVariable Long id) {
-        try {
-            return productService.getByCategory(id);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> getByCategory(@PathVariable Long id) {
+        List<ProductDTO> byCategory = productService.getByCategory(id);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", byCategory);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getById/{id}")
     @Transactional
-    public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
-        try {
-            return productService.getProductByCategory(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        ProductDTO products = productService.getProductByCategory(id);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", products);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/best-sellers")
-    public ResponseEntity<List<Map<String, Object>>> getBestSellers() {
+    public ResponseEntity<?> getBestSellers() {
         List<Map<String, Object>> bestSellers = billService.findBestSellers();
-        return ResponseEntity.ok(bestSellers);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bestSellers);
+        return ResponseEntity.ok(response);
     }
 }
+

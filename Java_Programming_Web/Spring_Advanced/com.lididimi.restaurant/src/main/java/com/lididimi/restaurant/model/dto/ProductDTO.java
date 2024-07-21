@@ -1,11 +1,5 @@
 package com.lididimi.restaurant.model.dto;
 
-import com.lididimi.restaurant.model.entity.CategoryEntity;
-import com.lididimi.restaurant.model.enums.StatusNameEnum;
-import com.lididimi.restaurant.model.validation.Unique;
-import com.lididimi.restaurant.repository.ProductRepository;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

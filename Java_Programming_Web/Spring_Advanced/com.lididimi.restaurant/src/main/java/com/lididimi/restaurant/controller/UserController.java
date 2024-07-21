@@ -93,7 +93,6 @@ public class UserController {
         return userService.validatePasswordResetToken(token);
     }
 
-
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPasswordDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

@@ -3,6 +3,7 @@ package com.lididimi.restaurant.controller;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
+import com.lididimi.restaurant.response.SuccessResponse;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.validation.Valid;
@@ -38,12 +39,9 @@ public class BillController {
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        try {
-            return billService.generateReport(billDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        String bill = billService.generateReport(billDTO);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bill);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getBills")

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -18,25 +19,18 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     boolean existsByName(String name);
 
     @Query("SELECT p FROM ProductEntity p")
-    List<ProductEntity> getAllProducts();
+    Optional<List<ProductEntity>> getAllProducts();
 
     @Modifying
+    @Transactional
     @Query("UPDATE ProductEntity p set p.status=:status WHERE p.id=:id")
     Integer updateProductStatus(@Param("status") StatusNameEnum status, @Param("id") Long id);
 
 
     @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:id and p.status='ACTIVE'")
-    List<ProductEntity> getProductByCategory(@Param("id") Long id);
+    Optional<List<ProductEntity>> getProductByCategory(@Param("id") Long id);
 
     @Query("SELECT p FROM ProductEntity p WHERE p.id=:id")
-    ProductEntity getProductById(@Param("id") Long id);
-
-/*     @Transactional
-    @Query("SELECT p FROM ProductEntity p JOIN FETCH p.category WHERE p.category.id = :categoryId")
-    List<ProductEntity> getProductByCategory(@Param("categoryId") Long categoryId);
-
-    @Transactional
-    @Query("SELECT p FROM ProductEntity p JOIN FETCH p.category WHERE p.id = :id")
-    ProductEntity getProductById(@Param("id") Long id);*/
+    Optional<ProductEntity> getProductById(@Param("id") Long id);
 
 }

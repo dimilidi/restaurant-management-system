@@ -1,22 +1,19 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.google.common.io.Files;
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
+import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.entity.CategoryEntity;
 import com.lididimi.restaurant.repository.CategoryRepository;
 import com.lididimi.restaurant.service.CategoryService;
-import com.lididimi.restaurant.utils.RestaurantUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,33 +31,40 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<String> addNewCategory(CategoryDTO categoryDTO) {
-        try {
-            if (jwtFilter.isAdmin()) {
-                if (validateCategoryMap(categoryDTO, false)) {
-                    categoryRepository.save(getCategoryFromMap(categoryDTO, false));
-                    return RestaurantUtils.getResponseEntity("{\"message\": \"Category added successfully.\"}", HttpStatus.CREATED);
-                }
-            } else {
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public String addNewCategory(CategoryDTO categoryDTO) {
+        if (!jwtFilter.isAdmin()) {
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        categoryRepository.save(getCategoryFromMap(categoryDTO, false));
+        return "Category added successfully.";
     }
 
+    @Override
+    public List<CategoryDTO> getAllCategories(String filterValue) {
+        List<CategoryEntity> categories =
+                (filterValue != null && filterValue.equalsIgnoreCase("true"))
+                        ? categoryRepository.getAllCategories().orElseGet(ArrayList::new)
+                        : categoryRepository.findAll();
 
+        return categories.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
-    private boolean validateCategoryMap(CategoryDTO categoryDTO, boolean validateId) {
-        if (categoryDTO.getName() != null && !categoryDTO.getName().isEmpty()) {
-            if (categoryDTO.getId() != null && validateId) {
-                return true;
-            } else if (!validateId) {
-                return true;
-            }
+    @Override
+    public String updateCategory(CategoryDTO categoryDTO) {
+        if(!jwtFilter.isAdmin()) {
+            log.info("Updating category - isAdmin {}", jwtFilter.isAdmin());
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
-        return false;
+
+        Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryDTO.getId());
+        if(categoryOptional.isPresent()) {
+            categoryRepository.save(getCategoryFromMap(categoryDTO, true));
+            return "Category updated successfully.";
+        } else {
+            throw  new ObjectNotFoundException("Category not found.");
+        }
     }
 
     private CategoryEntity getCategoryFromMap(CategoryDTO categoryDTO, Boolean isAdd) {
@@ -73,51 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryEntity;
     }
 
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(String filterValue) {
-        try {
-            List<CategoryEntity> categories;
-            if (filterValue != null && filterValue.equalsIgnoreCase("true")) {
-                categories = categoryRepository.getAllCategories();
-            } else {
-                categories = categoryRepository.findAll();
-            }
-
-            List<CategoryDTO> categoryDTOs = categories.stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
-
-            return new ResponseEntity<>(categoryDTOs, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     private CategoryDTO convertToDTO(CategoryEntity categoryEntity) {
         return modelMapper.map(categoryEntity, CategoryDTO.class);
-    }
-
-
-    @Override
-    public ResponseEntity<String> updateCategory(CategoryDTO categoryDTO) {
-        try {
-            if(jwtFilter.isAdmin()) {
-                if (validateCategoryMap(categoryDTO, true)) {
-                    Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryDTO.getId());
-                    if(categoryOptional.isPresent()) {
-                        categoryRepository.save(getCategoryFromMap(categoryDTO, true));
-                        return RestaurantUtils.getResponseEntity("{\"message\": \"Category updated successfully.\"}", HttpStatus.OK);
-                    } else {
-                        return RestaurantUtils.getResponseEntity("{\"message\": \"Category does not exist.\"}", HttpStatus.OK);
-                    }
-                }
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
-            } else {
-                return RestaurantUtils.getResponseEntity(RestaurantConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

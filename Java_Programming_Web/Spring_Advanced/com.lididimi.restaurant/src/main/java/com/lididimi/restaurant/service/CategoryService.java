@@ -10,9 +10,9 @@ import java.util.Map;
 public interface CategoryService {
 
 
-    ResponseEntity<String> addNewCategory(CategoryDTO categoryDTO);
+    String addNewCategory(CategoryDTO categoryDTO);
 
-    ResponseEntity<List<CategoryDTO>> getAllCategories(String filterValue);
+    List<CategoryDTO> getAllCategories(String filterValue);
 
-    ResponseEntity<String> updateCategory(CategoryDTO categoryDTO);
+    String updateCategory(CategoryDTO categoryDTO);
 }

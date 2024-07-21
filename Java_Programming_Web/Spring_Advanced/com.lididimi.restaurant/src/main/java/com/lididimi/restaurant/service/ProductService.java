@@ -1,25 +1,22 @@
 package com.lididimi.restaurant.service;
 
+import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public interface ProductService {
-    ResponseEntity<String> addNewProduct(ProductDTO productDTO);
+    String addNewProduct(ProductAddDTO productAddDTO);
 
-   ResponseEntity<List<ProductDTO>> getAllProducts();
+    List<ProductDTO> getAllProducts();
 
-    ResponseEntity<String> updateProduct(ProductDTO productDTO);
+    String updateProduct(ProductDTO productDTO);
 
-    ResponseEntity<String> deleteProduct(Long id);
+    String deleteProduct(Long id);
 
-    ResponseEntity<String> updateStatus(ProductDTO productDTO);
+    String updateStatus(ProductDTO productDTO);
 
-    ResponseEntity<List<ProductDTO>> getByCategory(Long id);
+    List<ProductDTO> getByCategory(Long id);
 
-    ResponseEntity<ProductDTO> getProductByCategory(Long id);
-
-
+    ProductDTO getProductByCategory(Long id);
 }

@@ -12,11 +12,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface BillRepository extends JpaRepository<BillEntity, Long> {
     @Query("SELECT b FROM BillEntity b ORDER BY b.id DESC")
-    List<BillEntity> getAllBills();
+    Optional<List<BillEntity>> getAllBills();
 
     List<BillEntity> findByCreatedBy(String createdBy);
 

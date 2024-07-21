@@ -2,10 +2,9 @@ package com.lididimi.restaurant.service;
 
 import com.lididimi.restaurant.model.dto.*;
 import jakarta.mail.MessagingException;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
+
 
 public interface UserService {
 

@@ -3,6 +3,7 @@ package com.lididimi.restaurant.controller;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.entity.CategoryEntity;
+import com.lididimi.restaurant.response.SuccessResponse;
 import com.lididimi.restaurant.service.CategoryService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.validation.Valid;
@@ -33,31 +34,27 @@ public class CategoryController {
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        try {
-            return categoryService.addNewCategory(categoryDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        String responseMessage = categoryService.addNewCategory(categoryDTO);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, responseMessage);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(@RequestParam(required = false) String filterValue) {
-        try {
-            return categoryService.getAllCategories(filterValue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> getAllCategories(@RequestParam(required = false) String filterValue) {
+        List<CategoryDTO> allCategories = categoryService.getAllCategories(filterValue);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", allCategories);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateCategory(@RequestBody @Valid CategoryDTO categoryDTO) {
-        try {
-            return categoryService.updateCategory(categoryDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
         }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        String responseMessage = categoryService.updateCategory(categoryDTO);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        return ResponseEntity.ok(response);
     }
 }

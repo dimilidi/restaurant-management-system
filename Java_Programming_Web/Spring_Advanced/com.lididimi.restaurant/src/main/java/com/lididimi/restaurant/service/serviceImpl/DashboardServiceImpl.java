@@ -24,12 +24,11 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public ResponseEntity<Map<String, Object>> getCount() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("category", categoryRepository.count());
-        map.put("product", productRepository.count());
-        map.put("bill", billRepository.count());
-
-        return new ResponseEntity<>(map, HttpStatus.OK);
+    public Map<String, Object> getCount() {
+            Map<String, Object> countMap = new HashMap<>();
+            countMap.put("category", categoryRepository.count());
+            countMap.put("product", productRepository.count());
+            countMap.put("bill", billRepository.count());
+            return countMap;
     }
 }

@@ -15,7 +15,6 @@ import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
@@ -26,8 +25,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.time.Instant;
@@ -53,68 +52,64 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<String> generateReport(BillDTO billDTO) {
+    public String generateReport(BillDTO billDTO) {
         log.info("Inside generateReport");
         try {
-            String fileName;
-
-            if (billDTO.isGenerate()) {
-                fileName = billDTO.getUuid();
-            } else {
-                fileName = RestaurantUtils.getUUID();
-                billDTO.setUuid(fileName);
-                billDTO.setCreatedBy(jwtFilter.currentUser());
-                billDTO.setCreatedDate(Instant.now());
-                insertBill(billDTO);
-            }
-            StringBuilder data = new StringBuilder();
-            data.append("Name: ");
-            data.append(billDTO.getName());
-            data.append(System.lineSeparator());
-            data.append("Contact Number: ");
-            data.append(billDTO.getContactNumber());
-            data.append(System.lineSeparator());
-            data.append("Email: ");
-            data.append(billDTO.getEmail());
-            data.append(System.lineSeparator());
-            data.append("Payment Method: ");
-            data.append(billDTO.getPaymentMethod());
-
-
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
-
-            document.open();
-            setRectangleInPdf(document);
-
-            Paragraph chunk = new Paragraph("Restaurant Management System", getFont("Header"));
-            chunk.setAlignment(Element.ALIGN_CENTER);
-            document.add(chunk);
-
-            Paragraph paragraph = new Paragraph(data + "\n \n", getFont("Data"));
-            document.add(paragraph);
-
-            PdfPTable table = new PdfPTable(5);
-            table.setWidthPercentage(100);
-            addTableHeader(table);
-
-            JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
-            }
-            document.add(table);
-
-            Paragraph footer = new Paragraph("Total: " + billDTO.getTotalAmount() + "\n" + "Thank you for visiting Restaurant Management System.");
-            document.add(footer);
-
+            String fileName = billDTO.isGenerate() ? billDTO.getUuid() : createAndInsertBill(billDTO);
+            Document document = initializeDocument(fileName);
+            addContentToDocument(document, billDTO);
             document.close();
-            return RestaurantUtils.getResponseEntity((String.format("{\"uuid\": \"%s\"}", fileName)), HttpStatus.OK);
-
+            return fileName;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error generating report: ", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private String createAndInsertBill(BillDTO billDTO) {
+        String fileName = RestaurantUtils.getUUID();
+        billDTO.setUuid(fileName);
+        billDTO.setCreatedBy(jwtFilter.currentUser());
+        billDTO.setCreatedDate(Instant.now());
+        insertBill(billDTO);
+        return fileName;
+    }
+
+    private Document initializeDocument(String fileName) throws Exception {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
+        document.open();
+        setRectangleInPdf(document);
+        return document;
+    }
+
+    private void addContentToDocument(Document document, BillDTO billDTO) throws Exception {
+        Paragraph header = new Paragraph("Restaurant Management System", getFont("Header"));
+        header.setAlignment(Element.ALIGN_CENTER);
+        document.add(header);
+
+        document.add(new Paragraph(formatBillData(billDTO), getFont("Data")));
+        document.add(new Paragraph("\n"));
+        addTableToDocument(document, billDTO);
+
+        document.add(new Paragraph("Total: " + billDTO.getTotalAmount() + "\nThank you for visiting Restaurant Management System."));
+    }
+
+
+    private String formatBillData(BillDTO billDTO) {
+        return String.format("Name: %s%nContact Number: %s%nEmail: %s%nPayment Method: %s%n",
+                billDTO.getName(), billDTO.getContactNumber(), billDTO.getEmail(), billDTO.getPaymentMethod());
+    }
+
+    private void addTableToDocument(Document document, BillDTO billDTO) throws Exception {
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100);
+        addTableHeader(table);
+        JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
+        }
+        document.add(table);
     }
 
     private void addRows(PdfPTable table, Map<String, Object> data) {
@@ -210,6 +205,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public ResponseEntity<byte[]> getPdf(BillDTO billDTO) throws IOException {
         log.info("Inside getPdf : requestMap {}", billDTO);
+
 
         byte[] byteArray = new byte[0];
         if (billDTO.getUuid() == null) { // && validateRequestMap(requestMap)
