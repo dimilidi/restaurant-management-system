@@ -75,7 +75,7 @@ export class ManageOrderComponent implements OnInit {
     return this.categoryService.getFilteredCategories().subscribe(
       (response: any) => {
         this.ngxService.stop();
-        this.categories = response;
+        this.categories = response.data;
       },
       (error: any) => {
         console.log(error);
@@ -98,7 +98,7 @@ export class ManageOrderComponent implements OnInit {
     
     this.productService.getProductsByCategory(value.id).subscribe(
       (response: any) => {
-        this.products = response;
+        this.products = response.data;
         this.manageOrderForm.controls['price'].setValue('');
         this.manageOrderForm.controls['quantity'].setValue('');
         this.manageOrderForm.controls['total'].setValue(0);
@@ -122,8 +122,8 @@ export class ManageOrderComponent implements OnInit {
   getProductDetails(value: any) {
     this.productService.getProductsById(value.id).subscribe(
       (response: any) => {
-        this.price = response.price;
-        this.manageOrderForm.controls['price'].setValue(response.price);
+        this.price = response.data.price;
+        this.manageOrderForm.controls['price'].setValue(this.price);
         this.manageOrderForm.controls['quantity'].setValue('1');
         this.manageOrderForm.controls['total'].setValue(this.price * 1);
       },
@@ -229,7 +229,9 @@ export class ManageOrderComponent implements OnInit {
     this.ngxService.start();
     this.billService.generateReport(data).subscribe(
       (response: any) => {
-        this.downloadFile(response?.uuid);
+        console.log(response);
+        
+        this.downloadFile(response.data);
         this.manageOrderForm.reset();
         this.dataSource = [];
         this.totalAmount = 0;
@@ -256,8 +258,14 @@ export class ManageOrderComponent implements OnInit {
     };
 
     this.billService.getPdf(data).subscribe((response: any) => {
+      console.log(response);
+      
       saveAs(response, fileName + '.pdf');
       this.ngxService.stop();
-    });
+    },
+  (error: any) => {
+    console.log(error.error);
+    
+  });
   }
 }

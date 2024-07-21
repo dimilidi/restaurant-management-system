@@ -140,7 +140,12 @@ export class ViewBillComponent implements OnInit {
       
       saveAs(response, data.uuid + '.pdf');
       this.ngxService.stop();
-    });
+    }, 
+    (error: any) => {
+      console.log(error.eror);
+      
+    }
+  );
   }
 
 }

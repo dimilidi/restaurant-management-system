@@ -23,6 +23,7 @@
             <span *ngIf="categoryForm.controls.name.errors?.required"
               >This field is mandatory.</span
             >
+            <span  *ngIf="categoryForm.controls.name.hasError('serverError')">{{ categoryForm.controls.name.errors?.serverError }}</span>
           </mat-error>
         </mat-form-field>
       </div>

@@ -45,7 +45,7 @@ export class ManageCategoryComponent implements OnInit {
     this.categoryService.getCategories().subscribe(
       (response: any) => {
         this.ngxService.stop();
-        this.dataSource = new MatTableDataSource(response);
+        this.dataSource = new MatTableDataSource(response.data);
       },
       (error: any) => {
         this.ngxService.stop();

@@ -94,20 +94,38 @@ export class ProductComponent implements OnInit {
         this.responseMessage = response.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
       },
-      (error: any) => {
-        this.dialogRef.close();
-        console.log(error.error?.message);
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
+    (error) => {
+      console.log(error);
+      // this.ngxService.stop();
+      console.log(error.status);
+      
+
+      if (error.status === 400 ) {
+        const errors = error.error;
+        console.log(errors);
+
+        Object.keys(errors).forEach((field) => {
+          const control = this.productForm.get(field);
+          if (control) {
+            console.log(errors[field]);
+            control.setErrors({ serverError: errors[field] });
+          } else{
+            this.responseMessage = errors.message;
+          }
+          
+        });
+      } else {
+        this.responseMessage =
+          error.error?.message || GlobalConstants.genericError;   
+          this.snackbarService.openSnackBar(
+            this.responseMessage,
+            GlobalConstants.error
+          );
+   
       }
-    );
+      
+    }
+  );
   }
 
   edit() {

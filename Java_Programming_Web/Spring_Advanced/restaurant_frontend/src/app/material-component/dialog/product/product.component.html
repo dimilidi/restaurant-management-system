@@ -26,6 +26,9 @@
             <span *ngIf="productForm.controls.name.errors?.pattern"
               >This field is invalid.</span
             >
+            <span *ngIf="productForm.controls.name.hasError('serverError')">{{
+              productForm.controls.name.errors?.serverError
+            }}</span>
           </mat-error>
         </mat-form-field>
       </div>
@@ -46,6 +49,9 @@
             <span *ngIf="productForm.controls.price.errors?.pattern"
               >This field is invalid.</span
             >
+            <span *ngIf="productForm.controls.price.hasError('serverError')">{{
+              productForm.controls.price.errors?.serverError
+            }}</span>
           </mat-error>
         </mat-form-field>
 
@@ -58,6 +64,7 @@
               >{{ category.name }}</mat-option
             >
           </mat-select>
+
         </mat-form-field>
       </div>
 
@@ -73,6 +80,10 @@
           >
             <span *ngIf="productForm.controls.description.errors?.required"
               >This field is mandatory.</span
+            >
+            <span
+              *ngIf="productForm.controls.description.hasError('serverError')"
+              >{{ productForm.controls.description.errors?.serverError }}</span
             >
           </mat-error>
         </mat-form-field>

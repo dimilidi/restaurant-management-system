@@ -43,7 +43,6 @@ export class CategoryComponent implements OnInit {
       this.action = 'Update';
       this.categoryForm.patchValue(this.dialogData.date);
     }
-    
   }
 
   handleSubmit() {
@@ -67,18 +66,29 @@ export class CategoryComponent implements OnInit {
         this.responseMessage = response.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
       },
-      (error: any) => {
-        this.dialogRef.close();
-        console.log(error.error?.message);
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
+      (error) => {
+        console.log(error);
+        if (error.status === 400) {
+          const errors = error.error;
+          console.log(errors);
+
+          Object.keys(errors).forEach((field) => {
+            const control = this.categoryForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] });
+            } else {
+              this.responseMessage = errors.message;
+            }
+          });
         } else {
-          this.responseMessage = GlobalConstants.genericError;
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;
+          this.snackbarService.openSnackBar(
+            this.responseMessage,
+            GlobalConstants.error
+          );
         }
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
       }
     );
   }
@@ -92,23 +102,36 @@ export class CategoryComponent implements OnInit {
 
     this.categoryService.update(data).subscribe(
       (response: any) => {
+        console.log(response.message);
+
         this.dialogRef.close();
         this.onAddCategory.emit();
         this.responseMessage = response.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
       },
-      (error: any) => {
-        this.dialogRef.close();
-        console.log(error.error?.message);
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
+      (error) => {
+        console.log(error);
+        if (error.status === 400) {
+          const errors = error.error;
+          console.log(errors);
+
+          Object.keys(errors).forEach((field) => {
+            const control = this.categoryForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] });
+            } else {
+              this.responseMessage = errors.message;
+            }
+          });
         } else {
-          this.responseMessage = GlobalConstants.genericError;
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;
+          this.snackbarService.openSnackBar(
+            this.responseMessage,
+            GlobalConstants.error
+          );
         }
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
       }
     );
   }

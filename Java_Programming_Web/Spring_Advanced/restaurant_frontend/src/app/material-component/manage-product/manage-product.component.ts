@@ -53,7 +53,7 @@ export class ManageProductComponent implements OnInit {
     this.productService.getProducts().subscribe(
       (response: any) => {
         this.ngxService.stop();
-        this.dataSource = new MatTableDataSource(response);
+        this.dataSource = new MatTableDataSource(response.data);
       },
       (error: any) => {
         this.ngxService.stop();
