@@ -96,7 +96,6 @@ export class ProductComponent implements OnInit {
       },
     (error) => {
       console.log(error);
-      // this.ngxService.stop();
       console.log(error.status);
       
 

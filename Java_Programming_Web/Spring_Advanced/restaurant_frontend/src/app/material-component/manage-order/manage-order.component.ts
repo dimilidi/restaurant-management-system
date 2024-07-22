@@ -29,6 +29,7 @@ export class ManageOrderComponent implements OnInit {
   price: any;
   totalAmount: number = 0;
   responseMessage: any;
+  editMode: boolean[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,59 +63,38 @@ export class ManageOrderComponent implements OnInit {
       paymentMethod: [null, [Validators.required]],
       product: [null, [Validators.required]],
       category: [null, [Validators.required]],
-      quantity: [null, [Validators.required]],
+      quantity: [1, [Validators.required]],
       price: [null, [Validators.required]],
       total: [0, [Validators.required]],
     });
 
-
-    
+    this.manageOrderForm.controls['quantity'].valueChanges.subscribe(() => {
+      this.calculateTotal();
+    });
   }
 
   getCategories() {
-    return this.categoryService.getFilteredCategories().subscribe(
+    this.categoryService.getFilteredCategories().subscribe(
       (response: any) => {
         this.ngxService.stop();
         this.categories = response.data;
       },
       (error: any) => {
-        console.log(error);
-
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
+        this.handleError(error);
       }
     );
   }
 
   getProductsByCategory(value: any) {
-    
     this.productService.getProductsByCategory(value.id).subscribe(
       (response: any) => {
         this.products = response.data;
         this.manageOrderForm.controls['price'].setValue('');
-        this.manageOrderForm.controls['quantity'].setValue('');
+        this.manageOrderForm.controls['quantity'].setValue(1);
         this.manageOrderForm.controls['total'].setValue(0);
       },
       (error: any) => {
-        console.log(error);
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
+        this.handleError(error);
       }
     );
   }
@@ -124,48 +104,27 @@ export class ManageOrderComponent implements OnInit {
       (response: any) => {
         this.price = response.data.price;
         this.manageOrderForm.controls['price'].setValue(this.price);
-        this.manageOrderForm.controls['quantity'].setValue('1');
-        this.manageOrderForm.controls['total'].setValue(this.price * 1);
+        this.calculateTotal();
       },
       (error: any) => {
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
+        this.handleError(error);
       }
     );
   }
 
-  setQuantity(value: any) {
-    var temp = this.manageOrderForm.controls['quantity'].value;
-
-    if (temp > 0) {
-      this.manageOrderForm.controls['total'].setValue(
-        this.manageOrderForm.controls['quantity'].value *
-          this.manageOrderForm.controls['price'].value
-      );
-    } else if (temp != '') {
-      this.manageOrderForm.controls['quantity'].setValue('1');
-      this.manageOrderForm.controls['total'].setValue(
-        this.manageOrderForm.controls['quantity'].value *
-          this.manageOrderForm.controls['price'].value
-      );
+  calculateTotal() {
+    const quantity = this.manageOrderForm.controls['quantity'].value;
+    const price = this.manageOrderForm.controls['price'].value;
+    if (quantity > 0 && price > 0) {
+      const total = quantity * price;
+      this.manageOrderForm.controls['total'].setValue(total);
     }
-    
   }
-
- 
 
   validateProductAdd() {
     var total = this.manageOrderForm.controls['total'].value;
     var quantity = this.manageOrderForm.controls['quantity'].value;
-    return (total <= 0 || total === null || quantity <= 0);
+    return total <= 0 || total === null || quantity <= 0;
   }
 
   validateSubmit() {
@@ -177,15 +136,14 @@ export class ManageOrderComponent implements OnInit {
     );
   }
 
-
   add() {
-    var formData = this.manageOrderForm.value;
-    var productName = this.dataSource.find(
+    const formData = this.manageOrderForm.value;
+    const productExists = this.dataSource.find(
       (e: { id: number }) => e.id === formData.product.id
     );
-      this.totalAmount = this.totalAmount + formData.total;
-    if (productName === undefined || productName === null) {
 
+    if (!productExists) {
+      this.totalAmount += formData.total;
       this.dataSource.push({
         id: formData.product.id,
         name: formData.product.name,
@@ -194,78 +152,121 @@ export class ManageOrderComponent implements OnInit {
         price: formData.price,
         total: formData.total,
       });
-
       this.dataSource = [...this.dataSource];
       this.snackbarService.openSnackBar(
         GlobalConstants.productAdded,
         'success'
       );
+
+      // Clear product fields
+      this.manageOrderForm.controls['product'].setValue(null);
+      this.manageOrderForm.controls['category'].setValue(null);
+      this.manageOrderForm.controls['price'].setValue(null);
+      this.manageOrderForm.controls['quantity'].setValue(1);
+      this.manageOrderForm.controls['total'].setValue(0);
+
+      // Reset validation state to prevent immediate display of errors
+      this.manageOrderForm.controls['product'].markAsPristine();
+      this.manageOrderForm.controls['product'].markAsUntouched();
+      this.manageOrderForm.controls['category'].markAsPristine();
+      this.manageOrderForm.controls['category'].markAsUntouched();
     } else {
       this.snackbarService.openSnackBar(
         GlobalConstants.productExistError,
         GlobalConstants.error
       );
     }
-    
   }
 
-  handleDeleteAction(value: any, element: any) {
+  updateQuantity(element: any, newQuantity: number) {
+    const oldTotal = element.total;
+    const newTotal = element.price * newQuantity;
+    element.quantity = newQuantity;
+    element.total = newTotal;
+    this.totalAmount = this.totalAmount - oldTotal + newTotal;
+    this.dataSource = [...this.dataSource];
+  }
+
+  onQuantityChange(event: any, element: any) {
+    const newQuantity = event.target.value;
+    if (newQuantity && newQuantity > 0) {
+      this.updateQuantity(element, newQuantity);
+    } else {
+      event.target.value = element.quantity;
+    }
+  }
+
+  setQuantity(event: any) {
+    const quantity = event.target.value;
+    if (quantity > 0) {
+      this.calculateTotal();
+    } else {
+      this.manageOrderForm.controls['quantity'].setValue(1);
+    }
+  }
+
+  saveChanges(index: number) {
+    this.editMode[index] = false;
+  }
+
+  handleDeleteAction(index: number, element: any) {
     this.totalAmount = this.totalAmount - element.total;
-    this.dataSource.splice(value, 1);
+    this.dataSource.splice(index, 1);
     this.dataSource = [...this.dataSource];
   }
 
   submitAction() {
-    var formData = this.manageOrderForm.value;
-    var data = {
+    const formData = this.manageOrderForm.value;
+    const data = {
       name: formData.name,
       email: formData.email,
       contactNumber: formData.contactNumber,
       paymentMethod: formData.paymentMethod,
-      totalAmount: this.totalAmount.toString(),
+      total: this.totalAmount.toString(),
       productDetails: JSON.stringify(this.dataSource),
     };
 
     this.ngxService.start();
     this.billService.generateReport(data).subscribe(
       (response: any) => {
-        console.log(response);
-        
-        this.downloadFile(response.data);
+        this.downloadFile(response.uuid);
         this.manageOrderForm.reset();
         this.dataSource = [];
         this.totalAmount = 0;
       },
       (error: any) => {
-        console.log(error);
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-        }
-
-        this.snackbarService.openSnackBar(
-          this.responseMessage,
-          GlobalConstants.error
-        );
+        this.handleError(error);
       }
     );
   }
 
   downloadFile(fileName: string) {
-    var data = {
-      uuid: fileName,
-    };
+    const data = { uuid: fileName };
+    this.billService.getPdf(data).subscribe(
+      (response: any) => {
+        saveAs(response, `${fileName}.pdf`);
+        this.ngxService.stop();
+      },
+      (error: any) => {
+        console.log(error.error);
+      }
+    );
+  }
 
-    this.billService.getPdf(data).subscribe((response: any) => {
-      console.log(response);
-      
-      saveAs(response, fileName + '.pdf');
-      this.ngxService.stop();
-    },
-  (error: any) => {
-    console.log(error.error);
-    
-  });
+  handleError(error: any) {
+    console.log(error);
+    if (error.error?.message) {
+      this.responseMessage = error.error.message;
+    } else {
+      this.responseMessage = GlobalConstants.genericError;
+    }
+    this.snackbarService.openSnackBar(
+      this.responseMessage,
+      GlobalConstants.error
+    );
+  }
+
+  toggleEditMode(index: number) {
+    this.editMode[index] = !this.editMode[index];
   }
 }
