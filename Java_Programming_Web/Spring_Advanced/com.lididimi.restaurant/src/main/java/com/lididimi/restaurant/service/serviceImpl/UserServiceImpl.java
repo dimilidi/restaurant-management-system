@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.user.*;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
@@ -16,13 +17,10 @@ import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
-import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,8 +29,6 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 
 @Slf4j
@@ -70,7 +66,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> userOptional = userRepository.findByEmail(userRegisterDTO.getEmail());
 
         if (userOptional.isPresent()) {
-            throw new EmailAlreadyExistsException("Email already exists.");
+            throw new AlreadyExistsException(RestaurantConstants.EMAIL_EXISTS);
         }
 
         Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
@@ -109,18 +105,18 @@ public class UserServiceImpl implements UserService {
                     return token;
                 } else {
                     log.info("Wait for admin approval");
-                    throw new InvalidCredentialsException("Wait for admin approval.");
+                    throw new BadCredentialsException(RestaurantConstants.UNAPPROVED);
                 }
             } else {
                 log.error("Authentication Failed");
-                throw new InvalidCredentialsException("Bad Credentials.");
+                throw new BadCredentialsException(RestaurantConstants.BAD_CREDENTIALS);
             }
-        } catch (InvalidCredentialsException e) {
+        } catch (BadCredentialsException e) {
             log.error("Invalid credentials: {}", e.getMessage());
-            throw e; // Re-throw to ensure the global exception handler catches it
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error during authentication: {}", e.getMessage());
-            throw new InvalidCredentialsException("Bad Credentials.");
+            throw new BadCredentialsException(RestaurantConstants.BAD_CREDENTIALS);
         }
     }
 
@@ -134,7 +130,7 @@ public class UserServiceImpl implements UserService {
                     .collect(Collectors.toList());
             return allUsers;
         } else {
-            throw new InvalidCredentialsException("Unauthorized");
+            throw new BadCredentialsException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
     }
 
@@ -147,12 +143,12 @@ public class UserServiceImpl implements UserService {
                 StatusNameEnum status = userDTO.getStatus();
                 userRepository.updateStatus(status, userDTO.getId());
                 sendMailToAllAdmins(status, optionalUser.get().getEmail(), userRepository.getAllAdmins(UserRoleNameEnum.ADMIN));
-                return "User status updated successfully.";
+                return RestaurantConstants.USER_UPDATE_SUCCESS;
             } else {
-                throw new UserNotFoundException("User does not exist.");
+                throw new ObjectNotFoundException(RestaurantConstants.USER_NOT_FOUND);
             }
         } else {
-            throw new InvalidCredentialsException("Unauthorized");
+            throw new BadCredentialsException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
     }
 
@@ -165,12 +161,12 @@ public class UserServiceImpl implements UserService {
             if (passwordEncoder.matches(userChangePasswordDTO.getOldPassword(), user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(userChangePasswordDTO.getNewPassword()));
                 userRepository.save(user);
-                return "Password changed successfully.";
+                return RestaurantConstants.PASSWORD_UPDATE_SUCCESS;
             } else {
-                throw new InvalidCredentialsException("Incorrect old password.");
+                throw new BadCredentialsException(RestaurantConstants.INCORRECT_OLD_PASSWORD);
             }
         } else {
-            throw new UserNotFoundException("User does not exist.");
+                throw new ObjectNotFoundException(RestaurantConstants.USER_NOT_FOUND);
         }
     }
 
@@ -181,9 +177,9 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
             UserEntity user = optionalUser.get();
             emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
-            return "Check your email for link to reset password.";
+            return RestaurantConstants.CHECK_EMAIL;
         } else {
-            throw new UserNotFoundException("Email not found.");
+            throw new ObjectNotFoundException(RestaurantConstants.EMAIL_NOT_FOUND);
         }
     }
 
@@ -204,13 +200,13 @@ public class UserServiceImpl implements UserService {
             PasswordResetToken resetToken = optionalToken.get();
             UserEntity user = resetToken.getUser();
             if (resetToken.isExpired()) {
-                throw new InvalidCredentialsException("Token expired.");
+                throw new BadCredentialsException(RestaurantConstants.TOKEN_EXPIRED);
             }
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
-            return "Password reset successful.";
+            return RestaurantConstants.PASSWORD_UPDATE_SUCCESS;
         } else {
-            throw new InvalidCredentialsException("Invalid token.");
+            throw new BadCredentialsException(RestaurantConstants.TOKEN_EXPIRED);
         }
     }
 
@@ -230,6 +226,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     private String passwordResetToken(String email) throws MessagingException {
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         String resetUrl = "";
@@ -241,11 +238,10 @@ public class UserServiceImpl implements UserService {
             resetToken.setUser(user);
             resetToken.setExpiryDate(new Date(System.currentTimeMillis() + 3600000)); // 1 hour expiry
             tokenRepository.save(resetToken);
-            resetUrl = "http://localhost:4200/reset-password?token=" + token;
+            resetUrl = RestaurantConstants.TOKEN_RESET_URL_BASE + token;
         }
         return resetUrl;
     }
-
 }
 
 

@@ -1,7 +1,7 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.model.dto.*;
-import com.lididimi.restaurant.response.SuccessResponse;
+import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;

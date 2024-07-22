@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.exception;
+package com.lididimi.restaurant.model.response;
 
 
 public class ErrorResponse {

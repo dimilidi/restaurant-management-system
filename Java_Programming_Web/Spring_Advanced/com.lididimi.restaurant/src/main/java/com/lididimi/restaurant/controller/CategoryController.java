@@ -1,18 +1,14 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.CategoryDTO;
-import com.lididimi.restaurant.model.entity.CategoryEntity;
-import com.lididimi.restaurant.response.SuccessResponse;
+import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.CategoryService;
-import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

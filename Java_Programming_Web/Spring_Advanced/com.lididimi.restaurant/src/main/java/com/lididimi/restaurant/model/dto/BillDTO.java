@@ -11,6 +11,7 @@ import java.time.Instant;
 
 @Data
 public class BillDTO {
+    private Long id;
 
     private String uuid;
 

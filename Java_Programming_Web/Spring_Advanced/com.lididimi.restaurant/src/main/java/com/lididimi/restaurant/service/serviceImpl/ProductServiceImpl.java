@@ -2,9 +2,7 @@ package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
-import com.lididimi.restaurant.exception.product.ProductNotFoundException;
-import com.lididimi.restaurant.exception.product.ProductsNotFoundException;
-import com.lididimi.restaurant.exception.product.UnauthorizedAccessException;
+import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
@@ -41,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productRepository.save(getProductFromMap(productAddDTO, false));
-        return "Successfully added product.";
+        return RestaurantConstants.PRODUCT_ADD_SUCCESS;
     }
 
     @Override
@@ -50,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<List<ProductEntity>> allProductsOpt = productRepository.getAllProducts();
 
         if (allProductsOpt.isEmpty()) {
-            throw new ObjectNotFoundException("No products found.");
+            throw new ObjectNotFoundException(RestaurantConstants.NOT_FOUND);
         }
 
         return allProductsOpt.get().stream()
@@ -62,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String updateProduct(ProductDTO productDTO) {
         if (!jwtFilter.isAdmin()) {
-            throw new UnauthorizedAccessException("Unauthorized access.");
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
 
         Optional<ProductEntity> optionalProduct = productRepository.findById(productDTO.getId());
@@ -70,9 +68,9 @@ public class ProductServiceImpl implements ProductService {
             ProductEntity product = modelMapper.map(productDTO, ProductEntity.class);
             product.setStatus(optionalProduct.get().getStatus());
             productRepository.save(product);
-            return "Successfully updated product.";
+            return RestaurantConstants.PRODUCT_UPDATE_SUCCESS;
         } else {
-            throw new ProductNotFoundException("Product not found.");
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
     }
 
@@ -86,9 +84,9 @@ public class ProductServiceImpl implements ProductService {
         Optional<ProductEntity> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             productRepository.deleteById(id);
-            return "Successfully deleted product.";
+            return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
         } else {
-            throw new ProductNotFoundException("Product does not exist.");
+            throw new ObjectNotFoundException("Product does not exist.");
         }
     }
 
@@ -103,9 +101,9 @@ public class ProductServiceImpl implements ProductService {
         if (optionalProduct.isPresent()) {
             StatusNameEnum status = StatusNameEnum.valueOf(productDTO.getStatus());
             productRepository.updateProductStatus(status, id);
-            return "Successfully updated product.";
+            return RestaurantConstants.PRODUCT_UPDATE_SUCCESS;
         } else {
-            throw new ProductNotFoundException("Product does not exist.");
+            throw new ObjectNotFoundException("Product does not exist.");
         }
     }
 
@@ -114,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> getByCategory(Long id) {
         Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(id);
         if (productsOpt.isEmpty()) {
-            throw new ObjectNotFoundException("No products found.");
+            throw new ObjectNotFoundException(RestaurantConstants.NOT_FOUND);
         }
 
         List<ProductDTO> products = productsOpt.get().stream()
@@ -129,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductByCategory(Long id) {
         Optional<ProductEntity> productById = productRepository.getProductById(id);
         if (productById.isEmpty()) {
-            throw new ProductNotFoundException("Product not found.");
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
         ProductDTO productDTO = convertToDTO(productById.get());
         return productDTO;

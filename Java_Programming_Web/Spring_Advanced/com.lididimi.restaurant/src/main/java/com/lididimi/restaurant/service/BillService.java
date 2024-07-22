@@ -15,15 +15,9 @@ public interface BillService {
 
     List<BillDTO> getBills();
 
-    ResponseEntity<byte[]> getPdf(BillDTO billDTO) throws IOException;
+    byte[] getPdf(BillDTO billDTO) throws IOException;
 
-    ResponseEntity<String> delete(Long id);
-
-    List<Map<String, Object>> findBestSellers();
-
-    List<Map<String, Object>> getTopEmployees();
-
-    List<Map<String, Object>> findRegularGuestsWithFavoriteProducts();
+    String delete(Long id);
 
 
 }

@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
         categoryRepository.save(getCategoryFromMap(categoryDTO, false));
-        return "Category added successfully.";
+        return RestaurantConstants.CATEGORY_ADD_SUCCESS;
     }
 
     @Override
@@ -61,9 +61,9 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryDTO.getId());
         if(categoryOptional.isPresent()) {
             categoryRepository.save(getCategoryFromMap(categoryDTO, true));
-            return "Category updated successfully.";
+            return RestaurantConstants.CATEGORY_UPDATE_SUCCESS;
         } else {
-            throw  new ObjectNotFoundException("Category not found.");
+            throw  new ObjectNotFoundException(RestaurantConstants.CATEGORY_NOT_FOUND);
         }
     }
 

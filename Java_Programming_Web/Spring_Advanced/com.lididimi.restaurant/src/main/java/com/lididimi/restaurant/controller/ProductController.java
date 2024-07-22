@@ -3,7 +3,7 @@ package com.lididimi.restaurant.controller;
 import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
 import com.lididimi.restaurant.repository.ProductRepository;
-import com.lididimi.restaurant.response.SuccessResponse;
+import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.ProductService;
 import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
 import jakarta.transaction.Transactional;
@@ -89,13 +89,6 @@ public class ProductController {
     public ResponseEntity<?> getById(@PathVariable Long id) {
         ProductDTO products = productService.getProductByCategory(id);
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", products);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/best-sellers")
-    public ResponseEntity<?> getBestSellers() {
-        List<Map<String, Object>> bestSellers = billService.findBestSellers();
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bestSellers);
         return ResponseEntity.ok(response);
     }
 }

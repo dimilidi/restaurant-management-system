@@ -19,9 +19,9 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
     @Query("SELECT b FROM BillEntity b ORDER BY b.id DESC")
     Optional<List<BillEntity>> getAllBills();
 
-    List<BillEntity> findByCreatedBy(String createdBy);
+    Optional<List<BillEntity>> findByCreatedBy(String createdBy);
 
-    List<BillEntity> findByEmail(String email);
+    Optional<List<BillEntity>> findByEmail(String email);
 
     @Query("SELECT b FROM BillEntity b WHERE b.createdBy=:username ORDER BY b.id DESC")
     Optional<List<BillEntity>> getBillsByUsername(@Param("username") String username);
@@ -35,7 +35,7 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
         "JOIN UserEntity e ON b.createdBy = e.email " +
         "GROUP BY e.name " +
         "ORDER BY billCount DESC")
-    List<Map<String, Object>> findTopEmployees(Pageable pageable);
+    Optional<List<Map<String, Object>>> findTopEmployees(Pageable pageable);
 
     @Query("SELECT b.email AS email, b.name AS name, COUNT(b.id) AS billCount " +
             "FROM BillEntity b " +
