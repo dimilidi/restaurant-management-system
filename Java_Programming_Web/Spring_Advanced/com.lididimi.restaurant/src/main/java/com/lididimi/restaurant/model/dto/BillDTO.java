@@ -30,7 +30,7 @@ public class BillDTO {
 
     @NotNull(message = "Total amount is mandatory")
     @Positive(message = "Total amount must be positive")
-    private BigDecimal totalAmount;
+    private BigDecimal total;
 
     @NotNull(message = "Product details are mandatory")
     @NotBlank(message = "Product details are mandatory")

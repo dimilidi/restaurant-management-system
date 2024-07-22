@@ -13,7 +13,7 @@ import java.util.Map;
 public interface BillService {
     String generateReport(BillDTO billDTO);
 
-    ResponseEntity<List<BillDTO>> getBills();
+    List<BillDTO> getBills();
 
     ResponseEntity<byte[]> getPdf(BillDTO billDTO) throws IOException;
 

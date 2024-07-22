@@ -40,18 +40,16 @@ public class BillController {
             return ResponseEntity.badRequest().body(errors);
         }
         String bill = billService.generateReport(billDTO);
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bill);
-        return ResponseEntity.ok(response);
+  /*      SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bill);
+        return ResponseEntity.ok(response);*/
+        return RestaurantUtils.getResponseEntity(bill, HttpStatus.OK);
     }
 
     @GetMapping("/getBills")
-    public ResponseEntity<List<BillDTO>> getBills() {
-        try {
-            return billService.getBills();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ResponseEntity<?> getBills() {
+        List<BillDTO> bills = billService.getBills();
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", bills);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/getPdf")

@@ -59,134 +59,19 @@ public class BillServiceImpl implements BillService {
             Document document = initializeDocument(fileName);
             addContentToDocument(document, billDTO);
             document.close();
-            return fileName;
+           // return fileName;
+            return String.format("{\"uuid\": \"%s\"}", fileName);
+
         } catch (Exception e) {
             log.error("Error generating report: ", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    private String createAndInsertBill(BillDTO billDTO) {
-        String fileName = RestaurantUtils.getUUID();
-        billDTO.setUuid(fileName);
-        billDTO.setCreatedBy(jwtFilter.currentUser());
-        billDTO.setCreatedDate(Instant.now());
-        insertBill(billDTO);
-        return fileName;
-    }
-
-    private Document initializeDocument(String fileName) throws Exception {
-        Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
-        document.open();
-        setRectangleInPdf(document);
-        return document;
-    }
-
-    private void addContentToDocument(Document document, BillDTO billDTO) throws Exception {
-        Paragraph header = new Paragraph("Restaurant Management System", getFont("Header"));
-        header.setAlignment(Element.ALIGN_CENTER);
-        document.add(header);
-
-        document.add(new Paragraph(formatBillData(billDTO), getFont("Data")));
-        document.add(new Paragraph("\n"));
-        addTableToDocument(document, billDTO);
-
-        document.add(new Paragraph("Total: " + billDTO.getTotalAmount() + "\nThank you for visiting Restaurant Management System."));
-    }
-
-
-    private String formatBillData(BillDTO billDTO) {
-        return String.format("Name: %s%nContact Number: %s%nEmail: %s%nPayment Method: %s%n",
-                billDTO.getName(), billDTO.getContactNumber(), billDTO.getEmail(), billDTO.getPaymentMethod());
-    }
-
-    private void addTableToDocument(Document document, BillDTO billDTO) throws Exception {
-        PdfPTable table = new PdfPTable(5);
-        table.setWidthPercentage(100);
-        addTableHeader(table);
-        JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
-        for (int i = 0; i < jsonArray.length(); i++) {
-            addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
-        }
-        document.add(table);
-    }
-
-    private void addRows(PdfPTable table, Map<String, Object> data) {
-        log.info("Inside addRows");
-        table.addCell((String) data.get("name"));
-        table.addCell((String) data.get("category"));
-        table.addCell((String) data.get("quantity"));
-        table.addCell(Double.toString((Double) data.get("price")));
-        table.addCell(Double.toString((Double) data.get("total")));
-    }
-
-    private void addTableHeader(PdfPTable table) {
-        log.info("Inside addTableHeader");
-        Stream.of("Name", "Category", "Quantity", "Price", "Sub Total").forEach(columnTitle -> {
-            PdfPCell header = new PdfPCell();
-            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-            header.setBorderWidth(2);
-            header.setPhrase(new Phrase(columnTitle));
-            header.setBackgroundColor(BaseColor.YELLOW);
-            header.setHorizontalAlignment(Element.ALIGN_CENTER);
-            header.setVerticalAlignment(Element.ALIGN_CENTER);
-            table.addCell(header);
-        });
-    }
-
-    private void setRectangleInPdf(Document document) throws DocumentException {
-        log.info("Inside setRectangleInPdf");
-        Rectangle rectangle = new Rectangle(577, 825, 18, 15);
-        rectangle.enableBorderSide(1);
-        rectangle.enableBorderSide(2);
-        rectangle.enableBorderSide(4);
-        rectangle.enableBorderSide(8);
-        rectangle.setBorderColor(BaseColor.BLACK);
-        rectangle.setBorderWidth(1);
-        document.add(rectangle);
-    }
-
-    private void insertBill(BillDTO billDTO) {
-        try {
-            BillEntity bill = new BillEntity();
-            bill.setUuid(billDTO.getUuid());
-            bill.setName(billDTO.getName());
-            bill.setEmail(billDTO.getEmail());
-            bill.setContactNumber(billDTO.getContactNumber());
-            bill.setPaymentMethod(billDTO.getPaymentMethod());
-            bill.setTotal(billDTO.getTotalAmount());
-            bill.setProductDetails(billDTO.getProductDetails());
-            bill.setCreatedBy(billDTO.getCreatedBy());
-            bill.setCreatedDate(billDTO.getCreatedDate());
-            billRepository.save(bill);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
-
-
-    private Font getFont(String type) {
-        log.info("Inside getFont");
-
-        switch (type) {
-            case "Header":
-                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE, 18, BaseColor.BLACK);
-                headerFont.setStyle(Font.BOLD);
-                return headerFont;
-            case "Data":
-                Font headerData = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
-                headerData.setStyle(Font.BOLD);
-                return headerData;
-            default:
-                return new Font();
-        }
-    }
 
     @Override
-    public ResponseEntity<List<BillDTO>> getBills() {
-        List<BillEntity> bills;
+    public List<BillDTO> getBills() {
+        Optional<List<BillEntity>> bills;
         if (jwtFilter.isAdmin()) {
             log.info("Inside getBills as Admin");
             bills = billRepository.getAllBills();
@@ -195,17 +80,18 @@ public class BillServiceImpl implements BillService {
             bills = billRepository.getBillsByUsername(jwtFilter.currentUser());
         }
 
-        List<BillDTO> billDTOs = bills.stream()
+        List<BillDTO> billDTOs = bills.get().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(billDTOs, HttpStatus.OK);
+        return billDTOs;
     }
+
+// todo - refactoring
 
     @Override
     public ResponseEntity<byte[]> getPdf(BillDTO billDTO) throws IOException {
         log.info("Inside getPdf : requestMap {}", billDTO);
-
 
         byte[] byteArray = new byte[0];
         if (billDTO.getUuid() == null) { // && validateRequestMap(requestMap)
@@ -222,14 +108,6 @@ public class BillServiceImpl implements BillService {
     }
 
 
-    private byte[] getByteArray(String filePath) throws IOException {
-        File initialFile = new File(filePath);
-
-        InputStream targetStream = new FileInputStream(initialFile);
-        byte[] byteArray = IOUtils.toByteArray(targetStream);
-        targetStream.close();
-        return byteArray;
-    }
 
     @Override
     public ResponseEntity<String> delete(Long id) {
@@ -249,12 +127,12 @@ public class BillServiceImpl implements BillService {
         return RestaurantUtils.getResponseEntity(RestaurantConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
+    @Override
     public List<Map<String, Object>> findBestSellers() {
-        List<BillEntity> bills = billRepository.getAllBills();
+        Optional<List<BillEntity>> bills = billRepository.getAllBills();
         Map<String, Integer> productSales = new HashMap<>();
 
-        for (BillEntity bill : bills) {
+        for (BillEntity bill : bills.get()) {
             try {
                 JSONArray products = new JSONArray(bill.getProductDetails());
                 for (int i = 0; i < products.length(); i++) {
@@ -343,6 +221,132 @@ public class BillServiceImpl implements BillService {
             result.add(guestData);
         }
         return result;
+    }
+
+    private String createAndInsertBill(BillDTO billDTO) {
+        String fileName = RestaurantUtils.getUUID();
+        billDTO.setUuid(fileName);
+        billDTO.setCreatedBy(jwtFilter.currentUser());
+        billDTO.setCreatedDate(Instant.now());
+        insertBill(billDTO);
+        return fileName;
+    }
+
+    private Document initializeDocument(String fileName) throws Exception {
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
+        document.open();
+        setRectangleInPdf(document);
+        return document;
+    }
+
+    private void addContentToDocument(Document document, BillDTO billDTO) throws Exception {
+        Paragraph header = new Paragraph("Restaurant Management System", getFont("Header"));
+        header.setAlignment(Element.ALIGN_CENTER);
+        document.add(header);
+
+        document.add(new Paragraph(formatBillData(billDTO), getFont("Data")));
+        document.add(new Paragraph("\n"));
+        addTableToDocument(document, billDTO);
+
+        document.add(new Paragraph("Total: " + billDTO.getTotal() + "\nThank you for visiting Restaurant Management System."));
+    }
+
+
+    private String formatBillData(BillDTO billDTO) {
+        return String.format("Name: %s%nContact Number: %s%nEmail: %s%nPayment Method: %s%n",
+                billDTO.getName(), billDTO.getContactNumber(), billDTO.getEmail(), billDTO.getPaymentMethod());
+    }
+
+    private void addTableToDocument(Document document, BillDTO billDTO) throws Exception {
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100);
+        addTableHeader(table);
+        JSONArray jsonArray = RestaurantUtils.getJSONArrayFromString((String) billDTO.getProductDetails());
+        for (int i = 0; i < jsonArray.length(); i++) {
+            addRows(table, RestaurantUtils.getMapFromJson(jsonArray.getString(i)));
+        }
+        document.add(table);
+    }
+
+    private void addRows(PdfPTable table, Map<String, Object> data) {
+        log.info("Inside addRows");
+        table.addCell((String) data.get("name"));
+        table.addCell((String) data.get("category"));
+        table.addCell((String) data.get("quantity"));
+        table.addCell(Double.toString((Double) data.get("price")));
+        table.addCell(Double.toString((Double) data.get("total")));
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        log.info("Inside addTableHeader");
+        Stream.of("Name", "Category", "Quantity", "Price", "Sub Total").forEach(columnTitle -> {
+            PdfPCell header = new PdfPCell();
+            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            header.setBorderWidth(2);
+            header.setPhrase(new Phrase(columnTitle));
+            header.setBackgroundColor(BaseColor.YELLOW);
+            header.setHorizontalAlignment(Element.ALIGN_CENTER);
+            header.setVerticalAlignment(Element.ALIGN_CENTER);
+            table.addCell(header);
+        });
+    }
+
+    private void setRectangleInPdf(Document document) throws DocumentException {
+        log.info("Inside setRectangleInPdf");
+        Rectangle rectangle = new Rectangle(577, 825, 18, 15);
+        rectangle.enableBorderSide(1);
+        rectangle.enableBorderSide(2);
+        rectangle.enableBorderSide(4);
+        rectangle.enableBorderSide(8);
+        rectangle.setBorderColor(BaseColor.BLACK);
+        rectangle.setBorderWidth(1);
+        document.add(rectangle);
+    }
+
+    private void insertBill(BillDTO billDTO) {
+        try {
+            BillEntity bill = new BillEntity();
+            bill.setUuid(billDTO.getUuid());
+            bill.setName(billDTO.getName());
+            bill.setEmail(billDTO.getEmail());
+            bill.setContactNumber(billDTO.getContactNumber());
+            bill.setPaymentMethod(billDTO.getPaymentMethod());
+            bill.setTotal(billDTO.getTotal());
+            bill.setProductDetails(billDTO.getProductDetails());
+            bill.setCreatedBy(billDTO.getCreatedBy());
+            bill.setCreatedDate(billDTO.getCreatedDate());
+            billRepository.save(bill);
+            log.info("Inside insertBill {}", bill);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private Font getFont(String type) {
+        log.info("Inside getFont");
+
+        switch (type) {
+            case "Header":
+                Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLDOBLIQUE, 18, BaseColor.BLACK);
+                headerFont.setStyle(Font.BOLD);
+                return headerFont;
+            case "Data":
+                Font headerData = FontFactory.getFont(FontFactory.TIMES_ROMAN, 11, BaseColor.BLACK);
+                headerData.setStyle(Font.BOLD);
+                return headerData;
+            default:
+                return new Font();
+        }
+    }
+
+    private byte[] getByteArray(String filePath) throws IOException {
+        File initialFile = new File(filePath);
+
+        InputStream targetStream = new FileInputStream(initialFile);
+        byte[] byteArray = IOUtils.toByteArray(targetStream);
+        targetStream.close();
+        return byteArray;
     }
 
     private BillDTO convertToDTO(BillEntity billEntity) {

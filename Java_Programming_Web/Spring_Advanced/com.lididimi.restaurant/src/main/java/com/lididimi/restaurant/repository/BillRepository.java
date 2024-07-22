@@ -24,7 +24,7 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
     List<BillEntity> findByEmail(String email);
 
     @Query("SELECT b FROM BillEntity b WHERE b.createdBy=:username ORDER BY b.id DESC")
-    List<BillEntity> getBillsByUsername(@Param("username") String username);
+    Optional<List<BillEntity>> getBillsByUsername(@Param("username") String username);
 
     @Modifying
     @Query("DELETE FROM BillEntity b WHERE b.createdDate < :cutoffDate")
