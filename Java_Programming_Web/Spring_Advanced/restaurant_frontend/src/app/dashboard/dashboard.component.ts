@@ -4,6 +4,8 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { GlobalConstants } from '../shared/global-constants';
 import { ProductService } from '../services/product.service';
+import { BillService } from '../services/bill.service';
+import { ReportService } from '../services/report.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,21 +17,23 @@ export class DashboardComponent implements OnInit {
   data: any;
   bestSellers: any;
 
-  ngOnInit() {
-    this.productService.getBestSellers().subscribe(d => {
-      this.bestSellers = d;
-    });
-  }
-
   constructor(
     private dashboardService: DashboardService,
-    private productService: ProductService,
+    private reportService:ReportService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService
   ) {
     ngxService.start();
     this.dashboardData();
   }
+
+
+  ngOnInit() {
+    this.reportService.getBestSellers().subscribe(d => {
+      this.bestSellers = d;
+    });
+  }
+
 
   dashboardData() {
     this.dashboardService.getDetails().subscribe(

@@ -47,8 +47,6 @@ export class ProductService {
     return this.httpClient.get(this.url + "/products/getById/" + id);
   }
 
-  getBestSellers(): Observable<any> {
-    return this.httpClient.get(`${this.url}/products/best-sellers`);
-  }
+
 
 }

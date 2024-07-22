@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BillService } from '../services/bill.service';
 import { Chart, registerables } from 'node_modules/chart.js';
+import { ReportService } from '../services/report.service';
 Chart.register(...registerables);
 
 @Component({
@@ -13,15 +14,15 @@ export class TopEmployeeChartComponent implements OnInit {
   labelData: any[] = [];
   realData: any[] = [];
 
-  constructor(private billService:BillService) {}
+  constructor(private reportService:ReportService) {}
 
   ngOnInit(): void {
     this.fetchTopEmployees();
   }
 
   fetchTopEmployees() {
-    this.billService.getTopEmployees().subscribe(data => {
-      this.chartData = data;
+    this.reportService.getTopEmployees().subscribe(data => {
+      this.chartData = data.data;
       console.log("TOP EMPLOYEE");
       
 

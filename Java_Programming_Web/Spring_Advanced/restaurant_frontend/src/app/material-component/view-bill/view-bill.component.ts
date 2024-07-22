@@ -128,24 +128,52 @@ export class ViewBillComponent implements OnInit {
     this.ngxService.start();
     var data = {
       uuid: values.uuid,
-    }
+    };
     this.downloadFile(data);
   }
 
   downloadFile(data: any) {
     console.log(data);
-    
-    this.billService.getPdf(data).subscribe((response: any) => {
-      console.log(response);
-      
-      saveAs(response, data.uuid + '.pdf');
-      this.ngxService.stop();
-    }, 
-    (error: any) => {
-      console.log(error.eror);
-      
-    }
-  );
+
+    this.billService.getPdf(data).subscribe(
+      (response: any) => {
+        console.log(response.data);
+
+        saveAs(response, data.uuid + '.pdf');
+        this.ngxService.stop();
+      },
+      (error: any) => {
+        console.log(error.eror);
+      }
+    );
   }
 
+  // downloadFile(data: any) {
+  //   this.billService.getPdf(data).subscribe(
+  //     (response: any) => {
+  //       console.log(response);
+  
+  //       // Extract the base64 encoded PDF from the response
+  //       const base64Data = response.data;
+  
+  //       // Convert base64 string to Blob
+  //       const byteCharacters = atob(base64Data);
+  //       const byteNumbers = new Array(byteCharacters.length);
+  //       for (let i = 0; i < byteCharacters.length; i++) {
+  //         byteNumbers[i] = byteCharacters.charCodeAt(i);
+  //       }
+  //       const byteArray = new Uint8Array(byteNumbers);
+  //       const blob = new Blob([byteArray], { type: 'application/pdf' });
+  
+  //       // Use FileSaver.js to save the PDF
+  //       saveAs(blob, data.uuid + '.pdf');
+  //       this.ngxService.stop();
+  //     },
+  //     (error: any) => {
+  //       console.log(error.error);
+  //       this.ngxService.stop();
+  //     }
+  //   );
+  // }
+  
 }

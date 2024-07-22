@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'node_modules/chart.js';
-import { ProductService } from '../services/product.service';
+import { BillService } from '../services/bill.service';
+import { ReportService } from '../services/report.service';
 Chart.register(...registerables);
 
 @Component({
@@ -9,7 +10,7 @@ Chart.register(...registerables);
   styleUrls: ['./best-seller-chart.component.css'],
 })
 export class BestSellerChartComponent implements OnInit {
-  constructor(private productService: ProductService) {}
+  constructor(private reportService:ReportService) {}
 
   chartData: any;
   labelData: any[] = [];
@@ -17,7 +18,7 @@ export class BestSellerChartComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.productService.getBestSellers().subscribe((response) => {
+    this.reportService.getBestSellers().subscribe((response) => {
       this.chartData = response.data;
       console.log(response);
       

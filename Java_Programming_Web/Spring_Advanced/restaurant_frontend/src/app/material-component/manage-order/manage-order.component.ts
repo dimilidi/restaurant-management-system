@@ -229,6 +229,8 @@ export class ManageOrderComponent implements OnInit {
     this.ngxService.start();
     this.billService.generateReport(data).subscribe(
       (response: any) => {
+        console.log(response);
+        
         this.downloadFile(response.uuid);
         this.manageOrderForm.reset();
         this.dataSource = [];
@@ -244,6 +246,8 @@ export class ManageOrderComponent implements OnInit {
     const data = { uuid: fileName };
     this.billService.getPdf(data).subscribe(
       (response: any) => {
+        console.log(response);
+        
         saveAs(response, `${fileName}.pdf`);
         this.ngxService.stop();
       },

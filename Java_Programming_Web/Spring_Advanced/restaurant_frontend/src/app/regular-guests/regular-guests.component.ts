@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BillService } from '../services/bill.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { GlobalConstants } from '../shared/global-constants';
+import { ReportService } from '../services/report.service';
 
 @Component({
   selector: 'app-regular-guests',
@@ -16,7 +16,7 @@ export class RegularGuestsComponent implements OnInit {
   responseMessage: any;
 
   constructor(
-    private billService: BillService,
+    private reportService: ReportService,
     private ngxService: NgxUiLoaderService,
     private snackbarService: SnackbarService,
   ) {}
@@ -27,10 +27,10 @@ export class RegularGuestsComponent implements OnInit {
   }
 
   tableData() {
-    this.billService.getRegularGuests().subscribe(
+    this.reportService.getRegularGuests().subscribe(
       (response: any) => {
         this.ngxService.stop();
-        this.dataSource = new MatTableDataSource(response);
+        this.dataSource = new MatTableDataSource(response.data);
         console.log(response);
         
       },
