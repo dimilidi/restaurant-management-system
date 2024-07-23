@@ -42,3 +42,6 @@ logging:
 server:
   port: 8080
 
+categories:
+  api:
+    baseUrl: "http://localhost:8081"

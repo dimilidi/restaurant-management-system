@@ -1,3 +1,4 @@
+/*
 package com.lididimi.restaurant.model.validation;
 
 import com.lididimi.restaurant.repository.CategoryRepository;
@@ -16,4 +17,4 @@ public class UniqueCategoryNameValidator implements ConstraintValidator<UniqueCa
         public boolean isValid (String value, ConstraintValidatorContext constraintValidatorContext){
         return categoryRepository.existsByName(value);
     }
-}
+}*/

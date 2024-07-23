@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.controller;
 
+import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.CategoryService;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/categories/")
+@RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -30,10 +31,17 @@ public class CategoryController {
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        String responseMessage = categoryService.addNewCategory(categoryDTO);
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, responseMessage);
-        return ResponseEntity.ok(response);
+  /*      String responseMessage = categoryService.addNewCategory(categoryDTO);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, responseMessage);*/
+        categoryService.addNewCategory(categoryDTO);
+        return ResponseEntity.ok().build();
     }
+
+/*    @PostMapping("/add")
+    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO createdCategory = categoryService.addCategory(categoryDTO);
+        return ResponseEntity.ok(createdCategory);
+    }*/
 
     @GetMapping("/get")
     public ResponseEntity<?> getAllCategories(@RequestParam(required = false) String filterValue) {
@@ -42,15 +50,25 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update")
+    @GetMapping("/count")
+    public ResponseEntity<?> getCategoriesCount() {
+        long count = categoryService.getCategoriesCount();
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", count);
+        return ResponseEntity.ok(count);
+    }
+
+    @PutMapping("/update")
     public ResponseEntity<?> updateCategory(@RequestBody @Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        String responseMessage = categoryService.updateCategory(categoryDTO);
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        categoryService.updateCategory(categoryDTO);
+        String responseMessage = RestaurantConstants.CATEGORY_UPDATE_SUCCESS;
+                SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
         return ResponseEntity.ok(response);
+     /*   categoryService.updateCategory(categoryDTO);
+        return ResponseEntity.ok().build();*/
     }
 }

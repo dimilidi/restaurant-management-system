@@ -1,3 +1,4 @@
+/*
 package com.lididimi.restaurant.model.validation;
 
 
@@ -19,3 +20,4 @@ public @interface UniqueCategoryName {
 
     Class<? extends Payload>[] payload() default {};
 }
+*/

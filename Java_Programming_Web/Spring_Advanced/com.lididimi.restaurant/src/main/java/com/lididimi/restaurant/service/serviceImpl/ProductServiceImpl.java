@@ -134,6 +134,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductEntity getProductFromMap(ProductAddDTO productAddDTO, boolean isAdd) {
+
         CategoryEntity category = new CategoryEntity();
         category.setId(productAddDTO.getCategoryId());
 

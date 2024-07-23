@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.model.entity;
 
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
@@ -29,6 +30,7 @@ public class ProductEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;
 
+    @NotEmpty
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 

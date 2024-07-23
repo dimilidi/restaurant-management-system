@@ -1,3 +1,4 @@
+/*
 package com.lididimi.restaurant.repository;
 
 import com.lididimi.restaurant.model.entity.CategoryEntity;
@@ -14,3 +15,4 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
    Optional<List<CategoryEntity>> getAllCategories();
 
 }
+*/

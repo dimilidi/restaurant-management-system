@@ -1,6 +1,5 @@
 package com.lididimi.restaurant.model.dto;
 
-import com.lididimi.restaurant.model.entity.CategoryEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
