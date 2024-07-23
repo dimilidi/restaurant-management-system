@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.restaurant_categories.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

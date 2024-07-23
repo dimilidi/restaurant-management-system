@@ -1,10 +1,6 @@
-package com.lididimi.restaurant.exception;
+package com.lididimi.restaurant.restaurant_categories.exception;
 
-import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
-import com.lididimi.restaurant.exception.common.SomethingWentWrongException;
-import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
-import com.lididimi.restaurant.exception.user.*;
-import com.lididimi.restaurant.model.response.ErrorResponse;
+import com.lididimi.restaurant.restaurant_categories.model.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  /*@ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleInvalidCredentialsException(BadCredentialsException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
@@ -39,6 +35,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
+*/
 
     @ExceptionHandler(SomethingWentWrongException.class)
     public ResponseEntity<ErrorResponse> handleSomethingWentWrongException(SomethingWentWrongException ex) {

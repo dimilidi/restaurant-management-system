@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.response;
+package com.lididimi.restaurant.restaurant_categories.model.response;
 
 
 public class ErrorResponse {
