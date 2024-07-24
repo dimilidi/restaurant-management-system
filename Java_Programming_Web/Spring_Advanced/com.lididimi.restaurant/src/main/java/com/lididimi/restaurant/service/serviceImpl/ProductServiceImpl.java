@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +31,12 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final CategoryService categoryService;
 
-    public ProductServiceImpl(JwtFilter jwtFilter, ProductRepository productRepository, ModelMapper modelMapper,  CategoryService categoryService) {
+    public ProductServiceImpl(
+            JwtFilter jwtFilter,
+            ProductRepository productRepository,
+            ModelMapper modelMapper,
+            CategoryService categoryService
+    ) {
         this.jwtFilter = jwtFilter;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
@@ -60,7 +64,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return allProductsOpt.get().stream()
-                .map(entity -> modelMapper.map(entity, ProductDTO.class))
+                .map(entity -> {
+                    CategoryDTO category = categoryService.getCategoryById(entity.getCategoryId());
+                    ProductDTO productDTO = modelMapper.map(entity, ProductDTO.class);
+                    productDTO.setCategoryName(category.getName());
+                    return productDTO;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -116,17 +125,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<CategoryDTO> getAllCategoriesWithActiveProducts() {
-        List<ProductEntity> activeProducts = productRepository.findAllActiveProducts();
-        List<Long> categoryIds = activeProducts.stream()
-                .map(ProductEntity::getCategoryId)
-                .collect(Collectors.toList());
-
-        return categoryService.getCategoriesByIds(categoryIds);
-    }
-
-
-    @Override
     @Transactional
     public List<ProductDTO> getByCategory(Long id) {
         Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(id);
@@ -156,7 +154,6 @@ public class ProductServiceImpl implements ProductService {
         Long categoryId = productAddDTO.getCategoryId();
 
         CategoryDTO category = categoryService.getCategoryById(categoryId);
-
         category.setId(categoryId);
 
         ProductEntity product = new ProductEntity();

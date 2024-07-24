@@ -1,5 +1,8 @@
 package com.lididimi.restaurant.controller;
 
+import com.lididimi.restaurant.model.dto.BestSellerDTO;
+import com.lididimi.restaurant.model.dto.GuestDTO;
+import com.lididimi.restaurant.model.dto.TopEmployeeDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.ReportService;
 import org.springframework.http.HttpStatus;
@@ -21,19 +24,19 @@ public class ReportController {
 
     @GetMapping("/best-sellers")
     public ResponseEntity<?> getBestSellers() {
-        List<Map<String, Object>> bestSellers = reportService.findBestSellers();
+        List<BestSellerDTO> bestSellers = reportService.findBestSellers();
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "", bestSellers));
     }
 
     @GetMapping("/top-employees")
     public ResponseEntity<?> getTopEmployees() {
-        List<Map<String, Object>> topEmployees = reportService.getTopEmployees();
+        List<TopEmployeeDTO> topEmployees = reportService.getTopEmployees();
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "", topEmployees));
     }
 
     @GetMapping("/regular-guests")
     public ResponseEntity<?> getRegularGuestsWithFavoriteProducts() {
-        List<Map<String, Object>> result = reportService.findRegularGuestsWithFavoriteProducts();
+        List<GuestDTO>result = reportService.findRegularGuestsWithFavoriteProducts();
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "", result));
     }
 }

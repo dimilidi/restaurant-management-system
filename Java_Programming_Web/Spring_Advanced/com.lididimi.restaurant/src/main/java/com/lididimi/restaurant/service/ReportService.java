@@ -1,5 +1,8 @@
 package com.lididimi.restaurant.service;
 
+import com.lididimi.restaurant.model.dto.BestSellerDTO;
+import com.lididimi.restaurant.model.dto.GuestDTO;
+import com.lididimi.restaurant.model.dto.TopEmployeeDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -7,11 +10,11 @@ import java.util.*;
 @Service
 public interface ReportService {
 
-    List<Map<String, Object>> findBestSellers();
+    List<BestSellerDTO> findBestSellers();
 
-    List<Map<String, Object>> getTopEmployees();
+    List<TopEmployeeDTO> getTopEmployees();
 
-    List<Map<String, Object>> findRegularGuestsWithFavoriteProducts();
+    List<GuestDTO> findRegularGuestsWithFavoriteProducts();
 
 
 }
