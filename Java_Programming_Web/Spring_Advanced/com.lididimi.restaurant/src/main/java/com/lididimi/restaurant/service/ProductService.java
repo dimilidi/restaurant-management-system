@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.service;
 
+import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
 import java.util.List;
@@ -9,6 +10,8 @@ public interface ProductService {
     String addNewProduct(ProductAddDTO productAddDTO);
 
     List<ProductDTO> getAllProducts();
+
+    List<CategoryDTO> getAllCategoriesWithActiveProducts();
 
     String updateProduct(ProductDTO productDTO);
 

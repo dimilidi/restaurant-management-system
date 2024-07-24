@@ -27,8 +27,8 @@ public class ProductEntity implements Serializable {
     private String name;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CategoryEntity category;
+    @Column(name = "category_id", nullable = false)
+    private Long categoryId;
 
     @NotEmpty
     @Column(nullable = false, columnDefinition = "TEXT")

@@ -21,13 +21,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("SELECT p FROM ProductEntity p")
     Optional<List<ProductEntity>> getAllProducts();
 
+    @Query("SELECT p FROM ProductEntity p WHERE p.status = 'ACTIVE'")
+    List<ProductEntity> findAllActiveProducts();
+
     @Modifying
     @Transactional
     @Query("UPDATE ProductEntity p set p.status=:status WHERE p.id=:id")
     Integer updateProductStatus(@Param("status") StatusNameEnum status, @Param("id") Long id);
 
 
-    @Query("SELECT p FROM ProductEntity p WHERE p.category.id=:id and p.status='ACTIVE'")
+    @Query("SELECT p FROM ProductEntity p WHERE p.categoryId=:id and p.status='ACTIVE'")
     Optional<List<ProductEntity>> getProductByCategory(@Param("id") Long id);
 
     @Query("SELECT p FROM ProductEntity p WHERE p.id=:id")

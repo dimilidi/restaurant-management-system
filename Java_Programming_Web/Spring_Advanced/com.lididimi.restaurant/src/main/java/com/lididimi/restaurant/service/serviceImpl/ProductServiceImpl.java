@@ -4,36 +4,44 @@ import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
 import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
-import com.lididimi.restaurant.model.entity.CategoryEntity;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.repository.ProductRepository;
+import com.lididimi.restaurant.service.CategoryService;
 import com.lididimi.restaurant.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Service
 public class ProductServiceImpl implements ProductService {
+    private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final JwtFilter jwtFilter;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final CategoryService categoryService;
 
-    public ProductServiceImpl(JwtFilter jwtFilter, ProductRepository productRepository, ModelMapper modelMapper) {
+    public ProductServiceImpl(JwtFilter jwtFilter, ProductRepository productRepository, ModelMapper modelMapper,  CategoryService categoryService) {
         this.jwtFilter = jwtFilter;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.categoryService = categoryService;
     }
 
     @Override
     public String addNewProduct(ProductAddDTO productAddDTO) {
+        log.info("addNewProduct called {}", productAddDTO);
         if (!jwtFilter.isAdmin()) {
             throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
@@ -86,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
             productRepository.deleteById(id);
             return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
         } else {
-            throw new ObjectNotFoundException("Product does not exist.");
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
     }
 
@@ -103,9 +111,20 @@ public class ProductServiceImpl implements ProductService {
             productRepository.updateProductStatus(status, id);
             return RestaurantConstants.PRODUCT_UPDATE_SUCCESS;
         } else {
-            throw new ObjectNotFoundException("Product does not exist.");
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
     }
+
+    @Override
+    public List<CategoryDTO> getAllCategoriesWithActiveProducts() {
+        List<ProductEntity> activeProducts = productRepository.findAllActiveProducts();
+        List<Long> categoryIds = activeProducts.stream()
+                .map(ProductEntity::getCategoryId)
+                .collect(Collectors.toList());
+
+        return categoryService.getCategoriesByIds(categoryIds);
+    }
+
 
     @Override
     @Transactional
@@ -134,9 +153,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductEntity getProductFromMap(ProductAddDTO productAddDTO, boolean isAdd) {
+        Long categoryId = productAddDTO.getCategoryId();
 
-        CategoryEntity category = new CategoryEntity();
-        category.setId(productAddDTO.getCategoryId());
+        CategoryDTO category = categoryService.getCategoryById(categoryId);
+
+        category.setId(categoryId);
 
         ProductEntity product = new ProductEntity();
 
@@ -146,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(StatusNameEnum.ACTIVE);
         }
         product.setName(productAddDTO.getName());
-        product.setCategory(category);
+        product.setCategoryId(category.getId());
         product.setDescription(productAddDTO.getDescription());
         product.setPrice(productAddDTO.getPrice());
         return product;

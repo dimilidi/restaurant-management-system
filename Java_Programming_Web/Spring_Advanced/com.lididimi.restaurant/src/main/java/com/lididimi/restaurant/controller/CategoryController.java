@@ -5,6 +5,8 @@ import com.lididimi.restaurant.model.dto.CategoryDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.CategoryService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
 
+    private static final Logger log = LoggerFactory.getLogger(CategoryController.class);
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
@@ -49,6 +53,28 @@ public class CategoryController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", allCategories);
         return ResponseEntity.ok(response);
     }
+
+  @GetMapping("/getFiltered")
+    public ResponseEntity<?> getAllCategoriesWithActiveProducts() {
+        List<CategoryDTO> allCategories = categoryService.getCategoriesWithActiveProducts();
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", allCategories);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id) {
+        CategoryDTO categoryById = categoryService.getCategoryById(id);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", categoryById);
+        return ResponseEntity.ok(response);
+    }
+
+    /*@GetMapping("/cat")
+    public ResponseEntity<?> getCategoriesByIds(List<Long> ids) {
+        List<CategoryDTO> categoriesByIds = categoryService.getCategoriesByIds(ids);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "", categoriesByIds);
+        return ResponseEntity.ok(response);
+    }*/
 
     @GetMapping("/count")
     public ResponseEntity<?> getCategoriesCount() {

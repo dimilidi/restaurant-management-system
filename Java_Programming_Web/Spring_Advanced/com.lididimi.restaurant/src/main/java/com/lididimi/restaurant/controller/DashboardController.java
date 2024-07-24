@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    private final DashboardServiceImpl dashboardServiceImpl;
     private final DashboardService dashboardService;
 
     public DashboardController(DashboardServiceImpl dashboardServiceImpl, DashboardService dashboardService) {
-        this.dashboardServiceImpl = dashboardServiceImpl;
         this.dashboardService = dashboardService;
     }
 
