@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.exception.user;
+package com.lididimi.restaurant.restaurant_categories.exception;
 
 public class AlreadyExistsException extends RuntimeException {
     public AlreadyExistsException(String message) {

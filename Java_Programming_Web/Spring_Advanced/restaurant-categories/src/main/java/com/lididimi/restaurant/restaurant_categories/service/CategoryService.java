@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface CategoryService {
 
-    void addNewCategory(CategoryDTO categoryDTO);
+    String addNewCategory(CategoryDTO categoryDTO);
 
     List<CategoryDTO> getAllCategories(String filterValue);
 

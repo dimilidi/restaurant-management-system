@@ -17,6 +17,5 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
   //  @Query("SELECT c FROM CategoryEntity c WHERE c.id IN (SELECT p.category.id FROM ProductEntity p WHERE p.status = 'ACTIVE')")
    //Optional<List<CategoryEntity>> getAllCategories();
 
-    List<CategoryEntity> findByIdIn(List<Long> ids);
-
+    Optional<CategoryEntity> findByName(String name);
 }

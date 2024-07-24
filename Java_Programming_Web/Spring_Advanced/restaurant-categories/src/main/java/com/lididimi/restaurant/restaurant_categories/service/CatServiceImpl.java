@@ -1,11 +1,13 @@
 package com.lididimi.restaurant.restaurant_categories.service;
 
+import com.lididimi.restaurant.restaurant_categories.exception.AlreadyExistsException;
 import com.lididimi.restaurant.restaurant_categories.exception.ObjectNotFoundException;
 import com.lididimi.restaurant.restaurant_categories.model.dto.CategoryDTO;
 import com.lididimi.restaurant.restaurant_categories.model.entity.CategoryEntity;
 import com.lididimi.restaurant.restaurant_categories.repository.CategoryRepository;
 import com.lididimi.restaurant.restaurant_categories.constants.CategoryConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 
 
@@ -33,15 +35,15 @@ public class CatServiceImpl implements CategoryService {
     }
 
     @Override
-    public void addNewCategory(CategoryDTO categoryDTO) {
+    public String addNewCategory(CategoryDTO categoryDTO) {
         log.info("addNewCategory {}", categoryDTO);
-/*
-  if (!jwtFilter.isAdmin()) {
-            throw new UnauthorizedAccessException(CategoryConstants.UNAUTHORIZED_ACCESS);
+
+        if(categoryRepository.existsByName(categoryDTO.getName())) {
+            throw new AlreadyExistsException(CategoryConstants.ALREADY_EXISTS);
         }
-*/
+
         categoryRepository.save(getCategoryFromMap(categoryDTO, false));
-  /*      return CategoryConstants.CATEGORY_ADD_SUCCESS;*/
+        return CategoryConstants.CATEGORY_ADD_SUCCESS;
     }
 
     @Override
@@ -59,20 +61,20 @@ public class CatServiceImpl implements CategoryService {
     @Override
     public String updateCategory(CategoryDTO categoryDTO) {
         log.info("updateCategory {}", categoryDTO);
-/*   if(!jwtFilter.isAdmin()) {
-            log.info("Updating category - isAdmin {}", jwtFilter.isAdmin());
-            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
-        }*/
 
         Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryDTO.getId());
-        if(categoryOptional.isEmpty()) {
+        if (categoryOptional.isEmpty()) {
             throw  new ObjectNotFoundException(CategoryConstants.CATEGORY_NOT_FOUND);
         }
+        String newName = categoryDTO.getName();
 
-        boolean nameExists = categoryOptional.get().getName().equals(categoryDTO.getName());
-        if (nameExists) {
-            throw new IllegalArgumentException("Category name already exists");
+        boolean existsByName = categoryRepository.existsByName(newName);
+        boolean nameEqual= categoryOptional.get().getName().toLowerCase().equals(newName.toLowerCase());
+
+        if (!nameEqual && existsByName) {
+           throw new AlreadyExistsException(CategoryConstants.ALREADY_EXISTS);
         }
+        categoryOptional.get().setName(categoryDTO.getName());
 
         categoryRepository.save(getCategoryFromMap(categoryDTO, true));
         return CategoryConstants.CATEGORY_UPDATE_SUCCESS;
@@ -82,6 +84,7 @@ public class CatServiceImpl implements CategoryService {
     public CategoryEntity getById(Long id) {
         Optional<CategoryEntity> categoryOptional = categoryRepository.findById(id);
         if(categoryOptional.isEmpty()) {
+            log.error("Category getById not found {}", id);
             throw new ObjectNotFoundException(CategoryConstants.CATEGORY_NOT_FOUND);
         }
         return categoryOptional.get();
