@@ -11,8 +11,10 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,9 +46,9 @@ public class CatServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDTO> getAllCategories(String filterValue) {
-        List<CategoryEntity> categories = categoryRepository.findAll();
-              /* /List<CategoryEntity> categories = (filterValue != null && filterValue.equalsIgnoreCase("true"))
-                        ? categoryRepository.getAllCategories().orElseGet(ArrayList::new)
+       List<CategoryEntity> categories = categoryRepository.findAll();
+               /*List<CategoryEntity> categories = (filterValue != null && filterValue.equalsIgnoreCase("true"))
+                        ? categoryRepository.findByIdIn(ids)
                         : categoryRepository.findAll();*/
 
         return categories.stream()
@@ -86,8 +88,23 @@ public class CatServiceImpl implements CategoryService {
     }
 
     @Override
-    public long getCategoriesCount() {
+    public Long getCategoriesCount() {
         return categoryRepository.count() < 0 ?  0 : categoryRepository.count();
+    }
+
+    @Override
+    public List<CategoryDTO> getCategoriesByIds(List<Long> ids) {
+        List<CategoryEntity> categories = categoryRepository.findAllById(ids);
+        List list = List.of(1l, 7l);
+       // List<CategoryEntity> categories = categoryRepository.findByIdIn(list);
+        log.info("getCategoriesByIds {}", categories);
+    var result = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                .collect(Collectors.toList());
+
+    log.info("getCategoriesByIds {}", result);
+
+    return result;
     }
 
     private CategoryEntity getCategoryFromMap(CategoryDTO categoryDTO, Boolean isAdd) {

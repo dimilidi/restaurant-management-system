@@ -7,15 +7,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
     boolean existsByName(String name);
-    boolean findById(long id);
+
 
   //  @Query("SELECT c FROM CategoryEntity c WHERE c.id IN (SELECT p.category.id FROM ProductEntity p WHERE p.status = 'ACTIVE')")
    //Optional<List<CategoryEntity>> getAllCategories();
 
-    Optional<List<CategoryEntity>> findAllByOrderByNameAsc();
+    List<CategoryEntity> findByIdIn(List<Long> ids);
 
 }

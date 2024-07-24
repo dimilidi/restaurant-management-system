@@ -4,6 +4,7 @@ import com.lididimi.restaurant.restaurant_categories.model.dto.CategoryDTO;
 import com.lididimi.restaurant.restaurant_categories.model.entity.CategoryEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CategoryService {
 
@@ -15,5 +16,7 @@ public interface CategoryService {
 
     CategoryEntity getById(Long id);
 
-    long getCategoriesCount();
+    Long getCategoriesCount();
+
+    List<CategoryDTO> getCategoriesByIds(List<Long> ids);
 }
