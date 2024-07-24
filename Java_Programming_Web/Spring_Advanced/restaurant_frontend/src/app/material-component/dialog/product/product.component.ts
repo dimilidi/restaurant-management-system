@@ -52,7 +52,7 @@ export class ProductComponent implements OnInit {
   getCategories() {
     this.categoryService.getCategories().subscribe(
       (response: any) => {
-        this.categories = response;
+        this.categories = response.data;
       },
       (error) => {
         console.log(error.error?.message);

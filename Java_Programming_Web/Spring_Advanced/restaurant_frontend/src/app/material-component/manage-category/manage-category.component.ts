@@ -39,6 +39,25 @@ export class ManageCategoryComponent implements OnInit {
   ngOnInit(): void {
     this.ngxService.start();
     this.tableData();
+    this.loadCategories();
+  }
+
+  loadCategories() {
+    this.categoryService.getCategories().subscribe(
+      (response: any) => {
+        this.dataSource = new MatTableDataSource(response.data);
+      },
+      (error) => {
+        console.error('Error loading categories:', error);
+      }
+    );
+  }
+
+
+  onCategoryUpdated() {
+    console.log("Load updated categories ...");
+    
+    this.loadCategories(); 
   }
 
   tableData() {

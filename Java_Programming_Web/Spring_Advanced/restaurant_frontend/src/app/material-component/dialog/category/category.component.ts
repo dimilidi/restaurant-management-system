@@ -43,7 +43,9 @@ export class CategoryComponent implements OnInit {
       this.action = 'Update';
       this.categoryForm.patchValue(this.dialogData.date);
     }
+
   }
+
 
   handleSubmit() {
     if (this.dialogAction === 'Edit') {
@@ -102,12 +104,13 @@ export class CategoryComponent implements OnInit {
 
     this.categoryService.update(data).subscribe(
       (response: any) => {
-        console.log(response.message);
+        console.log(response);
 
         this.dialogRef.close();
         this.onAddCategory.emit();
-        this.responseMessage = response.message;
+        this.responseMessage = response?.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
+      
       },
       (error) => {
         console.log(error);
