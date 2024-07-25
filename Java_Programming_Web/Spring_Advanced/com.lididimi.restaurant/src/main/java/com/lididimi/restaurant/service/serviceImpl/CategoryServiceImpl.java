@@ -157,4 +157,31 @@ public class CategoryServiceImpl implements CategoryService {
                .body(new ParameterizedTypeReference<>() {});
     }
 
+    @Override
+    public String deleteCategory(Long id) {
+        log.info("Delete new category");
+        if (!jwtFilter.isAdmin()) {
+            log.info("Unauthorized access in Add category - isAdmin {}", jwtFilter.isAdmin());
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
+        }
+        return categoryRestClient
+                .delete()
+                .uri("/categories/delete/{id}", id)
+                .retrieve()
+                .onStatus(status -> status.value() == 404, (request, response) -> {
+                    log.error("Error while updating category {}", response.getStatusCode());
+                    throw new ObjectNotFoundException(RestaurantConstants.CATEGORY_NOT_FOUND);
+                })
+                .onStatus(status -> status.value() == 401, (request, response) -> {
+                    log.error("Error while updating category {}", response.getStatusCode());
+                    throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
+                })
+                .onStatus(status -> status.value() == 500, (request, response) -> {
+                    log.error("Error while updating category {}", response.getStatusCode());
+                    throw new SomethingWentWrongException(RestaurantConstants.SOMETHING_WENT_WRONG);
+                })
+                .body(new ParameterizedTypeReference<>() {});
+    }
+
+
 }

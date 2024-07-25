@@ -104,8 +104,6 @@ public class BillServiceImpl implements BillService {
         }
     }
 
-
-
     private String createAndInsertBill(BillDTO billDTO) {
         String fileName = RestaurantUtils.getUUID();
         billDTO.setUuid(fileName);

@@ -30,7 +30,7 @@ public class SecurityConfig {
                             .requestMatchers("/","/users/login", "/users/register", "/users/forgotPassword","/users/reset-password", "/messages/**").permitAll()
                             .requestMatchers("/users/get", "/users/update",
                                     "/products/add", "/products/", "/products/delete/**", "/products/update",
-                                    "/categories/add", "/categories/update",
+                                    "/categories/add", "/categories/update", "/categories/delete/{id}",
                                     "/bills/delete/**"
                                     ).hasRole("ADMIN")
                             .anyRequest().authenticated()

@@ -1,6 +1,5 @@
 package com.lididimi.restaurant.model.response;
 
-
 public class SuccessResponse {
     private int status;
     private String message;
