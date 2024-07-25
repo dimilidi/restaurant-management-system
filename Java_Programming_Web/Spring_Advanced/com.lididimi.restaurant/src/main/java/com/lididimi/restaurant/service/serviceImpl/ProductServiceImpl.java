@@ -94,22 +94,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
-    @Override
-    public String deleteProduct(Long id) {
-        if (!jwtFilter.isAdmin()) {
-            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
-        }
-
-        Optional<ProductEntity> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
-            productRepository.deleteById(id);
-            return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
-        } else {
-            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
-        }
-    }
-
     @Override
     public String updateStatus(ProductDTO productDTO) {
         if (!jwtFilter.isAdmin()) {
@@ -126,6 +110,24 @@ public class ProductServiceImpl implements ProductService {
             throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
     }
+
+
+    @Override
+    public String deleteProduct(Long id) {
+        if (!jwtFilter.isAdmin()) {
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
+        }
+
+        Optional<ProductEntity> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            productRepository.deleteById(id);
+            return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
+        } else {
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
+        }
+    }
+
+
 
     @Override
     @Transactional
@@ -158,12 +160,19 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateStatusByCategoryId(Long categoryId, StatusNameEnum status) {
         log.info("Updating products to status {} for category ID {}", status, categoryId);
-        Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(categoryId);
-        for (ProductEntity product : productsOpt.get()) {
-            product.setStatus(status);
-            productRepository.save(product);
+        Optional<List<ProductEntity>> optionalProducts = productRepository.getProductByCategory(categoryId);
+
+        if (optionalProducts.isPresent()) {
+            List<ProductEntity> products = optionalProducts.get();
+            for (ProductEntity product : products) {
+                product.setStatus(status);
+                productRepository.save(product);
+            }
+        } else {
+            log.info("No products found for category ID {}", categoryId);
         }
     }
+
 
     private ProductEntity getProductFromMap(ProductAddDTO productAddDTO, boolean isAdd) {
         Long categoryId = productAddDTO.getCategoryId();

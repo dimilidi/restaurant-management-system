@@ -27,7 +27,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorizeRequests ->
                     authorizeRequests
-                            .requestMatchers("/","/users/login", "/users/register", "/users/forgotPassword","/users/reset-password", "/messages/**").permitAll()
+                            .requestMatchers("/","/auth/login", "/auth/register", "/password/forgot","/password/reset", "/messages/**").permitAll()
                             .requestMatchers("/users/get", "/users/update",
                                     "/products/add", "/products/", "/products/delete/**", "/products/update",
                                     "/categories/add", "/categories/update", "/categories/delete/{id}",

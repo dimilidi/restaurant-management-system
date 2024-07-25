@@ -22,7 +22,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
+/*    @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -45,9 +45,9 @@ public class UserController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), "Successfully logged in.", userService.login(userLoginDTO));
 
         return ResponseEntity.ok(response);
-    }
+    }*/
 
-    @GetMapping("/get")
+  /*  @GetMapping("/get")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
         return ResponseEntity.ok(allUsers);
@@ -76,8 +76,8 @@ public class UserController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), userService.changePassword(userChangePasswordDTO), null);
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/forgotPassword")
+*/
+   /* @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPassword(@RequestBody @Valid EmailDTO emailDTO, BindingResult bindingResult) throws MessagingException {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -106,7 +106,7 @@ public class UserController {
 
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), userService.updatePassword(token, newPassword), null);
         return ResponseEntity.ok(response);
-    }
+    }*/
 }
 
 
