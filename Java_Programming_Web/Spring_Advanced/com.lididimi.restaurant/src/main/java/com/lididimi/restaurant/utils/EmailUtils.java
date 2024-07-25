@@ -20,7 +20,7 @@ public class EmailUtils {
     private final UserRepository userRepository;
     private PasswordResetTokenRepository tokenRepository;
 
-    @Value("${smtp_username}")
+  //  @Value("${smtp_username}")
     private String fromAddress;
 
     @Autowired
@@ -31,7 +31,7 @@ public class EmailUtils {
 
     public void sendSimpleMessage(String to, String subject, String text, List<String> list) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromAddress);
+        message.setFrom("tattoochase80@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
@@ -54,7 +54,7 @@ public class EmailUtils {
     public void forgotMail(String to, String subject, String resetUrl) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom(fromAddress);
+        helper.setFrom("tattoochase80@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
         String htmlMsg = "<p><b>To reset your password, click the link below:</b><br>" +

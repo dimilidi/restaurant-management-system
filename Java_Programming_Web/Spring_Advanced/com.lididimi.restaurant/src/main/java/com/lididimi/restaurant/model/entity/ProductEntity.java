@@ -29,7 +29,7 @@ public class ProductEntity implements Serializable {
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)

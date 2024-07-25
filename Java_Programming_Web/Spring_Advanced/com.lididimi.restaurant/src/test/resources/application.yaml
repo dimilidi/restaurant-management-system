@@ -1,8 +1,13 @@
 spring:
+  datasource:
+    url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    username: root
+    password:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect:  org.hibernate.dialect.MySQLDialect
         format_sql: 'TRUE'
     hibernate:
       ddl-auto: update
@@ -17,8 +22,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${smtp_username}
-    password: ${smtp_password}
+    username: tattoochase80@gmail.com
+    password: baqcgodkbzblfysy
     properties:
       mail:
         smtp:

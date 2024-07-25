@@ -43,7 +43,7 @@ public class BillEntity implements Serializable {
     @Column(nullable = false)
     private BigDecimal total;
 
-    @Column(nullable = false, columnDefinition = "json")
+    @Column(nullable = false,columnDefinition = "CLOB")
     private String productDetails;
 
     @Column(nullable = false)

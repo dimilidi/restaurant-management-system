@@ -22,7 +22,7 @@ public class PasswordResetToken {
     private UserEntity user;
 
     @Column(nullable = false)
-    //@Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expiryDate;
 
     public boolean isExpired() {
