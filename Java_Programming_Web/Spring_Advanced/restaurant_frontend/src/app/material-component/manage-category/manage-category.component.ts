@@ -8,6 +8,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/global-constants';
 import { CategoryComponent } from '../dialog/category/category.component';
 import { RouteGuardService } from 'src/app/services/route-guard.service';
+import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 
 @Component({
   selector: 'app-manage-category',
@@ -123,20 +124,44 @@ export class ManageCategoryComponent implements OnInit {
     );
   }
 
+  handleDeleteAction(values: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      message: 'delete ' + values.name + ' Category',
+      confirmation: true,
+    };
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe(
+      (response) => {
+        this.ngxService.start();
+        this.deleteCategory(values.id);
+        dialogRef.close();
+      }
+    );
+  }
 
-handleDeleteAction(id: number) {
-    if (confirm('Are you sure you want to delete this category?')) {
-      this.categoryService.deleteCategory(id).subscribe(
-        (response: any) => {
-          this.responseMessage = response?.message;
-          this.snackbarService.openSnackBar(this.responseMessage, 'success');
-          this.tableData(); // Refresh the table
-        },
-        (error) => {
-          console.error('Error deleting category:', error);
-          this.snackbarService.openSnackBar('Failed to delete category.', GlobalConstants.error);
+  deleteCategory(id: any) {
+    this.categoryService.deleteCategory(id).subscribe(
+      (response: any) => {
+        this.ngxService.stop();
+        this.tableData();
+        this.responseMessage = response?.message;
+        this.snackbarService.openSnackBar(this.responseMessage, 'success');
+      },
+      (error) => {
+        this.ngxService.stop();
+        console.log(error.error?.message);
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
         }
-      );
-    }
+
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
+      }
+    );
   }
 }

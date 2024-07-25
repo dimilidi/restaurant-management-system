@@ -87,6 +87,9 @@ export class ProductComponent implements OnInit {
       description: formData.description,
     };
 
+    console.log("Add product - " + data.description);
+    
+
     this.productService.add(data).subscribe(
       (response: any) => {
         this.dialogRef.close();
@@ -94,37 +97,33 @@ export class ProductComponent implements OnInit {
         this.responseMessage = response.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
       },
-    (error) => {
-      console.log(error);
-      console.log(error.status);
-      
+      (error) => {
+        console.log(error);
+        console.log(error.status);
 
-      if (error.status === 400 ) {
-        const errors = error.error;
-        console.log(errors);
+        if (error.status === 400) {
+          const errors = error.error;
+          console.log(errors);
 
-        Object.keys(errors).forEach((field) => {
-          const control = this.productForm.get(field);
-          if (control) {
-            console.log(errors[field]);
-            control.setErrors({ serverError: errors[field] });
-          } else{
-            this.responseMessage = errors.message;
-          }
-          
-        });
-      } else {
-        this.responseMessage =
-          error.error?.message || GlobalConstants.genericError;   
+          Object.keys(errors).forEach((field) => {
+            const control = this.productForm.get(field);
+            if (control) {
+              console.log(errors[field]);
+              control.setErrors({ serverError: errors[field] });
+            } else {
+              this.responseMessage = errors.message;
+            }
+          });
+        } else {
+          this.responseMessage =
+            error.error?.message || GlobalConstants.genericError;
           this.snackbarService.openSnackBar(
             this.responseMessage,
             GlobalConstants.error
           );
-   
+        }
       }
-      
-    }
-  );
+    );
   }
 
   edit() {
