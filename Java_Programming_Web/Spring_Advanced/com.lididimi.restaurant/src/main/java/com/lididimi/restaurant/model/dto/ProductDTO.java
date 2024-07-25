@@ -21,7 +21,7 @@ public class ProductDTO {
 
     private String categoryName;
 
-    @NotNull
+    @NotNull(message = "Description is mandatory")
     @NotBlank(message = "Description is mandatory")
     @Size(min = 5, max = 50)
     private String description;

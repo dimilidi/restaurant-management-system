@@ -21,7 +21,7 @@ public class ProductAddDTO extends ProductEntity {
     @NotNull(message = "Category id is mandatory")
     private Long categoryId;
 
-    @NotNull
+    @NotNull(message = "Description is mandatory")
     @NotBlank(message = "Description is mandatory")
     @Size(min = 5, max = 50, message = "Description must have min 5 and max 50 characters")
     private String description;

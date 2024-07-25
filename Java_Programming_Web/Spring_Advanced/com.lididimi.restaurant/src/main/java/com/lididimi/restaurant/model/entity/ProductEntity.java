@@ -26,11 +26,9 @@ public class ProductEntity implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @NotNull
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
-    @NotEmpty
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 

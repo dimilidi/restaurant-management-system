@@ -96,10 +96,35 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String addNewCategory(CategoryDTO categoryDTO) {
         log.info("Add new category");
+
+        checkAdminAuthorization("Add new category");
+        return handleAddNewCategory(categoryDTO);
+    }
+
+    @Override
+    public String updateCategory(CategoryDTO categoryDTO) {
+        log.info("Inside Update category {}", categoryDTO);
+
+        checkAdminAuthorization("Update category");
+        return handleCategoryUpdate(categoryDTO);
+    }
+
+    @Override
+    public String deleteCategory(Long id) {
+        log.info("Delete category with ID {}", id);
+
+        checkAdminAuthorization("Delete category");
+        return handleCategoryDeletion(id);
+    }
+
+    private void checkAdminAuthorization(String name) {
         if (!jwtFilter.isAdmin()) {
-            log.info("Unauthorized access in Add category - isAdmin {}", jwtFilter.isAdmin());
+            log.info("Unauthorized access in " + name + "category - isAdmin {}", jwtFilter.isAdmin());
             throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
+    }
+
+    private String handleAddNewCategory(CategoryDTO categoryDTO) {
         return categoryRestClient
                 .post()
                 .uri("/categories/add")
@@ -124,15 +149,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
-    @Override
-    public String updateCategory(CategoryDTO categoryDTO) {
-        log.info("Inside Update category {}", categoryDTO);
-
-         if(!jwtFilter.isAdmin()) {
-            log.info("Unauthorized access in Update category - isAdmin {}", jwtFilter.isAdmin());
-            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
-        }
-
+    private String handleCategoryUpdate(CategoryDTO categoryDTO) {
         return  categoryRestClient
                 .post()
                 .uri("/categories/update")
@@ -154,17 +171,12 @@ public class CategoryServiceImpl implements CategoryService {
                     log.error("Error while updating category {}", response.getStatusCode());
                     throw new SomethingWentWrongException(RestaurantConstants.SOMETHING_WENT_WRONG);
                 })
-               .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {});
     }
 
-    @Override
-    public String deleteCategory(Long id) {
-        log.info("Delete new category");
-        if (!jwtFilter.isAdmin()) {
-            log.info("Unauthorized access in Add category - isAdmin {}", jwtFilter.isAdmin());
-            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
-        }
-        return categoryRestClient
+    private String handleCategoryDeletion(Long id) {
+        deleteProductsByCategory(id);
+         return categoryRestClient
                 .delete()
                 .uri("/categories/delete/{id}", id)
                 .retrieve()
@@ -183,5 +195,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
-
+    private void deleteProductsByCategory(Long id) {
+        productRepository.getProductByCategory(id)
+                .ifPresent(productRepository::deleteAll);
+    }
 }

@@ -49,8 +49,11 @@ public class ProductServiceImpl implements ProductService {
         if (!jwtFilter.isAdmin()) {
             throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
+        ProductEntity productFromMap = getProductFromMap(productAddDTO, false);
 
-        productRepository.save(getProductFromMap(productAddDTO, false));
+        log.info("Add product- Category id {} ",productFromMap.getCategoryId());
+
+        productRepository.save(productFromMap);
         return RestaurantConstants.PRODUCT_ADD_SUCCESS;
     }
 
@@ -148,6 +151,18 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductDTO productDTO = convertToDTO(productById.get());
         return productDTO;
+    }
+
+
+    @Override
+    @Transactional
+    public void updateStatusByCategoryId(Long categoryId, StatusNameEnum status) {
+        log.info("Updating products to status {} for category ID {}", status, categoryId);
+        Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(categoryId);
+        for (ProductEntity product : productsOpt.get()) {
+            product.setStatus(status);
+            productRepository.save(product);
+        }
     }
 
     private ProductEntity getProductFromMap(ProductAddDTO productAddDTO, boolean isAdd) {

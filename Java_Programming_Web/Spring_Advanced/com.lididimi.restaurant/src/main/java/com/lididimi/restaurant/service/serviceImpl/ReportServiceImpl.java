@@ -267,12 +267,6 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-  /*  @Override
-    public List<Map<String, Object>> getTopEmployees() {
-        Pageable limit = PageRequest.of(0, 5);
-        return billRepository.findTopEmployees(limit).orElse(Collections.emptyList());
-    }*/
-
     @Override
     public List<TopEmployeeDTO> getTopEmployees() {
         Pageable limit = PageRequest.of(0, 5);
