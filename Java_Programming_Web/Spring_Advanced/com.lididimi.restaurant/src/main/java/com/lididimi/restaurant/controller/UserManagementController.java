@@ -2,6 +2,7 @@ package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
 import com.lididimi.restaurant.model.dto.UserDTO;
+import com.lididimi.restaurant.model.dto.UserUpdateStatusDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.UserService;
 import jakarta.validation.Valid;
@@ -29,14 +30,14 @@ public class UserManagementController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserUpdateStatusDTO userUpdateStatusDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        String responseMessage = userService.update(userDTO);
+        String responseMessage = userService.update(userUpdateStatusDTO);
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), responseMessage));
     }
 

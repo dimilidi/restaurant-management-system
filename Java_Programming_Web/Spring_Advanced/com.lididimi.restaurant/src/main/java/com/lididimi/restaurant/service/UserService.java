@@ -14,7 +14,7 @@ public interface UserService {
 
     List<UserDTO> getAllUsers();
 
-    String update(UserDTO userDTO);
+    String update(UserUpdateStatusDTO userUpdateStatusDTO);
 
     String changePassword(UserChangePasswordDTO userChangePasswordDTO);
 

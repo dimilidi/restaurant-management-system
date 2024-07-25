@@ -136,12 +136,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String update(UserDTO userDTO) {
+    public String update(UserUpdateStatusDTO updateStatusDTO) {
         if (jwtFilter.isAdmin()) {
-            Optional<UserEntity> optionalUser = userRepository.findById(userDTO.getId());
+            Optional<UserEntity> optionalUser = userRepository.findById(updateStatusDTO.getId());
             if (optionalUser.isPresent()) {
-                StatusNameEnum status = userDTO.getStatus();
-                userRepository.updateStatus(status, userDTO.getId());
+                StatusNameEnum status = updateStatusDTO.getStatus();
+                userRepository.updateStatus(status, updateStatusDTO.getId());
                 sendMailToAllAdmins(status, optionalUser.get().getEmail(), userRepository.getAllAdmins(UserRoleNameEnum.ADMIN));
                 return RestaurantConstants.USER_UPDATE_SUCCESS;
             } else {

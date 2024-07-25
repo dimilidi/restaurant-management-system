@@ -1,10 +1,8 @@
 package com.lididimi.restaurant.model.dto;
 
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
