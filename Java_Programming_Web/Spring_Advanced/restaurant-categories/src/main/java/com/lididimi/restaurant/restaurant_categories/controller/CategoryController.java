@@ -73,4 +73,12 @@ public class CategoryController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, categoryDTO);
         return ResponseEntity.ok(response);
     }
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id) {
+        String responseMessage = categoryService.deleteCategory(id);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
+        return ResponseEntity.ok(response.getMessage());
+    }
 }

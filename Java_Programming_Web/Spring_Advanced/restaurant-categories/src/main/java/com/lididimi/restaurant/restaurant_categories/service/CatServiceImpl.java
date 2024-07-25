@@ -12,17 +12,13 @@ import org.modelmapper.ModelMapper;
 
 
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class CatServiceImpl implements CategoryService {
-//private final JwtFilter jwtFilter;
 
 
 
@@ -35,6 +31,28 @@ public class CatServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryDTO> getAllCategories(String filterValue) {
+        return categoryRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoryEntity getById(Long id) {
+        Optional<CategoryEntity> categoryOptional = categoryRepository.findById(id);
+        if(categoryOptional.isEmpty()) {
+            log.error("Category getById not found {}", id);
+            throw new ObjectNotFoundException(CategoryConstants.CATEGORY_NOT_FOUND);
+        }
+        return categoryOptional.get();
+    }
+
+    @Override
+    public Long getCategoriesCount() {
+        return categoryRepository.count() < 0 ?  0 : categoryRepository.count();
+    }
+
+    @Override
     public String addNewCategory(CategoryDTO categoryDTO) {
         log.info("addNewCategory {}", categoryDTO);
 
@@ -44,18 +62,6 @@ public class CatServiceImpl implements CategoryService {
 
         categoryRepository.save(getCategoryFromMap(categoryDTO, false));
         return CategoryConstants.CATEGORY_ADD_SUCCESS;
-    }
-
-    @Override
-    public List<CategoryDTO> getAllCategories(String filterValue) {
-       List<CategoryEntity> categories = categoryRepository.findAll();
-               /*List<CategoryEntity> categories = (filterValue != null && filterValue.equalsIgnoreCase("true"))
-                        ? categoryRepository.findByIdIn(ids)
-                        : categoryRepository.findAll();*/
-
-        return categories.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -81,34 +87,15 @@ public class CatServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryEntity getById(Long id) {
-        Optional<CategoryEntity> categoryOptional = categoryRepository.findById(id);
-        if(categoryOptional.isEmpty()) {
-            log.error("Category getById not found {}", id);
+    public String deleteCategory(Long id) {
+        log.info("Inside Delete Category {}", id);
+        if (!categoryRepository.existsById(id)) {
             throw new ObjectNotFoundException(CategoryConstants.CATEGORY_NOT_FOUND);
         }
-        return categoryOptional.get();
+        categoryRepository.deleteById(id);
+        return CategoryConstants.CATEGORY_DELETE_SUCCESS;
     }
 
-    @Override
-    public Long getCategoriesCount() {
-        return categoryRepository.count() < 0 ?  0 : categoryRepository.count();
-    }
-
-    @Override
-    public List<CategoryDTO> getCategoriesByIds(List<Long> ids) {
-        List<CategoryEntity> categories = categoryRepository.findAllById(ids);
-        List list = List.of(1l, 7l);
-       // List<CategoryEntity> categories = categoryRepository.findByIdIn(list);
-        log.info("getCategoriesByIds {}", categories);
-    var result = categories.stream()
-                .map(category -> modelMapper.map(category, CategoryDTO.class))
-                .collect(Collectors.toList());
-
-    log.info("getCategoriesByIds {}", result);
-
-    return result;
-    }
 
     private CategoryEntity getCategoryFromMap(CategoryDTO categoryDTO, Boolean isAdd) {
         CategoryEntity categoryEntity = new CategoryEntity();

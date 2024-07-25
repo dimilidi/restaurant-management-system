@@ -8,5 +8,5 @@ public class CategoryConstants {
     public static final String CATEGORY_NOT_FOUND = String.format("Category not found.");
     public static final String CATEGORY_UPDATE_SUCCESS = String.format("Category updated successfully.");
     public static final String ALREADY_EXISTS = String.format("Category name already exists");
-
+    public static final String CATEGORY_DELETE_SUCCESS = String.format("Category deleted successfully");
 }
