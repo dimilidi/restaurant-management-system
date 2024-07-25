@@ -65,7 +65,7 @@ export class CategoryComponent implements OnInit {
       (response: any) => {
         this.dialogRef.close();
         this.onAddCategory.emit();
-        this.responseMessage = response.message;
+        this.responseMessage = response?.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
       },
       (error) => {
@@ -86,11 +86,11 @@ export class CategoryComponent implements OnInit {
         } else {
           this.responseMessage =
             error.error?.message || GlobalConstants.genericError;
-          this.snackbarService.openSnackBar(
-            this.responseMessage,
-            GlobalConstants.error
-          );
         }
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
     );
   }
@@ -110,7 +110,6 @@ export class CategoryComponent implements OnInit {
         this.onAddCategory.emit();
         this.responseMessage = response?.message;
         this.snackbarService.openSnackBar(this.responseMessage, 'success');
-      
       },
       (error) => {
         console.log(error);
@@ -130,11 +129,12 @@ export class CategoryComponent implements OnInit {
         } else {
           this.responseMessage =
             error.error?.message || GlobalConstants.genericError;
-          this.snackbarService.openSnackBar(
-            this.responseMessage,
-            GlobalConstants.error
-          );
+       
         }
+        this.snackbarService.openSnackBar(
+          this.responseMessage,
+          GlobalConstants.error
+        );
       }
     );
   }

@@ -18,7 +18,7 @@ export class CategoryService {
   }
 
   update(data: any) {
-    return this.httpClient.put(this.url + '/categories/update', data, {
+    return this.httpClient.post(this.url + '/categories/update', data, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
@@ -28,7 +28,7 @@ export class CategoryService {
   }
 
   getCategoriesWithActiveProducts() {
-    return this.httpClient.get(this.url + '/categories/getFiltered');
+    return this.httpClient.get(this.url + '/categories/filter');
   }
 
   getCategoryById(id: number): Observable<any> {
@@ -37,5 +37,9 @@ export class CategoryService {
 
   getFilteredCategories() {
     return this.httpClient.get(this.url + '/categories/get?filterValue=true');
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.url}/categories/delete/${id}`);
   }
 }

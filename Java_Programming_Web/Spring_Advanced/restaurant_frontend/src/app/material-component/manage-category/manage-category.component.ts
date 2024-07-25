@@ -122,4 +122,21 @@ export class ManageCategoryComponent implements OnInit {
       }
     );
   }
+
+
+handleDeleteAction(id: number) {
+    if (confirm('Are you sure you want to delete this category?')) {
+      this.categoryService.deleteCategory(id).subscribe(
+        (response: any) => {
+          this.responseMessage = response?.message;
+          this.snackbarService.openSnackBar(this.responseMessage, 'success');
+          this.tableData(); // Refresh the table
+        },
+        (error) => {
+          console.error('Error deleting category:', error);
+          this.snackbarService.openSnackBar('Failed to delete category.', GlobalConstants.error);
+        }
+      );
+    }
+  }
 }
