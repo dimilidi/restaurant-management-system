@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    username: root
+    password:
+  jpa:
+    properties:
+      hibernate:
+        dialect:  org.hibernate.dialect.MySQLDialect
+        format_sql: 'TRUE'
+    hibernate:
+      ddl-auto: update
+    open-in-view: 'false'
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: 'true'
+  sql:
+    init:
+      mode: never
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tattoochase80@gmail.com
+    password: baqcgodkbzblfysy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor: TRACE
+        SQL: DEBUG
+      nodeValue: WARN
+    blog: WARN
+server:
+  port: 8080
+
+categories:
+  api:
+    baseUrl: "http://localhost:8081"

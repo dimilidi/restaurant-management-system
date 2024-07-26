@@ -1,0 +1,44 @@
+.mat-mdc-form-field {
+    text-align: center;
+}
+
+mat-select-trigger {
+    height: 55px;
+    font-size: 1.15em;
+    color: white;
+
+}
+
+:host ::ng-deep .mat-mdc-select-arrow  svg{
+    fill: pink !important;
+  }
+
+:host ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__leading {
+    border-color: transparent !important;
+
+}
+:host ::ng-deep .mdc-text-field--outlined .mdc-notched__notch {
+    border-color: transparent !important;
+
+}
+:host ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-color: transparent !important;
+
+}
+
+:host ::ng-deep .mat-mdc-select-enabled-arrow {
+    color: white;
+}
+
+.flag {
+    margin-right: 8px;
+}
+
+
+  
+
+
+
+
+  
+

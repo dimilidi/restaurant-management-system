@@ -1,0 +1,30 @@
+<div class="bg-image"></div>
+<app-best-seller></app-best-seller>
+
+<div class="wrapper sticky">
+  <nav class="navbar-fixed-top">
+    <a href="#" class="logo">
+      <div class="logo">
+        <mat-icon class="logo-icon">storefront</mat-icon>
+        <span class="logo-pipe">|</span>
+        <span class="logo-heading" fxShow="false" fxShow.gt-xs> RMS </span>
+      </div>
+    </a>
+    <!-- 
+      <mat-icon>storefront</mat-icon> {{ 'nav.logo' | translate }}
+     -->
+    <ul>
+      <li>
+        <a (click)="handleLoginAction()">{{ 'nav.login' | translate }}</a>
+        <a (click)="handleRegisterAction()">{{ 'nav.register' | translate }}</a>
+        <a (click)="handleForgotPasswordAction()">{{ 'nav.forgotPassword' | translate }}</a>
+      </li>
+      <li class="translation-switcher-wrapper">
+        <app-translation-switcher></app-translation-switcher>
+      </li>
+    </ul>
+  </nav>
+</div>
+<div class="footer" id="signup">
+  <h3>2024 &copy; LiDDim</h3>
+</div>

@@ -1,0 +1,21 @@
+.mat-toolbar {
+    margin: 24px;
+    margin-bottom: 10px;
+    width: auto;
+}
+
+mat-form-field {
+    padding: 5px;
+}
+
+.register{
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.register a {
+    color: var(--themecolor-alt)
+}

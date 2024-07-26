@@ -1,0 +1,103 @@
+/*
+Template Name: Material Pro Admin
+Author: Wrappixel
+Email: niravjoshi87@gmail.com
+File: scss
+*/
+
+/*============================================================== 
+ For all pages 
+ ============================================================== */
+
+/*******************
+ Main container
+*******************/
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .mat-drawer-container {
+    background: var(--bodycolor); 
+  }
+  
+  html .page-wrapper {
+    height: calc(100vh - 64px);
+  }
+  
+  html .page-wrapper .page-content {
+    padding: 15px;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  /*******************
+   Chartist chart css
+  ******************/
+  .barchrt .ct-series-a .ct-bar {
+    stroke: var(--success);
+  }
+  
+  .barchrt .ct-series-b .ct-bar {
+    stroke: var(--info) 
+  }
+  
+  .piechart .ct-series-a .ct-slice-donut {
+    stroke: #17a2b8; /* Replace with actual $info value */
+  }
+  
+  .piechart .ct-series-b .ct-slice-donut {
+    stroke: #28a745; /* Replace with actual $success value */
+  }
+  
+  .piechart .ct-series-c .ct-slice-donut {
+    stroke: #6f42c1; /* Replace with actual $purple value */
+  }
+  
+  .piechart .ct-series-d .ct-slice-donut {
+    stroke: #f8f9fa; /* Replace with actual $light value */
+  }
+  
+  .piechart .ct-series-e .ct-slice-donut {
+    stroke: #ffc107; /* Replace with actual $warning value */
+  }
+  
+  /*******************/
+  /*social-profile-first*/
+  /*******************/
+  .little-profile .pro-img,
+  .little-profile .pro-img:first-child {
+    margin-top: -110px;
+    margin-bottom: 20px;
+  }
+  
+  .little-profile .pro-img img {
+    width: 128px;
+    height: 128px;
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 100%;
+  }
+  
+  .button-row button {
+    margin-bottom: 5px;
+    margin-right: 5px;
+  }
+  
+  .pl-5 {
+    padding-left: 5px;
+  }
+  
+  .pr-5 {
+    padding-right: 5px;
+  }
+  

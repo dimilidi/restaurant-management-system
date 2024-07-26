@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "logo": "Restaurant-Management-System",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "forgotPassword": "Passwort vergessen"
+  },
+  "bestSeller": {
+    "title": "Bestseller",
+    "pizza": {
+      "title": "Pizza",
+      "description": "Pizza ist ein italienisches Gericht, das aus einem normalerweise runden, flachen Boden aus Hefeteig besteht, der mit Tomaten, Käse und oft verschiedenen anderen Zutaten belegt und dann bei hoher Temperatur, traditionell in einem Holzofen, gebacken wird. Eine kleine Pizza wird manchmal als Pizzetta bezeichnet."
+    },
+    "biryani": {
+      "title": "Biryani",
+      "description": "Biryani ist ein gemischtes Reisgericht. Es wird mit indischen Gewürzen, Reis und Fleisch, normalerweise Hähnchen, Fisch und manchmal auch mit Eiern oder Gemüse wie Kartoffeln in bestimmten regionalen Variationen zubereitet."
+    },
+    "pasta": {
+      "title": "Pasta",
+      "description": "Pasta ist eine Art von Lebensmitteln, die typischerweise aus einem ungesäuerten Teig aus Weizenmehl, gemischt mit Wasser oder Eiern, hergestellt wird und zu Blättern oder anderen Formen geformt und dann durch Kochen oder Backen zubereitet wird."
+    },
+    "chocolateCake": {
+      "title": "Schokoladenkuchen",
+      "description": "Schokoladenkuchen ist ein beliebtes Dessert, das die Elemente eines Schokoladenkuchens und eines Soufflés kombiniert. Sein Name stammt von der flüssigen Schokoladenzentrale des Desserts und ist auch bekannt als Moelleux au chocolat, Lava-Kuchen oder einfach Lava-Kuchen."
+    },
+    "callToAction": "Sei Teil unseres Restaurant!"
+  }
+}

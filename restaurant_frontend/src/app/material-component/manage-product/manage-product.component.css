@@ -1,0 +1,40 @@
+
+mat-card {
+    padding: 30px;
+}
+
+
+.header {
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+}
+
+.primary {
+    color: var(--themecolor-alt);
+  }
+
+.heading {
+padding: 5px;
+}
+
+.float-right {
+    margin-left: auto;
+}
+
+
+table {
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,60 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+    <span>View Bill</span>
+    <button class="mat-dialog-close" mat-icon-button mat-dialog-close>
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+  <table id="customers">
+    <tr>
+      <td><b>Name:</b> {{ data?.name }}</td>
+      <td><b>Email:</b> {{ data?.email }}</td>
+    </tr>
+    <tr>
+      <td><b>Contact Number:</b> {{ data?.contactNumber }}</td>
+      <td><b>Payment Method:</b> {{ data?.paymentMethod }}</td>
+    </tr>
+    <tr>
+      <td><b>Created Date:</b> {{ data?.createdDate | date:'short' }}</td>
+      <td><b>Created By:</b> {{ data?.createdBy }}</td>
+    </tr>
+  </table>
+
+  <div class="responsive_table">
+    <br />
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th class="center" mat-header-cell *matHeaderCellDef>Product Name</th>
+        <td class="center" mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th class="center" mat-header-cell *matHeaderCellDef>Category</th>
+        <td class="center" mat-cell *matCellDef="let element">{{ element.category }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th class="center" mat-header-cell *matHeaderCellDef>Price</th>
+        <td class="center" mat-cell *matCellDef="let element">{{ element.price | currency:'EUR'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th class="center" mat-header-cell *matHeaderCellDef>Quantity</th>
+        <td class="center" mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th class="center" mat-header-cell *matHeaderCellDef>Total</th>
+        <td class="center" mat-cell *matCellDef="let element">{{ element.total | currency:'EUR' }}</td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</mat-dialog-content>

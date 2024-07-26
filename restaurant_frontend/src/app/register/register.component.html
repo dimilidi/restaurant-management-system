@@ -1,0 +1,139 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+    <span>Register</span>
+    <button mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="registerForm">
+    <div fxFlex fxLayout="column">
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error>
+          <span *ngIf="registerForm.controls.name.errors?.required">This field is mandatory.</span>
+          <span *ngIf="registerForm.controls.name.errors?.pattern">This field is invalid.</span>
+          <span  *ngIf="registerForm.controls.name.hasError('serverError')">{{ registerForm.controls.name.errors?.serverError }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Contact Number</mat-label>
+        <input matInput formControlName="contactNumber" required />
+        <mat-error
+          *ngIf="
+            registerForm.controls.contactNumber.touched &&
+            registerForm.controls.contactNumber.invalid
+          "
+        >
+          <span *ngIf="registerForm.controls.contactNumber.errors?.required">This field is mandatory.</span>
+          <span *ngIf="registerForm.controls.contactNumber.errors?.pattern">This field is invalid.</span>
+          <span  *ngIf="registerForm.controls.contactNumber.hasError('serverError')">{{ registerForm.controls.contactNumber.errors?.serverError }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required />
+        <mat-error
+          *ngIf="
+            registerForm.controls.email.touched &&
+            registerForm.controls.email.invalid
+          "
+        >
+          <span *ngIf="registerForm.controls.email.errors?.required">This field is mandatory.</span>
+          <span *ngIf="registerForm.controls.email.errors?.pattern">This field is invalid.</span>
+          <span  *ngIf="registerForm.controls.email.hasError('serverError')">{{ registerForm.controls.email.errors?.serverError }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="password ? 'password' : 'text'"
+          formControlName="password"
+          required
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="password = !password"
+          [attr.aria-label]="password ? 'Show password' : 'Hide password'"
+          [attr.aria-pressed]="!password"
+        >
+          <mat-icon>{{ password ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="
+            registerForm.controls.password.touched &&
+            registerForm.controls.password.invalid
+          "
+        >
+          <span *ngIf="registerForm.controls.password.errors?.required">This field is mandatory.</span>
+          <span  *ngIf="registerForm.controls.password.hasError('serverError')">{{ registerForm.controls.password.errors?.serverError }}</span>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Confirm Password</mat-label>
+        <input
+          matInput
+          [type]="confirmPassword ? 'password' : 'text'"
+          formControlName="confirmPassword"
+          required
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="confirmPassword = !confirmPassword"
+          [attr.aria-label]="
+            confirmPassword ? 'Show confirmPassword' : 'Hide confirmPassword'
+          "
+          [attr.aria-pressed]="!confirmPassword"
+        >
+          <mat-icon>{{
+            confirmPassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="
+            registerForm.controls.confirmPassword.touched &&
+            registerForm.controls.confirmPassword.invalid
+          "
+        >
+          <span *ngIf="registerForm.controls.confirmPassword.errors?.required">This field is mandatory.</span>
+          <span  *ngIf="registerForm.controls.confirmPassword.hasError('serverError')">{{ registerForm.controls.confirmPassword.errors?.serverError }}</span>
+        </mat-error>
+        <mat-hint
+          *ngIf="
+            passwordMismatch && registerForm.controls.confirmPassword.touched
+          "
+        >
+          New password and confirm password do not match.
+        </mat-hint>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    (click)="handleSubmit()"
+    [disabled]="passwordMismatch || !(registerForm.valid || registerForm.dirty)"
+  >
+    <mat-icon>save</mat-icon>Register
+  </button>
+  <button mat-raised-button color="warn" mat-dialog-close>
+    <mat-icon>cancel</mat-icon>Close
+  </button>
+</mat-dialog-actions>
+

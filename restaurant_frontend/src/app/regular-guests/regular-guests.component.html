@@ -1,0 +1,51 @@
+<body>
+  <mat-card class="row">
+    <mat-icon>grade</mat-icon>
+    <span class="heading">Regular Guests</span>
+  </mat-card>
+
+  <hr />
+  <mat-card>
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input />
+    </mat-form-field>
+  </mat-card>
+  <hr />
+
+  <div class="responsive_table">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let guest">{{ guest.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let guest">{{ guest.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="topProducts">
+        <th mat-header-cell *matHeaderCellDef>Top Products</th>
+        <td mat-cell *matCellDef="let guest">
+          <ul>
+            <li *ngFor="let product of guest.topProducts">
+              <mat-icon>check</mat-icon>
+              <span>
+                {{ product }}
+              </span>
+            </li>
+          </ul>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="billCount">
+        <th mat-header-cell *matHeaderCellDef>BillCount</th>
+        <td mat-cell *matCellDef="let guest">{{ guest.billCount }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</body>

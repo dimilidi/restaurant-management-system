@@ -1,0 +1,40 @@
+
+.float-right {
+    margin-left: auto;
+}
+
+
+mat-card {
+    padding: 20px; 
+}
+
+.header {
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+}
+
+.primary {
+    color: var(--themecolor-alt);
+  }
+
+.heading {
+padding: 5px;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+   text-align: center;
+}
+
+::ng-deep .highlight {
+    color: white;
+    background: #673ab7;
+}
+

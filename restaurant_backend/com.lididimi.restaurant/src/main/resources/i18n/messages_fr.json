@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "logo": "Système de Gestion de Restaurant",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié"
+  },
+  "bestSeller": {
+    "title": "Meilleur Vendeur",
+    "pizza": {
+      "title": "Pizza",
+      "description": "La pizza est un plat italien composé d'une base ronde et aplatie de pâte à base de blé levé garnie de tomates, de fromage et souvent de divers autres ingrédients, puis cuite à haute température, traditionnellement dans un four à bois. Une petite pizza est parfois appelée pizzetta."
+    },
+    "biryani": {
+      "title": "Biryani",
+      "description": "Le biryani est un plat de riz mélangé. Il est composé d'épices indiennes, de riz et de viande, généralement de poulet, de poisson et parfois, en plus, d'œufs ou de légumes tels que des pommes de terre dans certaines variétés régionales."
+    },
+    "pasta": {
+      "title": "Pâtes",
+      "description": "Les pâtes sont un type d'aliment généralement fabriqué à partir d'une pâte non levée de farine de blé mélangée avec de l'eau ou des œufs, et formée en feuilles ou en d'autres formes, puis cuite par ébullition ou cuisson."
+    },
+    "chocolateCake": {
+      "title": "Gâteau au chocolat fondant",
+      "description": "Le gâteau au chocolat fondant est un dessert populaire qui combine les éléments d'un gâteau au chocolat et d'un soufflé. Son nom vient du centre de chocolat liquide du dessert, et il est également connu sous le nom de moelleux au chocolat, de gâteau au chocolat lava ou simplement de gâteau lava."
+    },
+    "callToAction": "Faites partie de notre restaurant!"
+  }
+}

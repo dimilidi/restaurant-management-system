@@ -1,0 +1,37 @@
+.float-right {
+    margin-left: auto;
+}
+
+mat-card {
+    padding: 20px;
+}
+
+.header {
+    height: 55px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+}
+
+.primary {
+    color: var(--themecolor-alt);
+  }
+
+.heading {
+padding: 5px;
+}
+
+table {
+    width: 100%;
+}
+
+table th, td {
+    text-align: center;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,61 @@
+<body>
+  <mat-card>
+    <mat-icon>dashboard</mat-icon>
+    <span class="heading">Dashboard</span>
+  </mat-card>
+
+  <div class="row">
+    <div class="column">
+      <div class="card">
+        <div class="container primary">
+          <mat-icon>category</mat-icon>
+          <h2 class="title">Categories</h2>
+          <h1 class="title">{{ data?.category }}</h1>
+          <p>
+            <button class="button" [routerLink]="['/restaurant/categories']">
+              View Categories
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <div class="container primary">
+          <mat-icon>inventory_2</mat-icon>
+          <h2 class="title">Products</h2>
+          <h1 class="title primary">{{ data?.product }}</h1>
+          <p>
+            <button class="button" [routerLink]="['/restaurant/products']">
+              View Products
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <div class="container primary">
+          <mat-icon>backup_table</mat-icon>
+          <h2 class="title">Bills</h2>
+          <h1 class="title">{{ data?.bill }}</h1>
+          <p>
+            <button class="button" [routerLink]="['/restaurant/bills']">
+              View Bills
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <app-best-seller-chart></app-best-seller-chart>
+    <app-top-employee-chart></app-top-employee-chart>
+  </div>
+  <br>
+
+  <app-regular-guests></app-regular-guests>
+</body>

@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "logo": "Restaurant-Management-System",
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+  },
+  "bestSeller": {
+    "title": "Best Seller",
+    "pizza": {
+      "title": "Pizza",
+      "description": "Pizza is an Italian dish consisting of a usually round, flattened base of leavened wheat-based dough topped with tomatoes, cheese, and often various other ingredients, which is then baked at a high temperature, traditionally in a wood-fired oven. A small pizza is sometimes called a pizzetta."
+    },
+    "biryani": {
+      "title": "Biryani",
+      "description": "Biryani is a mixed rice dish. It is made with Indian spices, rice, and meat usually that of chicken, fish, and sometimes, in addition, eggs or vegetables such as potatoes in certain regional varieties."
+    },
+    "pasta": {
+      "title": "Pasta",
+      "description": "Pasta is a type of food typically made from an unleavened dough of wheat flour mixed with water or eggs, and formed into sheets or other shapes, then cooked by boiling or baking."
+    },
+    "chocolateCake": {
+      "title": "Molten chocolate cake",
+      "description": "Molten chocolate cake is a popular dessert that combines the elements of a chocolate cake and a soufflé. Its name derives from the dessert's liquid chocolate center, and it is also known as chocolate moelleux, chocolate lava cake, or simply lava cake."
+    },
+    "callToAction": "Be Part Of Our Cafe!"
+  }
+}
