@@ -15,7 +15,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    public DashboardController(DashboardServiceImpl dashboardServiceImpl, DashboardService dashboardService) {
+    public DashboardController(DashboardService dashboardService) {
         this.dashboardService = dashboardService;
     }
 

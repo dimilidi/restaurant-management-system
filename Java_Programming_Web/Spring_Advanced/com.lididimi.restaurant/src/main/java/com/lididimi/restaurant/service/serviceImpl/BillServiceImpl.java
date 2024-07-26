@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+
+
 @Slf4j
 @Service
 public class BillServiceImpl implements BillService {
@@ -113,7 +115,7 @@ public class BillServiceImpl implements BillService {
         return fileName;
     }
 
-    private Document initializeDocument(String fileName) throws Exception {
+    Document initializeDocument(String fileName) throws Exception {
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
         document.open();
@@ -222,7 +224,7 @@ public class BillServiceImpl implements BillService {
         }
     }
 
-    private byte[] getByteArray(String filePath) throws IOException {
+    byte[] getByteArray(String filePath) throws IOException {
         File initialFile = new File(filePath);
 
         InputStream targetStream = new FileInputStream(initialFile);

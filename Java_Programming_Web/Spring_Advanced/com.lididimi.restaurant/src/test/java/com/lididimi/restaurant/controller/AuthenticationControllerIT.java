@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.model.dto.UserLoginDTO;
 import com.lididimi.restaurant.model.dto.UserRegisterDTO;
 import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.service.UserService;
+import com.lididimi.restaurant.service.AuthService;
+import com.lididimi.restaurant.service.serviceImpl.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,12 @@ public class AuthenticationControllerIT {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private UserService userService;
+    private AuthService authService;
 
     private UserRegisterDTO userRegisterDTO;
     private UserLoginDTO userLoginDTO;
     private UserDTO userDTO;
+
 
     @BeforeEach
     public void setUp() {
@@ -58,7 +60,7 @@ public class AuthenticationControllerIT {
         userRegisterDTO.setContactNumber("0123456789");
         userRegisterDTO.setConfirmPassword("password123");
 
-        when(userService.register(any(UserRegisterDTO.class))).thenReturn(userDTO);
+        when(authService.register(any(UserRegisterDTO.class))).thenReturn(userDTO);
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +85,7 @@ public class AuthenticationControllerIT {
     @Test
     public void testLogin_Success() throws Exception {
         String token = "mocked-jwt-token";
-        when(userService.login(any(UserLoginDTO.class))).thenReturn(token);
+        when(authService.login(any(UserLoginDTO.class))).thenReturn(token);
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

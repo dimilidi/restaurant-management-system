@@ -60,66 +60,6 @@ public class UserServiceImpl implements UserService {
         this.request = request;
     }
 
-    @Transactional
-    @Override
-    public UserDTO register(UserRegisterDTO userRegisterDTO) {
-        Optional<UserEntity> userOptional = userRepository.findByEmail(userRegisterDTO.getEmail());
-
-        if (userOptional.isPresent()) {
-            throw new AlreadyExistsException(RestaurantConstants.EMAIL_EXISTS);
-        }
-
-        Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
-        UserEntity userEntity = modelMapper.map(userRegisterDTO, UserEntity.class);
-        userEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
-        userEntity.setStatus(StatusNameEnum.ACTIVE);
-
-        if (optionalRole.isPresent()) {
-            RoleEntity userRole = optionalRole.get();
-            userEntity.setRoles(List.of(userRole));
-            roleRepository.save(userRole);
-        }
-
-        userRepository.save(userEntity);
-        return modelMapper.map(userEntity, UserDTO.class);
-    }
-
-    @Override
-    public String login(UserLoginDTO userLoginDTO) {
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
-            );
-
-            if (auth.isAuthenticated()) {
-                log.info("Authentication Success");
-                UserEntity userEntity = restaurantUserDetailsService.getUserDetails();
-                if (StatusNameEnum.ACTIVE.equals(userEntity.getStatus())) {
-                    log.info("Active User");
-                    List<String> roles = userEntity.getRoles().stream()
-                            .map(roleEntity -> roleEntity.getName().name())
-                            .collect(Collectors.toList());
-
-                    String token = jwtUtils.generateToken(userEntity.getEmail(), userEntity.getName(), roles);
-
-                    return token;
-                } else {
-                    log.info("Wait for admin approval");
-                    throw new BadCredentialsException(RestaurantConstants.UNAPPROVED);
-                }
-            } else {
-                log.error("Authentication Failed");
-                throw new BadCredentialsException(RestaurantConstants.BAD_CREDENTIALS);
-            }
-        } catch (BadCredentialsException e) {
-            log.error("Invalid credentials: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Unexpected error during authentication: {}", e.getMessage());
-            throw new BadCredentialsException(RestaurantConstants.BAD_CREDENTIALS);
-        }
-    }
-
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -133,7 +73,6 @@ public class UserServiceImpl implements UserService {
             throw new BadCredentialsException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
     }
-
 
     @Override
     public String update(UserUpdateStatusDTO updateStatusDTO) {
@@ -151,7 +90,6 @@ public class UserServiceImpl implements UserService {
             throw new BadCredentialsException(RestaurantConstants.UNAUTHORIZED_ACCESS);
         }
     }
-
 
     @Override
     public String changePassword(UserChangePasswordDTO userChangePasswordDTO) {
@@ -171,46 +109,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public String forgotPassword(EmailDTO emailDTO) throws MessagingException {
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(emailDTO.getEmail());
-        if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
-            UserEntity user = optionalUser.get();
-            emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
-            return RestaurantConstants.CHECK_EMAIL;
-        } else {
-            throw new ObjectNotFoundException(RestaurantConstants.EMAIL_NOT_FOUND);
-        }
-    }
-
-    @Override
-    public boolean validatePasswordResetToken(String token) {
-        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
-        if (tokenOpt.isPresent()) {
-            PasswordResetToken resetToken = tokenOpt.get();
-            return !resetToken.isExpired();
-        }
-        return false;
-    }
-
-    @Override
-    public String updatePassword(String token, String newPassword) {
-        Optional<PasswordResetToken> optionalToken = tokenRepository.findByToken(token);
-        if (optionalToken.isPresent()) {
-            PasswordResetToken resetToken = optionalToken.get();
-            UserEntity user = resetToken.getUser();
-            if (resetToken.isExpired()) {
-                throw new BadCredentialsException(RestaurantConstants.TOKEN_EXPIRED);
-            }
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            return RestaurantConstants.PASSWORD_UPDATE_SUCCESS;
-        } else {
-            throw new BadCredentialsException(RestaurantConstants.TOKEN_EXPIRED);
-        }
-    }
-
-
     private UserDTO convertToDto(UserEntity user) {
         return modelMapper.map(user, UserDTO.class);
     }
@@ -226,22 +124,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-    private String passwordResetToken(String email) throws MessagingException {
-        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
-        String resetUrl = "";
-        if (userOpt.isPresent()) {
-            UserEntity user = userOpt.get();
-            String token = UUID.randomUUID().toString();
-            PasswordResetToken resetToken = new PasswordResetToken();
-            resetToken.setToken(token);
-            resetToken.setUser(user);
-            resetToken.setExpiryDate(new Date(System.currentTimeMillis() + 3600000)); // 1 hour expiry
-            tokenRepository.save(resetToken);
-            resetUrl = RestaurantConstants.TOKEN_RESET_URL_BASE + token;
-        }
-        return resetUrl;
-    }
 }
 
 

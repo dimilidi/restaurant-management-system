@@ -11,7 +11,6 @@ public class CategoryDTO {
     private Long id;
 
     @NotNull(message = "Name is mandatory")
-    @NotBlank(message = "Name is mandatory")
     @Size(min = 2, max = 20, message = "Category name must have min 2 and max 20 characters")
     private String name;
 }

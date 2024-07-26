@@ -129,14 +129,15 @@ public class CategoryControllerIT {
         categoryDTO.setName(""); // Invalid name
 
         Map<String, String> errors = new HashMap<>();
-        errors.put("name", "Name is required");
+        errors.put("name", "Category name must have min 2 and max 20 characters");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/categories/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Name is mandatory"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Category name must have min 2 and max 20 characters"));
     }
+
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -159,13 +160,13 @@ public class CategoryControllerIT {
         categoryDTO.setName(""); // Invalid name
 
         Map<String, String> errors = new HashMap<>();
-        errors.put("name", "Name is required");
+        errors.put("name", "Category name must have min 2 and max 20 characters");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/categories/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Name is mandatory"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Category name must have min 2 and max 20 characters"));
     }
 
     @Test

@@ -2,12 +2,16 @@ package com.lididimi.restaurant.model.dto;
 
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BillDTO {
     private Long id;
 

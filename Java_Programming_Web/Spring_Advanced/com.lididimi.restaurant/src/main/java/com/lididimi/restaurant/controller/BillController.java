@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.controller;
 
+import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.response.ErrorResponse;
 import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
@@ -44,7 +45,7 @@ public class BillController {
             return new ResponseEntity<>(pdf, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to generate PDF");
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), RestaurantConstants.PDF_GENERATION_FAILURE);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }

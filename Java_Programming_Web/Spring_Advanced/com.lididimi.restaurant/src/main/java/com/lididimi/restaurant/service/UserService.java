@@ -8,19 +8,11 @@ import java.util.List;
 
 public interface UserService {
 
-    UserDTO register(UserRegisterDTO userRegisterDTO);
-
-    String login(UserLoginDTO userLoginDTO);
-
     List<UserDTO> getAllUsers();
 
     String update(UserUpdateStatusDTO userUpdateStatusDTO);
 
     String changePassword(UserChangePasswordDTO userChangePasswordDTO);
 
-    String forgotPassword(EmailDTO emailDTO) throws MessagingException;
 
-    boolean validatePasswordResetToken(String token);
-
-    String updatePassword(String token, String newPassword);
 }

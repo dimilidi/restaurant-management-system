@@ -3,6 +3,8 @@ package com.lididimi.restaurant.controller;
 import com.lididimi.restaurant.model.dto.EmailDTO;
 import com.lididimi.restaurant.model.dto.ResetPasswordDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
+import com.lididimi.restaurant.service.AuthService;
+import com.lididimi.restaurant.service.PasswordService;
 import com.lididimi.restaurant.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -21,6 +23,8 @@ import java.util.Map;
 public class PasswordResetController {
 
     private final UserService userService;
+    private final AuthService authService;
+    private final PasswordService passwordService;
 
     @PostMapping("/forgot")
     public ResponseEntity<?> forgotPassword(@RequestBody @Valid EmailDTO emailDTO, BindingResult bindingResult) throws MessagingException {
@@ -29,13 +33,13 @@ public class PasswordResetController {
             bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), userService.forgotPassword(emailDTO), null);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), passwordService.forgotPassword(emailDTO), null);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/reset-token")
     public ResponseEntity<?> validateResetToken(@RequestParam String token) {
-        boolean isValid = userService.validatePasswordResetToken(token);
+        boolean isValid = passwordService.validatePasswordResetToken(token);
         return ResponseEntity.ok(isValid);
     }
 
@@ -50,7 +54,7 @@ public class PasswordResetController {
         String token = resetPasswordDTO.getToken();
         String newPassword = resetPasswordDTO.getNewPassword();
 
-        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), userService.updatePassword(token, newPassword), null);
+        SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), passwordService.updatePassword(token, newPassword), null);
         return ResponseEntity.ok(response);
     }
 }
