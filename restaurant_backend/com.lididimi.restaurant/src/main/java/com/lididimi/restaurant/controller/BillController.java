@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.response.ErrorResponse;
 import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/bills")
@@ -56,6 +58,7 @@ public class BillController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), responseMessage, null);
         return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/getBills")
     public ResponseEntity<?> getBills() {

@@ -123,8 +123,6 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
-
-
         <!-- Spring Boot Starter Security for security configurations -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -180,10 +178,6 @@
             <version>2.5.2</version>
             <scope>runtime</scope>
         </dependency>
-
-
-        
-
     </dependencies>
 
     <build>

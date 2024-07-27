@@ -25,23 +25,17 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final JwtFilter jwtFilter;
-    private final ModelMapper modelMapper;
     private final RestClient categoryRestClient;
-    private final ObjectMapper objectMapper;
     private final ProductRepository productRepository;
 
 
     public CategoryServiceImpl(
             JwtFilter jwtFilter,
-            ModelMapper modelMapper,
             @Qualifier("categoriesRestClient") RestClient categoryRestClient,
-            ObjectMapper objectMapper,
             ProductRepository productRepository
     ) {
         this.jwtFilter = jwtFilter;
-        this.modelMapper = modelMapper;
         this.categoryRestClient = categoryRestClient;
-        this.objectMapper = objectMapper;
         this.productRepository = productRepository;
     }
 

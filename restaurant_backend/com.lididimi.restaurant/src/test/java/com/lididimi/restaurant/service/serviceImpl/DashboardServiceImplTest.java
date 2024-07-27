@@ -36,17 +36,17 @@ public class DashboardServiceImplTest {
     @Test
     void testGetCount() {
         // Arrange
-        when(categoryService.getCategoriesCount()).thenReturn(5L); // Return Long
-        when(productRepository.count()).thenReturn(100L); // Return Long
-        when(billRepository.count()).thenReturn(50L); // Return Long
+        when(categoryService.getCategoriesCount()).thenReturn(5L);
+        when(productRepository.count()).thenReturn(100L);
+        when(billRepository.count()).thenReturn(50L);
 
         // Act
         Map<String, Object> countMap = dashboardServiceImpl.getCount();
 
         // Assert
         assertNotNull(countMap);
-        assertEquals(5L, countMap.get("category")); // Compare Long with Long
-        assertEquals(100L, countMap.get("product")); // Compare Long with Long
-        assertEquals(50L, countMap.get("bill")); // Compare Long with Long
+        assertEquals(5L, countMap.get("category"));
+        assertEquals(100L, countMap.get("product"));
+        assertEquals(50L, countMap.get("bill"));
     }
 }

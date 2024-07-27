@@ -4,6 +4,7 @@ import com.lididimi.restaurant.model.dto.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.ProductDTO;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.model.response.SuccessResponse;
+import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.service.ProductService;
 import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
 import jakarta.transaction.Transactional;
@@ -23,9 +24,14 @@ public class ProductController {
 
     private final ProductRepository productRepository;
     private final ProductService productService;
-    private final BillServiceImpl billService;
+    private final BillService billService;
 
-    public ProductController(ProductRepository productRepository, ProductService productService, BillServiceImpl billService) {
+
+    public ProductController(
+            ProductRepository productRepository,
+            ProductService productService,
+            BillService billService
+    ) {
         this.productRepository = productRepository;
         this.productService = productService;
         this.billService = billService;
