@@ -22,11 +22,5 @@ COPY --from=build /app/target/com.lididimi.restaurant-0.0.1-SNAPSHOT.jar /app/co
 # Expose the port the application runs on
 EXPOSE 8080
 
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/restaurant?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
-SPRING_DATASOURCE_USERNAME=root
-SPRING_DATASOURCE_PASSWORD=ilove2read
-SPRING_MAIL_USERNAME=tattoochase80@gmail.com
-SPRING_MAIL_PASSWORD=baqcgodkbzblfysy
-
 # Run the JAR file
 ENTRYPOINT ["java", "-jar", "/app/com.lididimi.restaurant.jar"]
