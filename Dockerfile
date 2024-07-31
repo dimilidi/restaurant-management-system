@@ -1,6 +1,6 @@
 FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
-COPY COPY restaurant_backend/com.lididimi.restaurant /app/
+COPY restaurant_backend/com.lididimi.restaurant /app/
 COPY src ./src
 RUN mvn clean package -DskipTests
 
