@@ -1,7 +1,7 @@
 [build]
-    base = "restaurant-frontend"
+    base = "restaurant_frontend"
     command = "npm run build:prod"
-    publish = "dist/"
+    publish = "restaurant_frontend/dist/"
 [[redirects]]
   from = "/*"
   to = "/index.html"
