@@ -16,4 +16,7 @@ public class UserChangePasswordDTO {
     @NotBlank(message = "New password is required")
     private String newPassword;
 
+    @NotNull(message = "Confirm password is required")
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
 }

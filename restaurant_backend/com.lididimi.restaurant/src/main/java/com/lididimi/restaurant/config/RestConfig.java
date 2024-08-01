@@ -5,9 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 @Configuration
 public class RestConfig {
 
