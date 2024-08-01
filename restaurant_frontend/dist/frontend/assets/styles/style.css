@@ -1,0 +1,12 @@
+/* Importing CSS files */
+@import 'variable.css';
+@import 'spinner.css';
+@import 'app.css';
+@import 'header.css';
+@import 'pages.css';
+@import 'sidebar.css';
+@import 'responsive.css';
+
+/* Importing external stylesheet */
+@import url("../styles/icons/material-design-iconic-font/css/materialdesignicons.min.css");
+@import url("/node_modules/flag-icons/css/flag-icons.min.css");
