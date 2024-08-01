@@ -6,8 +6,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class DashboardService {
-  url = "https://restaurant-restaurant.azuremicroservices.io";
-
+  url = environment.apiUrl;
+  
   constructor(
     private httpClient: HttpClient,
   ) { }
