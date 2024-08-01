@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment.prod';
   providedIn: 'root',
 })
 export class UserService {
-  url = environment.apiUrl;
+  url = "https://restaurant-restaurant.azuremicroservices.io";
 
   constructor(private httpClient: HttpClient) {}
 
