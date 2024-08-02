@@ -41,8 +41,14 @@ logging:
     blog: WARN
 server:
   port: 8080
-
+  
 categories:
   api:
     baseUrl: "${categories_base_url}"
+
+cloudinary:
+  cloud-name: ${cloudinary.cloud-name}
+  api-key: ${cloudinary.api-key}
+  api-secret: ${cloudinary.api-secret}
+
 

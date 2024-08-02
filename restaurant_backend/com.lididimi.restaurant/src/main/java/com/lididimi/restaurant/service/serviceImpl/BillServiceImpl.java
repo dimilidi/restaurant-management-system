@@ -1,5 +1,7 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
+import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -35,21 +38,29 @@ public class BillServiceImpl implements BillService {
     private final JwtFilter jwtFilter;
     private final BillRepository billRepository;
     private final ModelMapper modelMapper;
+    private final Cloudinary cloudinary;
 
-    public BillServiceImpl(JwtFilter jwtFilter, BillRepository billRepository, ModelMapper modelMapper) {
+
+    public BillServiceImpl(JwtFilter jwtFilter, BillRepository billRepository, ModelMapper modelMapper,  Cloudinary cloudinary) {
         this.jwtFilter = jwtFilter;
         this.billRepository = billRepository;
         this.modelMapper = modelMapper;
+        this.cloudinary = cloudinary;
     }
+
 
     @Override
     public String generateReport(BillDTO billDTO) {
         log.info("Inside generateReport");
         try {
             String fileName = billDTO.isGenerate() ? billDTO.getUuid() : createAndInsertBill(billDTO);
-            Document document = initializeDocument(fileName);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Document document = new Document();
+            PdfWriter.getInstance(document, baos);
+            document.open();
             addContentToDocument(document, billDTO);
             document.close();
+            uploadPdfToCloudinary(fileName, baos.toByteArray());
             return String.format("{\"uuid\": \"%s\"}", fileName);
         } catch (Exception e) {
             log.error("Error generating report: ", e);
@@ -57,6 +68,19 @@ public class BillServiceImpl implements BillService {
         }
     }
 
+
+    @Override
+    public byte[] getPdf(BillDTO billDTO) throws IOException {
+        log.info("Inside getPdf : requestMap {}", billDTO);
+
+        byte[] byteArray = new byte[0];
+        if (billDTO.getUuid() == null) {
+            return byteArray;
+        }
+        String fileName = billDTO.getUuid();
+        byteArray = downloadPdfFromCloudinary(fileName);
+        return byteArray;
+    }
 
     @Override
     public List<BillDTO> getBills() {
@@ -78,24 +102,6 @@ public class BillServiceImpl implements BillService {
 
 
     @Override
-    public byte[] getPdf(BillDTO billDTO) throws IOException {
-        log.info("Inside getPdf : requestMap {}", billDTO);
-
-        byte[] byteArray = new byte[0];
-        if (billDTO.getUuid() == null) {
-            return byteArray;
-        }
-        String filePath = RestaurantConstants.STORE_LOCATION + "\\" + (String) billDTO.getUuid() + ".pdf";
-
-        if (!RestaurantUtils.isFileExist(filePath)) {
-            billDTO.setGenerate(false);
-            generateReport(billDTO);
-        }
-        byteArray = getByteArray(filePath);
-        return byteArray;
-    }
-
-    @Override
     public String delete(Long id) {
         Optional<BillEntity> optionalBill = billRepository.findById(id);
         if (optionalBill.isPresent()) {
@@ -115,14 +121,6 @@ public class BillServiceImpl implements BillService {
         return fileName;
     }
 
-    Document initializeDocument(String fileName) throws Exception {
-        Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(RestaurantConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
-        document.open();
-        setRectangleInPdf(document);
-        return document;
-    }
-
     private void addContentToDocument(Document document, BillDTO billDTO) throws Exception {
         Paragraph header = new Paragraph("Restaurant Management System", getFont("Header"));
         header.setAlignment(Element.ALIGN_CENTER);
@@ -134,7 +132,6 @@ public class BillServiceImpl implements BillService {
 
         document.add(new Paragraph("Total: " + billDTO.getTotal() + "\nThank you for visiting Restaurant Management System."));
     }
-
 
     private String formatBillData(BillDTO billDTO) {
         return String.format("Name: %s%nContact Number: %s%nEmail: %s%nPayment Method: %s%n",
@@ -235,5 +232,27 @@ public class BillServiceImpl implements BillService {
 
     private BillDTO convertToDTO(BillEntity billEntity) {
         return modelMapper.map(billEntity, BillDTO.class);
+    }
+
+
+    private void uploadPdfToCloudinary(String fileName, byte[] pdfBytes) throws IOException {
+        try {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(pdfBytes, ObjectUtils.asMap("public_id", fileName, "resource_type", "raw"));
+            log.info("PDF uploaded to Cloudinary: {}", uploadResult);
+        } catch (Exception e) {
+            log.error("Error uploading PDF to Cloudinary", e);
+            throw new IOException("Error uploading PDF to Cloudinary", e);
+        }
+    }
+
+    private byte[] downloadPdfFromCloudinary(String fileName) throws IOException {
+        try {
+            Map<String, Object> result = cloudinary.api().resource(fileName, ObjectUtils.asMap("resource_type", "raw"));
+            String url = (String) result.get("url");
+            return IOUtils.toByteArray(new URL(url).openStream());
+        } catch (Exception e) {
+            log.error("Error downloading PDF from Cloudinary", e);
+            throw new IOException("Error downloading PDF from Cloudinary", e);
+        }
     }
 }

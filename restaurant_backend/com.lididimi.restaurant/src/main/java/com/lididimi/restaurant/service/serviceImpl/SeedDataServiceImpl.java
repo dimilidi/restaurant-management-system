@@ -44,8 +44,8 @@ public class SeedDataServiceImpl implements SeedDataService {
             String contactNumber = "1231231234";
             PaymentMethodNameEnum paymentMethod = PaymentMethodNameEnum.DEBIT_CARD;
             BigDecimal total = BigDecimal.valueOf(2.29).multiply(BigDecimal.valueOf(20));
-            String productDetails = "[{\"id\": 2, \"name\": \"Mix Salad\", \"price\": 3.00, \"total\": 6.00, \"category\": \"Salad\", \"quantity\": \"2\"}]";
-            String createdBy = "sam@mail.com";
+            String productDetails = "[{\"id\": 1, \"name\": \"Cheese Cake\", \"price\": 10.00, \"total\": 20.00, \"category\": \"Cake\", \"quantity\": \"2\"}]";
+            String createdBy = "john@example.com";
 
             // Set createdDate to the start of the current day in the loop
             Instant createdDate = date.atStartOfDay().toInstant(ZoneOffset.UTC);

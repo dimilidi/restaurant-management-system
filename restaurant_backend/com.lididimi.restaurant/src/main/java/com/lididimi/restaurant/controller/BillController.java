@@ -8,11 +8,12 @@ import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,13 +45,20 @@ public class BillController {
     public ResponseEntity<?> getPdf(@RequestBody BillDTO billDTO) {
         try {
             byte[] pdf = billService.getPdf(billDTO);
-            return new ResponseEntity<>(pdf, HttpStatus.OK);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "report.pdf");
+            return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+
         } catch (Exception e) {
             e.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), RestaurantConstants.PDF_GENERATION_FAILURE);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
