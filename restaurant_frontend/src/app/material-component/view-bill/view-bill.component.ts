@@ -47,7 +47,19 @@ export class ViewBillComponent implements OnInit {
     this.billService.getBills().subscribe(
       (response: any) => {
         this.ngxService.stop();
-        this.dataSource = new MatTableDataSource(response.data);
+        console.log('Backend response:', response.data); // Log backend data
+
+        this.dataSource = new MatTableDataSource(
+          response.data.map((bill: any) => {
+            console.log('Original createdDate:', bill.createdDate); // Log each createdDate
+            return {
+              ...bill,
+              createdDate: new Date(bill.createdDate * 1000), // Convert to milliseconds
+            };
+          })
+        );
+        console.log('DataSource:', this.dataSource.data); // Log processed dataSource
+        
       },
       (error) => {
         this.ngxService.stop();
@@ -137,43 +149,15 @@ export class ViewBillComponent implements OnInit {
 
     this.billService.getPdf(data).subscribe(
       (response: any) => {
-        console.log(response.data);
+        console.log(response);
 
         saveAs(response, data.uuid + '.pdf');
         this.ngxService.stop();
       },
       (error: any) => {
-        console.log(error.eror);
+        console.log(error.error);
       }
     );
   }
-
-  // downloadFile(data: any) {
-  //   this.billService.getPdf(data).subscribe(
-  //     (response: any) => {
-  //       console.log(response);
-  
-  //       // Extract the base64 encoded PDF from the response
-  //       const base64Data = response.data;
-  
-  //       // Convert base64 string to Blob
-  //       const byteCharacters = atob(base64Data);
-  //       const byteNumbers = new Array(byteCharacters.length);
-  //       for (let i = 0; i < byteCharacters.length; i++) {
-  //         byteNumbers[i] = byteCharacters.charCodeAt(i);
-  //       }
-  //       const byteArray = new Uint8Array(byteNumbers);
-  //       const blob = new Blob([byteArray], { type: 'application/pdf' });
-  
-  //       // Use FileSaver.js to save the PDF
-  //       saveAs(blob, data.uuid + '.pdf');
-  //       this.ngxService.stop();
-  //     },
-  //     (error: any) => {
-  //       console.log(error.error);
-  //       this.ngxService.stop();
-  //     }
-  //   );
-  // }
   
 }

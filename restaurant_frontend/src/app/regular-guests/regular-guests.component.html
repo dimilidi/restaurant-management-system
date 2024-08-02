@@ -26,7 +26,7 @@
       </ng-container>
 
       <ng-container matColumnDef="topProducts">
-        <th mat-header-cell *matHeaderCellDef>Top Products</th>
+        <th mat-header-cell *matHeaderCellDef>Most Ordered</th>
         <td mat-cell *matCellDef="let guest">
           <ul>
             <li *ngFor="let product of guest.topProducts">
@@ -40,7 +40,7 @@
       </ng-container>
 
       <ng-container matColumnDef="billCount">
-        <th mat-header-cell *matHeaderCellDef>BillCount</th>
+        <th mat-header-cell *matHeaderCellDef>Orders</th>
         <td mat-cell *matCellDef="let guest">{{ guest.billCount }}</td>
       </ng-container>
 
