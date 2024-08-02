@@ -144,20 +144,40 @@ export class ViewBillComponent implements OnInit {
     this.downloadFile(data);
   }
 
-  downloadFile(data: any) {
-    console.log(data);
+// downloadFile(data: any) {
+//   console.log(data);
 
-    this.billService.getPdf(data).subscribe(
-      (response: any) => {
-        console.log(response);
+//   this.billService.getPdf(data).subscribe(
+//     (response: any) => {
+//       console.log(response);
 
-        saveAs(response, data.uuid + '.pdf');
-        this.ngxService.stop();
-      },
-      (error: any) => {
-        console.log(error.error);
-      }
-    );
-  }
+//       saveAs(response, data.uuid + '.pdf');
+//       this.ngxService.stop();
+//     },
+//     (error: any) => {
+//       console.log(error.error);
+//     }
+//   );
+// }
+
+downloadFile(data: any) {
+  console.log(data);
+
+  this.billService.getPdf(data).subscribe(
+    (response: Blob) => {  // Ensure the response is treated as a Blob
+      console.log(response);
+
+      const file = new Blob([response], { type: 'application/pdf' });  // Create a new Blob object
+      saveAs(file, data.uuid + '.pdf');  // Use file-saver to save the file
+      this.ngxService.stop();
+    },
+    (error: any) => {
+      console.log(error.error);
+      this.ngxService.stop();  // Stop loader in case of error
+      this.snackbarService.openSnackBar(GlobalConstants.genericError, GlobalConstants.error);
+    }
+  );
+}
+
   
 }
