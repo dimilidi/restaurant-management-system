@@ -49,7 +49,6 @@ public class RestaurantUtils {
         try {
             File file = new File(path);
             return file != null && file.exists() ? Boolean.TRUE : Boolean.FALSE;
-
         } catch (Exception e) {
             e.printStackTrace();
         }

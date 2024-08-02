@@ -1,44 +1,55 @@
 /*
+
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.github.javafaker.Faker;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
+import com.lididimi.restaurant.model.dto.BillDTO;
 import com.lididimi.restaurant.repository.BillRepository;
+import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.service.SeedDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-
-
+import java.util.logging.Logger;
 @Service
 public class SeedDataServiceImpl implements SeedDataService {
 
- @Autowired
+    @Autowired
     private BillRepository billRepository;
 
+    @Autowired
+    private BillService billService;
+
     private Faker faker = new Faker();
+    private static final Logger logger = Logger.getLogger(SeedDataServiceImpl.class.getName());
 
     @Override
     @PostConstruct
     public void generateSeedData() {
-     String name = "Tom Smith";
-        String email = "tom.smith@example.com";
+        String name = "Anna Andonova";
+        String email = "anna@example.com";
 
         LocalDate startDate = LocalDate.now();
-        LocalDate endDate = startDate.minusDays(404); // 365 days back
+        LocalDate endDate = startDate.minusDays(365);
 
         for (LocalDate date = startDate; !date.isBefore(endDate); date = date.minusDays(1)) {
             String uuid = "BILL-" + faker.number().digits(15);
             String contactNumber = "1231231234";
             PaymentMethodNameEnum paymentMethod = PaymentMethodNameEnum.DEBIT_CARD;
             BigDecimal total = BigDecimal.valueOf(2.29).multiply(BigDecimal.valueOf(20));
-            String productDetails = "[{\"id\": 2, \"name\": \"Pizza Margarita\", \"price\": 2.20, \"total\": 44.80, \"category\": \"Pizza\", \"quantity\": \"2\"}]";
-            String createdBy = "anna@gmail.com";
+            String productDetails = "[{\"id\": 2, \"name\": \"Mix Salad\", \"price\": 3.00, \"total\": 6.00, \"category\": \"Salad\", \"quantity\": \"2\"}]";
+            String createdBy = "sam@mail.com";
+
+            // Set createdDate to the start of the current day in the loop
+            Instant createdDate = date.atStartOfDay().toInstant(ZoneOffset.UTC);
+            logger.info("Creating bill for date: " + date + " with createdDate: " + createdDate);
 
             BillEntity bill = new BillEntity();
             bill.setUuid(uuid);
@@ -49,14 +60,32 @@ public class SeedDataServiceImpl implements SeedDataService {
             bill.setTotal(total);
             bill.setProductDetails(productDetails);
             bill.setCreatedBy(createdBy);
-            // Set createdDate using a different hour/minute/second for variety
-            Instant createdDate = date.atStartOfDay(ZoneOffset.UTC)
-                    .plusSeconds(faker.number().numberBetween(0, 86400)) // Random seconds within the day
-                    .toInstant();
             bill.setCreatedDate(createdDate);
 
             billRepository.save(bill);
+
+            // Generate PDF for the seeded bill
+            BillDTO billDTO = new BillDTO();
+            billDTO.setUuid(uuid);
+            billDTO.setName(name);
+            billDTO.setEmail(email);
+            billDTO.setContactNumber(contactNumber);
+            billDTO.setPaymentMethod(paymentMethod);
+            billDTO.setTotal(total);
+            billDTO.setProductDetails(productDetails);
+            billDTO.setCreatedBy(createdBy);
+            billDTO.setCreatedDate(createdDate);
+            billDTO.setGenerate(true);
+
+            billService.generateReport(billDTO);
         }
     }
 }
+
+
+
+
+
+
+
 */

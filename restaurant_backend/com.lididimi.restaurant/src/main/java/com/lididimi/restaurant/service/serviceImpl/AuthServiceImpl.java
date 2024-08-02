@@ -75,10 +75,10 @@ public class AuthServiceImpl implements AuthService {
             throw new AlreadyExistsException(RestaurantConstants.EMAIL_EXISTS);
         }
 
-        Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.ADMIN);
+        Optional<RoleEntity> optionalRole = roleRepository.findByName(UserRoleNameEnum.USER);
         UserEntity userEntity = modelMapper.map(userRegisterDTO, UserEntity.class);
         userEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
-        userEntity.setStatus(StatusNameEnum.ACTIVE);
+        userEntity.setStatus(StatusNameEnum.INACTIVE);
 
         if (optionalRole.isPresent()) {
             RoleEntity userRole = optionalRole.get();
