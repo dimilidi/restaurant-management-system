@@ -33,6 +33,15 @@ For building and running the application you need:
 
 ## 2. Project Structure
 
+The Restaurant Management System (RMS) application is divided into two main parts:
+restaurant_backend and restaurant_frontend.
+
+- **restaurant_backend** contains the backend logic and is further divided into two modules:
+    - **com.lididimi.restaurant** is the core of the Restaurant Management System, handling all the business logic and interactions.
+    - **restaurant_categories** module provides category services which are utilized by the RMS.
+- **restaurant_frontend** contains the frontend application, built using Angular, which interacts with the backend to provide a user interface for managing the restaurant.
+
+
 ## 3. Technologies
 Some of the key technologies used in the project include:
 
@@ -164,7 +173,7 @@ This will start the Angular application on http://localhost:4200.
 - Client-side and server-side validation with appropriate validation messages
 - Global server-side exception handling with the @ControllerAdvice
 3) Internationalization (i18n)
-- support multiple languages (English, German, French)
+- Support multiple languages (English, German, French)
 4) Scheduling
 - Scheduler runs every day at 2 am and deletes bills older than 1 year
 5) Mapping
