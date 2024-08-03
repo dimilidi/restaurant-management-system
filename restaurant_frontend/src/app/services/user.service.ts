@@ -23,9 +23,7 @@ register(data: any) {
     });
   }
 
-  // checkToken() {
-  //   return this.httpClient.get(this.url + '/users/checkToken');
-  // }
+
 
   changePassword(data: any) {
     return this.httpClient.post(this.url + '/users/changePassword', data, {
