@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.restaurant_categories.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lididimi.restaurant.restaurant_categories.constants.CategoryConstants;
 import com.lididimi.restaurant.restaurant_categories.model.dto.CategoryDTO;
 import com.lididimi.restaurant.restaurant_categories.service.CategoryService;
 import com.lididimi.restaurant.restaurant_categories.model.response.SuccessResponse;
@@ -44,7 +45,6 @@ public class CategoryControllerIT {
         categoryDTO = new CategoryDTO();
         categoryDTO.setId(1L);
         categoryDTO.setName("Test Category");
-        // Initialize other fields as needed
     }
 
     @Test
@@ -76,32 +76,32 @@ public class CategoryControllerIT {
 
     @Test
     public void testAddNewCategory() throws Exception {
-        when(categoryService.addNewCategory(any(CategoryDTO.class))).thenReturn("Category added successfully");
+        when(categoryService.addNewCategory(any(CategoryDTO.class))).thenReturn(CategoryConstants.CATEGORY_ADD_SUCCESS);
 
         mockMvc.perform(post("/categories/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Category added successfully"));
+                .andExpect(jsonPath("$.message").value(CategoryConstants.CATEGORY_ADD_SUCCESS));
     }
 
     @Test
     public void testUpdateCategory() throws Exception {
-        when(categoryService.updateCategory(any(CategoryDTO.class))).thenReturn("Category updated successfully");
+        when(categoryService.updateCategory(any(CategoryDTO.class))).thenReturn(CategoryConstants.CATEGORY_UPDATE_SUCCESS);
 
         mockMvc.perform(post("/categories/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Category updated successfully"));
+                .andExpect(jsonPath("$.message").value(CategoryConstants.CATEGORY_UPDATE_SUCCESS));
     }
 
     @Test
     public void testDeleteCategory() throws Exception {
-        when(categoryService.deleteCategory(anyLong())).thenReturn("Category deleted successfully");
+        when(categoryService.deleteCategory(anyLong())).thenReturn(CategoryConstants.CATEGORY_DELETE_SUCCESS);
 
         mockMvc.perform(delete("/categories/delete/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("Category deleted successfully"));
+                .andExpect(jsonPath("$").value(CategoryConstants.CATEGORY_DELETE_SUCCESS));
     }
 }
