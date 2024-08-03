@@ -1,7 +1,11 @@
 package com.lididimi.restaurant.model.dto;
 
+import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
+import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import lombok.Data;
+
+import java.util.ArrayList;
 
 @Data
 public class UserDTO {

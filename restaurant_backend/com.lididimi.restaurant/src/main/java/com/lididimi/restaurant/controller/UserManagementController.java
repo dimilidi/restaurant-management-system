@@ -52,5 +52,7 @@ public class UserManagementController {
         SuccessResponse response = new SuccessResponse(HttpStatus.OK.value(), userService.changePassword(userChangePasswordDTO), null);
         return ResponseEntity.ok(response);
     }
+
+
 }
 

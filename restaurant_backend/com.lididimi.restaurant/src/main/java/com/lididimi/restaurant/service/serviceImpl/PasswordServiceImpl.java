@@ -3,65 +3,46 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
-import com.lididimi.restaurant.jwt.JwtFilter;
-import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
 import com.lididimi.restaurant.model.dto.EmailDTO;
-import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserUpdateStatusDTO;
 import com.lididimi.restaurant.model.entity.PasswordResetToken;
 import com.lididimi.restaurant.model.entity.UserEntity;
-import com.lididimi.restaurant.model.enums.StatusNameEnum;
-import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
-import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.PasswordService;
-import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Slf4j
 @Service
 public class PasswordServiceImpl implements PasswordService {
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
-    private final AuthenticationManager authenticationManager;
+
     public final RestaurantUserDetailsService restaurantUserDetailsService;
-    private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
-    private final JwtFilter jwtFilter;
     private final EmailUtils emailUtils;
     private final PasswordResetTokenRepository tokenRepository;
-    private final RoleRepository roleRepository;
-    private final HttpServletRequest request;
 
-    public PasswordServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, RestaurantUserDetailsService restaurantUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository, RoleRepository roleRepository, HttpServletRequest request) {
+
+    public PasswordServiceImpl(
+            UserRepository userRepository,
+            RestaurantUserDetailsService restaurantUserDetailsService,
+            PasswordEncoder passwordEncoder,
+            EmailUtils emailUtils,
+            PasswordResetTokenRepository tokenRepository
+    ) {
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.authenticationManager = authenticationManager;
         this.restaurantUserDetailsService = restaurantUserDetailsService;
-        this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
-        this.jwtFilter = jwtFilter;
         this.emailUtils = emailUtils;
         this.tokenRepository = tokenRepository;
-        this.roleRepository = roleRepository;
-        this.request = request;
     }
 
 
