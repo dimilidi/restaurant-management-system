@@ -107,7 +107,7 @@ public class AuthServiceImplTest {
 
         // Then
         verify(userRepository, times(1)).findByEmail(anyString());
-        verify(roleRepository, times(1)).findByName(UserRoleNameEnum.ADMIN);
+        verify(roleRepository, times(1)).findByName(UserRoleNameEnum.USER);
         verify(userRepository, times(1)).save(any(UserEntity.class));
         assertEquals("test@example.com", userDTO.getEmail()); // Ensure email matches
     }

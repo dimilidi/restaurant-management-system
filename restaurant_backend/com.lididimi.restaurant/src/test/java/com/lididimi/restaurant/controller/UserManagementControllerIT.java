@@ -61,6 +61,7 @@ public class UserManagementControllerIT {
         userChangePasswordDTO.setId(1L);
         userChangePasswordDTO.setOldPassword("oldPassword");
         userChangePasswordDTO.setNewPassword("newPassword");
+        userChangePasswordDTO.setConfirmPassword("confirmPassword");;
     }
 
     @Test
