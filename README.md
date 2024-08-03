@@ -183,15 +183,15 @@ This will start the Angular application on http://localhost:4200.
 
 ## 8. Screenshots
 
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss1.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss2.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss3.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss4.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss5.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss6.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss7.jpg' height='250' />
-<img src='./restaurant-management-system/restaurant_frontend/src/assets/screenshots/ss8.jpg' height='250' />
-
+<img src='./restaurant_frontend/src/assets/screenshots/ss1.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss2.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss3.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss4.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss5.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss6.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss7.jpg' height='250' />
+<img src='./restaurant_frontend/src/assets/screenshots/ss8.jpg' height='250' />
+restaurant_frontend/src/assets/screenshots/ss2.jpg
 
 
 
