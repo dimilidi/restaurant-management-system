@@ -7,7 +7,6 @@ import com.lididimi.restaurant.restaurant_categories.model.entity.CategoryEntity
 import com.lididimi.restaurant.restaurant_categories.repository.CategoryRepository;
 import com.lididimi.restaurant.restaurant_categories.constants.CategoryConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 
 
@@ -18,14 +17,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class CatServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
 
 
     private final CategoryRepository categoryRepository;
      private final ModelMapper modelMapper;
 
-    public CatServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
     }
@@ -38,13 +37,13 @@ public class CatServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryEntity getById(Long id) {
+    public CategoryDTO getById(Long id) {
         Optional<CategoryEntity> categoryOptional = categoryRepository.findById(id);
         if(categoryOptional.isEmpty()) {
             log.error("Category getById not found {}", id);
             throw new ObjectNotFoundException(CategoryConstants.CATEGORY_NOT_FOUND);
         }
-        return categoryOptional.get();
+        return modelMapper.map(categoryOptional.get(), CategoryDTO.class) ;
     }
 
     @Override

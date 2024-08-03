@@ -13,7 +13,7 @@ public interface CategoryService {
 
     String updateCategory(CategoryDTO categoryDTO);
 
-    CategoryEntity getById(Long id);
+    CategoryDTO getById(Long id);
 
     Long getCategoriesCount();
 
