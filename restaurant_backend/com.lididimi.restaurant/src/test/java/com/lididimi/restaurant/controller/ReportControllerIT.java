@@ -1,9 +1,9 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.BestSellerDTO;
-import com.lididimi.restaurant.model.dto.GuestDTO;
-import com.lididimi.restaurant.model.dto.TopEmployeeDTO;
+import com.lididimi.restaurant.model.dto.bestseller.BestSellerDTO;
+import com.lididimi.restaurant.model.dto.guest.GuestDTO;
+import com.lididimi.restaurant.model.dto.topEmployee.TopEmployeeDTO;
 import com.lididimi.restaurant.service.ReportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

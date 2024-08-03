@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.model.dto.guest;
 
 import lombok.*;
 

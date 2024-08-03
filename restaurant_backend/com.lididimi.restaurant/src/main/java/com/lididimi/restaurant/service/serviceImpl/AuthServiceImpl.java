@@ -1,14 +1,14 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
-import com.lididimi.restaurant.model.dto.*;
-import com.lididimi.restaurant.model.entity.PasswordResetToken;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
 import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
@@ -17,9 +17,7 @@ import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.AuthService;
-import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.utils.EmailUtils;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +28,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 

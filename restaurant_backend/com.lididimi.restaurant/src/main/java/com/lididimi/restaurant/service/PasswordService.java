@@ -1,6 +1,6 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.EmailDTO;
+import com.lididimi.restaurant.model.dto.email.EmailDTO;
 import jakarta.mail.MessagingException;
 
 public interface PasswordService {

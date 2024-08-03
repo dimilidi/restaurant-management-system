@@ -1,8 +1,8 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.model.dto.BestSellerDTO;
-import com.lididimi.restaurant.model.dto.GuestDTO;
-import com.lididimi.restaurant.model.dto.TopEmployeeDTO;
+import com.lididimi.restaurant.model.dto.bestseller.BestSellerDTO;
+import com.lididimi.restaurant.model.dto.guest.GuestDTO;
+import com.lididimi.restaurant.model.dto.topEmployee.TopEmployeeDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.ReportService;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/reports")

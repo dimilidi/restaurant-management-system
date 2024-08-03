@@ -1,14 +1,12 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
 import com.lididimi.restaurant.jwt.JwtUtils;
 import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserLoginDTO;
-import com.lididimi.restaurant.model.dto.UserRegisterDTO;
-import com.lididimi.restaurant.model.entity.PasswordResetToken;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
 import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;

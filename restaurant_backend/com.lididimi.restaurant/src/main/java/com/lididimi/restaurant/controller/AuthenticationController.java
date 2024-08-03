@@ -1,8 +1,8 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserLoginDTO;
-import com.lididimi.restaurant.model.dto.UserRegisterDTO;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.AuthService;
 import jakarta.validation.Valid;

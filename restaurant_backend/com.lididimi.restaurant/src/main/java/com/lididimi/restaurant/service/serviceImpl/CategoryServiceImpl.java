@@ -1,18 +1,16 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.common.SomethingWentWrongException;
 import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
 import com.lididimi.restaurant.jwt.JwtFilter;
-import com.lididimi.restaurant.model.dto.CategoryDTO;
+import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;

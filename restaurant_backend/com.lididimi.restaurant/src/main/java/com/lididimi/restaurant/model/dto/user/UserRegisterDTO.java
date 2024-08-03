@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.model.dto.user;
 
 import com.lididimi.restaurant.model.validation.FieldMatch;
 import com.lididimi.restaurant.model.validation.UniqueUserEmail;

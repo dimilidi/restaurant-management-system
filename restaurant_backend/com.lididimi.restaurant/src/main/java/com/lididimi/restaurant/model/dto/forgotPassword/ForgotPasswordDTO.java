@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.model.dto.forgotPassword;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

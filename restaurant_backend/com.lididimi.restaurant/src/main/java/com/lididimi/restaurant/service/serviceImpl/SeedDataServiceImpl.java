@@ -5,7 +5,7 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.github.javafaker.Faker;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
-import com.lididimi.restaurant.model.dto.BillDTO;
+import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.service.SeedDataService;

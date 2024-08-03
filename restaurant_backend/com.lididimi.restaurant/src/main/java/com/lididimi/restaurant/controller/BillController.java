@@ -1,23 +1,19 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.response.ErrorResponse;
-import com.lididimi.restaurant.model.dto.BillDTO;
+import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.utils.RestaurantUtils;
 import jakarta.validation.Valid;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/bills")

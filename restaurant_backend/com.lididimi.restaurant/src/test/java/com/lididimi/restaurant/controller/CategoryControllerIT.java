@@ -1,7 +1,7 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.CategoryDTO;
+import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;

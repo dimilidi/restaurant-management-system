@@ -1,32 +1,24 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.lididimi.restaurant.model.dto.BestSellerDTO;
-import com.lididimi.restaurant.model.dto.BillDTO;
-import com.lididimi.restaurant.model.dto.GuestDTO;
-import com.lididimi.restaurant.model.dto.TopEmployeeDTO;
+import com.lididimi.restaurant.model.dto.bestseller.BestSellerDTO;
+import com.lididimi.restaurant.model.dto.bill.BillDTO;
+import com.lididimi.restaurant.model.dto.guest.GuestDTO;
+import com.lididimi.restaurant.model.dto.topEmployee.TopEmployeeDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.repository.BillRepository;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

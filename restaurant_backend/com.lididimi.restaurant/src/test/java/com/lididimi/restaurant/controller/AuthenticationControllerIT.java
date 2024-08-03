@@ -1,11 +1,10 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.UserLoginDTO;
-import com.lididimi.restaurant.model.dto.UserRegisterDTO;
-import com.lididimi.restaurant.model.dto.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.service.AuthService;
-import com.lididimi.restaurant.service.serviceImpl.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

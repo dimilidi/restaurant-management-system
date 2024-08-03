@@ -1,6 +1,8 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.*;
+import com.lididimi.restaurant.model.dto.user.UserChangePasswordDTO;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserUpdateStatusDTO;
 
 import java.util.List;
 

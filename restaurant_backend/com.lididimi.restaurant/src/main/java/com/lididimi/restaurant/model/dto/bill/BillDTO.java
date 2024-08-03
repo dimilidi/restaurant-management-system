@@ -1,4 +1,4 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.model.dto.bill;
 
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import jakarta.validation.constraints.*;

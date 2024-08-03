@@ -2,10 +2,9 @@ package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.model.dto.ProductAddDTO;
-import com.lididimi.restaurant.model.dto.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
+import com.lididimi.restaurant.model.dto.product.ProductDTO;
 import com.lididimi.restaurant.service.ProductService;
-import com.lididimi.restaurant.model.response.SuccessResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

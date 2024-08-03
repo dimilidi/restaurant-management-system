@@ -1,12 +1,11 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.model.dto.ProductAddDTO;
-import com.lididimi.restaurant.model.dto.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
+import com.lididimi.restaurant.model.dto.product.ProductDTO;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.BillService;
 import com.lididimi.restaurant.service.ProductService;
-import com.lididimi.restaurant.service.serviceImpl.BillServiceImpl;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

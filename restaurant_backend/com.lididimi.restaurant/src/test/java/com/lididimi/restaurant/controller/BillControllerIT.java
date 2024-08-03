@@ -2,7 +2,7 @@ package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.model.dto.BillDTO;
+import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import com.lididimi.restaurant.repository.BillRepository;
 import com.lididimi.restaurant.service.BillService;

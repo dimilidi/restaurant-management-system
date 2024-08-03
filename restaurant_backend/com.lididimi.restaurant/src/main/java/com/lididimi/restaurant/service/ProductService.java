@@ -1,7 +1,7 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.ProductAddDTO;
-import com.lididimi.restaurant.model.dto.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
+import com.lididimi.restaurant.model.dto.product.ProductDTO;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 
 import java.util.List;

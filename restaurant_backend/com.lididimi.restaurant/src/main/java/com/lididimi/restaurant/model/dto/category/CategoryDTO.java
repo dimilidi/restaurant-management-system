@@ -1,6 +1,5 @@
-package com.lididimi.restaurant.model.dto;
+package com.lididimi.restaurant.model.dto.category;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;

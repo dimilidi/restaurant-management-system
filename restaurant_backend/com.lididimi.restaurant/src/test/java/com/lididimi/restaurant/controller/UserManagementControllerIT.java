@@ -1,9 +1,9 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.UserChangePasswordDTO;
-import com.lididimi.restaurant.model.dto.UserDTO;
-import com.lididimi.restaurant.model.dto.UserUpdateStatusDTO;
+import com.lididimi.restaurant.model.dto.user.UserChangePasswordDTO;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserUpdateStatusDTO;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

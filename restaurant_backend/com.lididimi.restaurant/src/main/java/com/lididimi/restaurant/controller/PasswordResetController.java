@@ -1,7 +1,7 @@
 package com.lididimi.restaurant.controller;
 
-import com.lididimi.restaurant.model.dto.EmailDTO;
-import com.lididimi.restaurant.model.dto.ResetPasswordDTO;
+import com.lididimi.restaurant.model.dto.email.EmailDTO;
+import com.lididimi.restaurant.model.dto.product.ResetPasswordDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import com.lididimi.restaurant.service.AuthService;
 import com.lididimi.restaurant.service.PasswordService;

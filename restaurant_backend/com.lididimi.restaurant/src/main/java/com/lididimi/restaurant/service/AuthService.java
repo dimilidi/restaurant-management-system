@@ -1,9 +1,8 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.*;
-import jakarta.mail.MessagingException;
-
-import java.util.List;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
+import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
+import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
 
 
 public interface AuthService {

@@ -4,7 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
-import com.lididimi.restaurant.model.dto.BillDTO;
+import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
 import com.lididimi.restaurant.repository.BillRepository;
@@ -15,7 +15,6 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collections;

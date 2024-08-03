@@ -2,8 +2,8 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.EmailDTO;
-import com.lididimi.restaurant.model.dto.ResetPasswordDTO;
+import com.lididimi.restaurant.model.dto.email.EmailDTO;
+import com.lididimi.restaurant.model.dto.product.ResetPasswordDTO;
 import com.lididimi.restaurant.service.UserService;
 import com.lididimi.restaurant.model.response.SuccessResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,10 +132,9 @@ public class PasswordResetControllerIT {
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lididimi.restaurant.model.dto.EmailDTO;
-import com.lididimi.restaurant.model.dto.ResetPasswordDTO;
+import com.lididimi.restaurant.model.dto.email.EmailDTO;
+import com.lididimi.restaurant.model.dto.product.ResetPasswordDTO;
 import com.lididimi.restaurant.service.PasswordService;
-import com.lididimi.restaurant.service.serviceImpl.PasswordServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

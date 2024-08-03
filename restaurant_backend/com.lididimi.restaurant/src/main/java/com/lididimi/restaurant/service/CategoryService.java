@@ -1,6 +1,6 @@
 package com.lididimi.restaurant.service;
 
-import com.lididimi.restaurant.model.dto.CategoryDTO;
+import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import java.util.List;
 
 
