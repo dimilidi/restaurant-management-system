@@ -6,6 +6,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.lididimi.restaurant.config.RetentionProperties;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.bill.BillDTO;
@@ -23,25 +24,33 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.net.URL;
-import java.time.Instant;
+import java.time.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-
-
 @Slf4j
 @Service
 public class BillServiceImpl implements BillService {
+    private final Clock clock;
     private final JwtFilter jwtFilter;
     private final BillRepository billRepository;
     private final ModelMapper modelMapper;
     private final Cloudinary cloudinary;
+    private final RetentionProperties retentionProperties;
 
 
-    public BillServiceImpl(JwtFilter jwtFilter, BillRepository billRepository, ModelMapper modelMapper,  Cloudinary cloudinary) {
+    public BillServiceImpl(
+            Clock clock,
+            JwtFilter jwtFilter,
+            BillRepository billRepository,
+            ModelMapper modelMapper,
+            Cloudinary cloudinary, RetentionProperties retentionProperties
+    ) {
+        this.retentionProperties = retentionProperties;
+        this.clock = clock != null ? clock : Clock.systemUTC();
         this.jwtFilter = jwtFilter;
         this.billRepository = billRepository;
         this.modelMapper = modelMapper;
@@ -111,6 +120,33 @@ public class BillServiceImpl implements BillService {
             return RestaurantConstants.CATEGORY_NOT_FOUND;
         }
     }
+
+/*
+    @Override
+    public void cleanupOldBills() {
+        LocalDate now = LocalDate.now(clock);
+
+        LocalDate cutoffLocalDate = now.minus(retentionProperties.getPeriod());
+        Instant cutoffDate = cutoffLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+        log.info("Removing all bills older than " + cutoffDate);
+
+        billRepository.deleteBillsOlderThan(cutoffDate);
+    }
+*/
+
+    @Override
+    public void cleanupOldBills() {
+        LocalDate now = LocalDate.now(clock);
+
+        LocalDate cutoffLocalDate = now.minus(retentionProperties.getPeriod());
+        Instant cutoffDate = cutoffLocalDate.atStartOfDay(ZoneId.of(clock.getZone().getId())).toInstant();
+
+        log.info("Removing all bills older than " + cutoffDate);
+
+        billRepository.deleteBillsOlderThan(cutoffDate);
+    }
+
 
     private String createAndInsertBill(BillDTO billDTO) {
         String fileName = RestaurantUtils.getUUID();

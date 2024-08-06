@@ -2,6 +2,7 @@ package com.lididimi.restaurant.service.serviceImpl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
+import com.lididimi.restaurant.config.RetentionProperties;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.bill.BillDTO;
@@ -16,7 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -42,6 +46,11 @@ public class BillServiceImplTest {
     @Mock
     private Uploader uploader;
 
+    @Mock
+    private RetentionProperties retentionProperties;
+
+    private Clock clock;
+
     @InjectMocks
     private BillServiceImpl billService;
 
@@ -49,6 +58,7 @@ public class BillServiceImplTest {
 
     @BeforeEach
     public void setUp() {
+        clock = Clock.fixed(Instant.parse("2024-08-06T00:00:50.004Z"), ZoneId.of("Europe/Berlin"));
         billDTO = new BillDTO();
         billDTO.setUuid("12345");
         billDTO.setName("John Doe");
@@ -59,9 +69,23 @@ public class BillServiceImplTest {
         billDTO.setProductDetails("[{\"name\": \"Pizza\", \"category\": \"Food\", \"quantity\": \"2\", \"price\": \"20.00\", \"total\": \"40.00\"}]");
         billDTO.setGenerate(false);
         billDTO.setCreatedBy("admin");
-        billDTO.setCreatedDate(Instant.now());
+        billDTO.setCreatedDate(Instant.now(clock));
 
+        lenient().when(retentionProperties.getPeriod()).thenReturn(Period.ofYears(1));
         lenient().when(cloudinary.uploader()).thenReturn(uploader);
+    }
+
+
+    @Test
+    public void testCleanupOldBills() {
+        // Arrange
+        Instant expectedCutoffDate = Instant.parse("2023-08-06T00:00:00.000Z");
+
+        // Act
+        billService.cleanupOldBills();
+
+        // Assert
+        verify(billRepository).deleteBillsOlderThan(expectedCutoffDate);
     }
 
 
@@ -115,15 +139,15 @@ public class BillServiceImplTest {
         // Arrange
         Long id = 1L;
 
-        when(billRepository.findById(id)).thenReturn(Optional.empty()); // Simulate the entity not being found
+        when(billRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
         String result = billService.delete(id);
 
         // Assert
         assertEquals(RestaurantConstants.CATEGORY_NOT_FOUND, result);
-        verify(billRepository, times(1)).findById(id); // Verify findById was called once
-        verify(billRepository, never()).deleteById(id); // Verify deleteById was never called
+        verify(billRepository, times(1)).findById(id);
+        verify(billRepository, never()).deleteById(id);
     }
 
 

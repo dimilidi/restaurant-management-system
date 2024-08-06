@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.repository;
 
 import com.lididimi.restaurant.model.entity.BillEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,6 +27,7 @@ public interface BillRepository extends JpaRepository<BillEntity, Long> {
     Optional<List<BillEntity>> getBillsByUsername(@Param("username") String username);
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM BillEntity b WHERE b.createdDate < :cutoffDate")
     void deleteBillsOlderThan(@Param("cutoffDate") Instant cutoffDate);
 

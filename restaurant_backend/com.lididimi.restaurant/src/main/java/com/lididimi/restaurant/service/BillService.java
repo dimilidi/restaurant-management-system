@@ -14,5 +14,5 @@ public interface BillService {
 
     String delete(Long id);
 
-
+    void cleanupOldBills();
 }

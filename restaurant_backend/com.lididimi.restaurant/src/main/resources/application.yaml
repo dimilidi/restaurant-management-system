@@ -51,4 +51,5 @@ cloudinary:
   api-key: ${cloudinary.api-key}
   api-secret: ${cloudinary.api-secret}
 
+bills.retention.period: P1Y
 
