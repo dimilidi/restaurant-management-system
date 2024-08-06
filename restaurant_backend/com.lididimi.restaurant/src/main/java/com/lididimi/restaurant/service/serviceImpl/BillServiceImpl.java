@@ -121,20 +121,6 @@ public class BillServiceImpl implements BillService {
         }
     }
 
-/*
-    @Override
-    public void cleanupOldBills() {
-        LocalDate now = LocalDate.now(clock);
-
-        LocalDate cutoffLocalDate = now.minus(retentionProperties.getPeriod());
-        Instant cutoffDate = cutoffLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-
-        log.info("Removing all bills older than " + cutoffDate);
-
-        billRepository.deleteBillsOlderThan(cutoffDate);
-    }
-*/
-
     @Override
     public void cleanupOldBills() {
         LocalDate now = LocalDate.now(clock);
