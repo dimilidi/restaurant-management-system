@@ -193,16 +193,33 @@
             <version>1.4.7</version>
         </dependency>
 
+        <!-- Used for Logback’s email notification feature -->
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>angus-mail</artifactId>
             <version>2.0.1</version>
         </dependency>
+
+        <!-- Used for Logback’s email notification feature -->
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>angus-activation</artifactId>
             <version>2.0.0</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <!-- Prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.13.2</version>
         </dependency>
 
     </dependencies>

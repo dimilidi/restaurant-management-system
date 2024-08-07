@@ -69,8 +69,13 @@ Some of the key technologies used in the project include:
 
 ## 4. Setup
 
-To run RMS application on your local machine:
-### 1. Backend Setup (Spring Boot)
+To run RMS application on your local machine you have two main alternatives:  
+    👉 clone the GitHub repository  
+    👉 pull the docker images from Docker Hub.
+
+### 4.1. Clone the Repository
+
+#### 1. Backend Setup (Spring Boot)
 
 Step 1: Clone the Repository
 
@@ -101,7 +106,7 @@ To run the Spring Boot application:
 mvn spring-boot:run
 ``` 
 Alternatively, you can start the application by executing the main method of the main application class (*RestaurantManagementSystemApplication*) from your IDE.  
-The backend will be running at http://localhost:8080.
+The backend will be running at http://localhost:9090.
 
 Step 4: Navigate to category service
 ```    
@@ -111,7 +116,7 @@ cd restaurant_backend/restaurant_categories
 Step 5: Repeat steps 2 and 3 for category app  
 The category service will be running at http://localhost:8081.
 
-### 2. Frontend Setup (Angular)
+#### 2. Frontend Setup (Angular)
 
 Step 1: Navigate to the Frontend Directory
 
@@ -138,14 +143,48 @@ ng serve
 This will start the Angular application on http://localhost:4200.
 
 
-### 3. Access the Application
-1) Ensure the backend Spring Boot application is running at http://localhost:8080.
+#### 3. Access the Application
+1) Ensure the backend Spring Boot application is running at http://localhost:9090.
 2) Ensure the category service application is running at http://localhost:8081.
 3) Ensure the Angular development server is running at http://localhost:4200.
 4) Open a web browser.
    Navigate to http://localhost:4200 to interact with the Angular frontend.
 
 
+### 4.2. Docker Setup
+You can also run the backend services using Docker images. 
+The Docker images for the Restaurant and Categories services are available on Docker Hub. 
+
+#### 1. Pull Docker Images
+You can pull the Docker images from Docker Hub using the following commands:
+```
+docker pull lidididi/restaurant:v2
+docker pull lidididi/categories:v2
+```
+
+#### 2. Run Services with Docker Compose
+
+Use Docker Compose to set up and run the database, restaurant, and categories services. 
+The docker-compose.yml is in the docker folder of the Restaurant Service.  
+Create a `.env` file in the same directory as your `docker-compose.yml` file 
+and add and configure the environment variables listed in the `env.example` file. 
+
+
+#### 3. Start the Services
+
+Run the following command in the directory containing your docker-compose.yml file:
+
+```
+ docker-compose -f docker-compose.yaml up
+```
+
+#### 4. Verify the Services
+
+Ensure the services are running by executing:
+
+```
+ docker-compose ps
+```
 ## 5. Features
 
 **Public part**

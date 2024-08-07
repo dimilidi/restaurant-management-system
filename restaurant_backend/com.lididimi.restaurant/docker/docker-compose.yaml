@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin']
+    environment:
+     - MYSQL_ROOT_PASSWORD=ilove2read
+    #  - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  restaurant:
+    depends_on: [db]
+    image: lidididi/restaurant:v2
+    ports:
+      - "9090:9090"
+    environment:
+      - db_host=db
+      - db_port=3306
+      - db_username=${DB_USERNAME}
+      - db_password=${DB_PASSWORD}
+      - categories_base_url=http://categories:8081
+      - smtp_username=${SMTP_USERNAME}
+      - smtp_password=${SMTP_PASSWORD}
+      - cloudinary_cloud_name=${CLOUDINARY_CLOUD_NAME}
+      - cloudinary_api_key=${CLOUDINARY_API_KEY}
+      - cloudinary_api_secret=${CLOUDINARY_API_SECRET}
+  categories:
+    depends_on: [db]
+    image: lidididi/categories:v2
+    ports:
+      - "8081:8081"
+    environment:
+      - db_host=db
+      - db_port=3306
+      - db_username=${DB_USERNAME}
+      - db_password=${DB_PASSWORD}
+        
+        
