@@ -25,7 +25,7 @@ Visit the website: [RMS](https://rms-management-system.netlify.app/)
 
 For building and running the application you need:
 
-- Java Development Kit (JDK) (version 11 or later)
+- Java Development Kit (JDK) (version 17git  or later)
 - Node.js (version 14 or later) and npm
 - Angular CLI
 - Maven
