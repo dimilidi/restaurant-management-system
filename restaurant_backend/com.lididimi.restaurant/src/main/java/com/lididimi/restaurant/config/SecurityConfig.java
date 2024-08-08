@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.config;
 
 import com.lididimi.restaurant.jwt.JwtFilter;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,12 +28,13 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorizeRequests ->
                     authorizeRequests
-                            .requestMatchers("/","/auth/login", "/auth/register", "/password/forgot","/password/reset", "/messages/**").permitAll()
+                            .requestMatchers("/","/auth/login", "/auth/register", "/password/forgot","/password/reset", "/messages/**", "/swagger-ui/**", "swagger-ui.html", "/v3/api-docs/**").permitAll()
                             .requestMatchers("/users/get", "/users/update",
                                     "/products/add", "/products/", "/products/delete/**", "/products/update",
                                     "/categories/add", "/categories/update", "/categories/delete/{id}",
                                     "/bills/delete/**"
                                     ).hasRole("ADMIN")
+                            .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                             .anyRequest().authenticated()
             )
             .sessionManagement(sessionManagement ->

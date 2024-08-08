@@ -7,6 +7,7 @@ import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.product.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductOrderDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.repository.ProductRepository;
@@ -49,6 +50,7 @@ public class ProductServiceImplTest {
     private ProductServiceImpl productService;
 
     private ProductDTO productDTO;
+    private ProductOrderDTO productOrderDTO;
     private ProductAddDTO productAddDTO;
     private ProductEntity productEntity;
     private ProductEntity productEntity1;
@@ -99,6 +101,13 @@ public class ProductServiceImplTest {
         productDTO.setDescription("Delicious pizza with tomatoes and cheese");
         productDTO.setPrice(new BigDecimal("8.99"));
         productDTO.setStatus(StatusNameEnum.INACTIVE.name());
+
+        productOrderDTO = new ProductOrderDTO();
+        productOrderDTO.setId(productId);
+        productOrderDTO.setName("Pizza Margarita");
+        productOrderDTO.setDescription("Delicious pizza with tomatoes and cheese");
+        productOrderDTO.setPrice(new BigDecimal("8.99"));
+        productOrderDTO.setStatus(StatusNameEnum.INACTIVE.name());
 
         ProductDTO productDTO2 = new ProductDTO();
         productDTO2.setId(productEntity2.getId());
@@ -368,15 +377,15 @@ public class ProductServiceImplTest {
         // Arrange
         Long productId = 1L;
         when(productRepository.getProductById(productId)).thenReturn(Optional.of(productEntity));
-        when(modelMapper.map(productEntity, ProductDTO.class)).thenReturn(productDTO);
+        when(modelMapper.map(productEntity, ProductOrderDTO.class)).thenReturn(productOrderDTO);
 
         // Act
-        ProductDTO result = productService.getProductByCategory(productId);
+        ProductOrderDTO result = productService.getProductByCategory(productId);
 
         // Assert
-        assertEquals(productDTO, result);
+        assertEquals(productOrderDTO, result);
         verify(productRepository, times(1)).getProductById(productId);
-        verify(modelMapper, times(1)).map(productEntity, ProductDTO.class);
+        verify(modelMapper, times(1)).map(productEntity, ProductOrderDTO.class);
     }
 
     @Test

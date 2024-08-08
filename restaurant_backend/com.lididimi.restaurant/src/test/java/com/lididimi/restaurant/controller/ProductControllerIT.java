@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.product.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductOrderDTO;
 import com.lididimi.restaurant.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,7 @@ public class ProductControllerIT {
 
     private ProductAddDTO productAddDTO;
     private ProductDTO productDTO;
+    private ProductOrderDTO productOrderDTO;
     private List<ProductDTO> products;
 
     @BeforeEach
@@ -62,6 +64,14 @@ public class ProductControllerIT {
         productDTO.setDescription("A test product");
         productDTO.setPrice(BigDecimal.valueOf(10.99));
         productDTO.setStatus("ACTIVE");
+
+        productOrderDTO = new ProductOrderDTO();
+        productOrderDTO.setId(1L);
+        productOrderDTO.setName("Product1");
+        productOrderDTO.setCategoryId(1L);
+        productOrderDTO.setDescription("A test product");
+        productOrderDTO.setPrice(BigDecimal.valueOf(10.99));
+        productOrderDTO.setStatus("ACTIVE");
 
         products = Arrays.asList(productDTO);
     }
@@ -143,7 +153,7 @@ public class ProductControllerIT {
     @Test
     @WithMockUser(roles = "USER")
     public void testGetById() throws Exception {
-        when(productService.getProductByCategory(anyLong())).thenReturn(productDTO);
+        when(productService.getProductByCategory(anyLong())).thenReturn(productOrderDTO);
 
         mockMvc.perform(get("/products/getById/1")
                         .contentType(MediaType.APPLICATION_JSON))

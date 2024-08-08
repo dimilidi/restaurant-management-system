@@ -7,12 +7,12 @@ import com.lididimi.restaurant.jwt.JwtFilter;
 import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.product.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductOrderDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.repository.ProductRepository;
 import com.lididimi.restaurant.service.CategoryService;
 import com.lididimi.restaurant.service.ProductService;
-import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public List<ProductDTO> getAllProducts() {
         Optional<List<ProductEntity>> allProductsOpt = productRepository.getAllProducts();
 
@@ -74,6 +73,30 @@ public class ProductServiceImpl implements ProductService {
                     return productDTO;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> getByCategory(Long id) {
+        Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(id);
+        if (productsOpt.isEmpty()) {
+            throw new ObjectNotFoundException(RestaurantConstants.NOT_FOUND);
+        }
+
+        List<ProductDTO> products = productsOpt.get().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return products;
+    }
+
+
+    @Override
+    public ProductOrderDTO getProductByCategory(Long id) {
+        Optional<ProductEntity> productById = productRepository.getProductById(id);
+        if (productById.isEmpty()) {
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
+        }
+        ProductOrderDTO productOrderDTO = convertToProductOrderDTO(productById.get());
+        return productOrderDTO;
     }
 
 
@@ -113,51 +136,6 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public String deleteProduct(Long id) {
-        if (!jwtFilter.isAdmin()) {
-            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
-        }
-
-        Optional<ProductEntity> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
-            productRepository.deleteById(id);
-            return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
-        } else {
-            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
-        }
-    }
-
-
-
-    @Override
-    @Transactional
-    public List<ProductDTO> getByCategory(Long id) {
-        Optional<List<ProductEntity>> productsOpt = productRepository.getProductByCategory(id);
-        if (productsOpt.isEmpty()) {
-            throw new ObjectNotFoundException(RestaurantConstants.NOT_FOUND);
-        }
-
-        List<ProductDTO> products = productsOpt.get().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return products;
-    }
-
-
-    @Override
-    @Transactional
-    public ProductDTO getProductByCategory(Long id) {
-        Optional<ProductEntity> productById = productRepository.getProductById(id);
-        if (productById.isEmpty()) {
-            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
-        }
-        ProductDTO productDTO = convertToDTO(productById.get());
-        return productDTO;
-    }
-
-
-    @Override
-    @Transactional
     public void updateStatusByCategoryId(Long categoryId, StatusNameEnum status) {
         log.info("Updating products to status {} for category ID {}", status, categoryId);
         Optional<List<ProductEntity>> optionalProducts = productRepository.getProductByCategory(categoryId);
@@ -170,6 +148,22 @@ public class ProductServiceImpl implements ProductService {
             }
         } else {
             log.info("No products found for category ID {}", categoryId);
+        }
+    }
+
+
+    @Override
+    public String deleteProduct(Long id) {
+        if (!jwtFilter.isAdmin()) {
+            throw new UnauthorizedAccessException(RestaurantConstants.UNAUTHORIZED_ACCESS);
+        }
+
+        Optional<ProductEntity> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            productRepository.deleteById(id);
+            return RestaurantConstants.PRODUCT_DELETE_SUCCESS;
+        } else {
+            throw new ObjectNotFoundException(RestaurantConstants.PRODUCT_NOT_FOUND);
         }
     }
 
@@ -196,5 +190,9 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductDTO convertToDTO(ProductEntity productEntity) {
         return modelMapper.map(productEntity, ProductDTO.class);
+    }
+
+    private ProductOrderDTO convertToProductOrderDTO(ProductEntity productEntity) {
+        return modelMapper.map(productEntity, ProductOrderDTO.class);
     }
 }

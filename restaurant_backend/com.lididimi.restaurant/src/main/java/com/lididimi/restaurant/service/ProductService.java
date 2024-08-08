@@ -2,6 +2,7 @@ package com.lididimi.restaurant.service;
 
 import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.product.ProductDTO;
+import com.lididimi.restaurant.model.dto.product.ProductOrderDTO;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ProductService {
 
     List<ProductDTO> getByCategory(Long id);
 
-    ProductDTO getProductByCategory(Long id);
+    ProductOrderDTO getProductByCategory(Long id);
 
     void updateStatusByCategoryId(Long categoryId, StatusNameEnum status);
 }

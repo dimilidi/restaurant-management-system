@@ -18,6 +18,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     boolean existsByName(String name);
 
+    @Transactional
     @Query("SELECT p FROM ProductEntity p")
     Optional<List<ProductEntity>> getAllProducts();
 
@@ -29,10 +30,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("UPDATE ProductEntity p set p.status=:status WHERE p.id=:id")
     Integer updateProductStatus(@Param("status") StatusNameEnum status, @Param("id") Long id);
 
-
+    @Transactional
     @Query("SELECT p FROM ProductEntity p WHERE p.categoryId=:id and p.status='ACTIVE'")
     Optional<List<ProductEntity>> getProductByCategory(@Param("id") Long id);
 
+    @Transactional
     @Query("SELECT p FROM ProductEntity p WHERE p.id=:id")
     Optional<ProductEntity> getProductById(@Param("id") Long id);
 
