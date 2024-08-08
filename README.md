@@ -157,8 +157,8 @@ The Docker images for the Restaurant and Categories services are available on Do
 #### 1. Pull Docker Images
 You can pull the Docker images from Docker Hub using the following commands:
 ```
-docker pull lidididi/restaurant:v2
-docker pull lidididi/categories:v2
+docker pull lidididi/restaurant:v3
+docker pull lidididi/categories:v3
 ```
 
 #### 2. Run Services with Docker Compose
@@ -242,7 +242,14 @@ This will attach the token to all subsequent requests, allowing you to test auth
 1) Used Angular for the front-end.
 2) Hosted the application in a cloud environment - Azure.
 3) Used a file storage cloud API - Cloudinary.
-4) Used JWT authentication
+4) Used JWT authentication.
+5) Implemented a logging feature using Logback:
+    - Logs are archived when they reach a certain size.
+    - Sends an email notification when a critical error causes the application to fail.
+6) Added API Documentation using Swagger and OpenAPI.
+7) Created Docker images of the backend services.
+8) Implemented AOP monitoring aspect with around advice for method execution time.
+
 
 
 ## 9. Screenshots
