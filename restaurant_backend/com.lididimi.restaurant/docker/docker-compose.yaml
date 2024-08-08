@@ -5,7 +5,7 @@ services:
       - "3306:3306"
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin']
     environment:
-     - MYSQL_ROOT_PASSWORD=ilove2read
+     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     #  - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]

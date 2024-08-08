@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin']
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=restaurant
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+  #promtool:
+   # image: prom/prometheus:v2.43.0
+    #ports:
+     # - 9091:9091
+    #volumes:
+     # - type: bind
+      #  source: ./prometheus.yaml
+       # target: /etc/prometheus/prometheus.yml
+  #grafana:
+   # image: grafana/grafana:8.5.22
+    #ports:
+     # - 3000:3000
