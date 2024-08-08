@@ -32,9 +32,6 @@ public class AppBeanConfig {
         DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
 
-        System.out.println("Initializing DataSource");
-        System.out.println(roleRepository.count() );
-
         if (roleRepository.count() == 0) {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.addScript(resourceLoader.getResource("classpath:data.sql"));
@@ -43,6 +40,4 @@ public class AppBeanConfig {
 
         return initializer;
     }
-
-
 }

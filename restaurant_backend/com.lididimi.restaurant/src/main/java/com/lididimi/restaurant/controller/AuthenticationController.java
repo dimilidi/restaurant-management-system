@@ -1,5 +1,6 @@
 package com.lididimi.restaurant.controller;
 
+import com.lididimi.restaurant.controller.aop.WarnIfExecutionExceeds;
 import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
 import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
@@ -22,6 +23,7 @@ public class AuthenticationController {
 
     private final AuthService authService;
 
+    @WarnIfExecutionExceeds(threshold = 1000)
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

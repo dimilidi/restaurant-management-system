@@ -11,7 +11,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
   restaurant:
     depends_on: [db]
-    image: lidididi/restaurant:v2
+    image: lidididi/restaurant:v3
     ports:
       - "9090:9090"
     environment:
@@ -27,7 +27,7 @@ services:
       - cloudinary_api_secret=${CLOUDINARY_API_SECRET}
   categories:
     depends_on: [db]
-    image: lidididi/categories:v2
+    image: lidididi/categories:v3
     ports:
       - "8081:8081"
     environment:
