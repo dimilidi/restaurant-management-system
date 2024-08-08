@@ -15,11 +15,10 @@ Visit the website: [RMS](https://rms-management-system.netlify.app/)
 3. [Technologies](#3-technologies)
 4. [Setup](#4-setup)
 5. [Features](#5-features)
-6. [Core implementations](#6-core-implementations)
-7. [Bonus implementations](#7-bonus-implementations)
-8. [Screenshots](#8-screenshots)
-
-
+6. [API Documentation](#6-api-documentation)
+7. [Core implementations](#7-core-implementations)
+8. [Bonus implementations](#8-bonus-implementations)
+9. [Screenshots](#9-screenshots)
 
 ## 1. Prerequisites
 
@@ -205,8 +204,24 @@ Ensure the services are running by executing:
 - Have overview of all users and manage their status
 - Track, download, delete all bills
 
+## 6. API Documentation
 
-## 6. Core implementations
+The RMS application includes comprehensive API documentation using Swagger/OpenAPI. This documentation provides details about all available endpoints, request parameters, response formats, and possible status codes.
+
+Access the API Documentation
+Once the backend services are running, you can access the API documentation at the following URL:
+```
+http://localhost:9090/swagger-ui.html
+```
+This will open the Swagger UI interface, where you can explore the API, view detailed information about each endpoint, and use the "Try it out" feature to test the endpoints directly from the browser.
+
+Authorize Requests
+For endpoints that require authentication, you need to provide a Bearer token. To do this - click on the "Authorize" button in the Swagger UI.
+In the value field, enter your Bearer token in the format.
+Click "Authorize" and then "Close".
+This will attach the token to all subsequent requests, allowing you to test authenticated endpoints.
+
+## 7. Core implementations
 1) Security
 - Used standard Spring Security for managing users and roles
 2) Validation and Error Handling
@@ -223,14 +238,14 @@ Ensure the services are running by executing:
 - Unit & Integration tests with 60% coverage on business logic using JUnit 5 and Mockito
 
 
-## 7. Bonus implementations
+## 8. Bonus implementations
 1) Used Angular for the front-end.
 2) Hosted the application in a cloud environment - Azure.
 3) Used a file storage cloud API - Cloudinary.
 4) Used JWT authentication
 
 
-## 8. Screenshots
+## 9. Screenshots
 
 <img src='./restaurant_frontend/src/assets/screenshots/ss1.jpg' height='250' />
 <img src='./restaurant_frontend/src/assets/screenshots/ss2.jpg' height='250' />
