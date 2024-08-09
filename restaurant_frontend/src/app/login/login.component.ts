@@ -8,6 +8,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { GlobalConstants } from '../shared/global-constants';
 import { RegisterComponent } from '../register/register.component';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private snackbarService: SnackbarService,
     public dialogRef: MatDialogRef<LoginComponent>,
     private dialog: MatDialog,
-    private ngxService: NgxUiLoaderService
+    private ngxService: NgxUiLoaderService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +39,7 @@ export class LoginComponent implements OnInit {
       ],
       password: [null, [Validators.required]],
     });
+
   }
 
   handleSubmit() {

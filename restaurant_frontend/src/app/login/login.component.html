@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
-    <span>Login</span>
+    <span>{{ 'login.title' | translate }}</span>
     <button mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
     </button>
@@ -11,23 +11,23 @@
   <form [formGroup]="loginForm">
     <div fxFlex fxLayout="column">
       <mat-form-field appearance="outline" fxFlex>
-        <mat-label>Email</mat-label>
+        <mat-label>{{ 'login.email' | translate }}</mat-label>
         <input matInput formControlName="email" required />
         <mat-error>
-          <span *ngIf="loginForm.controls.email.errors?.required"
-            >This field is mandatory.</span
-          >
-          <span *ngIf="loginForm.controls.email.errors?.pattern"
-            >This field is invalid.</span
-          >
-          <span *ngIf="loginForm.controls.email.hasError('serverError')">{{
-            loginForm.controls.email.errors?.serverError
-          }}</span>
+          <span *ngIf="loginForm.controls.email.errors?.required">
+            {{ 'login.emailErrors.required' | translate }}
+          </span>
+          <span *ngIf="loginForm.controls.email.errors?.pattern">
+            {{ 'login.emailErrors.pattern' | translate }}
+          </span>
+          <span *ngIf="loginForm.controls.email.hasError('serverError')">
+            {{ loginForm.controls.email.errors?.serverError }}
+          </span>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" fxFlex>
-        <mat-label>Password</mat-label>
+        <mat-label>{{ 'login.password' | translate }}</mat-label>
         <input
           matInput
           [type]="hide ? 'password' : 'text'"
@@ -42,25 +42,25 @@
           [attr.aria-label]="hide ? 'Show password' : 'Hide password'"
           [attr.aria-pressed]="!hide"
         >
-          <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
         <mat-error>
-          <span *ngIf="loginForm.controls.password.errors?.required"
-            >This field is mandatory.</span
-          >
-          <span *ngIf="loginForm.controls.password.errors?.pattern"
-            >This field is invalid.</span
-          >
-          <span *ngIf="loginForm.controls.password.hasError('serverError')">{{
-            loginForm.controls.password.errors?.serverError
-          }}</span>
+          <span *ngIf="loginForm.controls.password.errors?.required">
+            {{ 'login.passwordErrors.required' | translate }}
+          </span>
+          <span *ngIf="loginForm.controls.password.errors?.pattern">
+            {{ 'login.passwordErrors.pattern' | translate }}
+          </span>
+          <span *ngIf="loginForm.controls.password.hasError('serverError')">
+            {{ loginForm.controls.password.errors?.serverError }}
+          </span>
         </mat-error>
       </mat-form-field>
     </div>
   </form>
   <div class="register">
-    <a (click)="openRegisterDialog()">Create Account</a>
-    <a (click)="openForgottenPasswordDialog()"> Forgotten Password </a>
+    <a (click)="openRegisterDialog()">{{ 'login.createAccount' | translate }}</a>
+    <a (click)="openForgottenPasswordDialog()">{{ 'login.forgotPassword' | translate }}</a>
   </div>
 </mat-dialog-content>
 
@@ -72,9 +72,9 @@
     (click)="handleSubmit()"
     [disabled]="!(loginForm.valid && loginForm.dirty)"
   >
-    <mat-icon>login</mat-icon>Login
+    <mat-icon>login</mat-icon>{{ 'login.loginButton' | translate }}
   </button>
   <button mat-raised-button color="warn" mat-dialog-close>
-    <mat-icon>cancel</mat-icon>Close
+    <mat-icon>cancel</mat-icon>{{ 'login.closeButton' | translate }}
   </button>
 </mat-dialog-actions>
