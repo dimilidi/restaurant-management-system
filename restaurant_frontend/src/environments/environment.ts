@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    apiUrl: "https://restaurant-restaurant.azuremicroservices.io"
+    apiUrl: "http://localhost:9090"
   };
 

@@ -49,7 +49,7 @@ const MENUITEMS = [
     name: 'Employees',
     type: 'link',
     icon: 'people',
-    role: 'ADMIN_ROLE',
+    role: 'ADMIN',
   },
 ];
 
