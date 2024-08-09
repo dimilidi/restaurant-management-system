@@ -10,4 +10,5 @@ public interface AuthService {
     UserDTO register(UserRegisterDTO userRegisterDTO);
 
     String login(UserLoginDTO userLoginDTO);
+
 }

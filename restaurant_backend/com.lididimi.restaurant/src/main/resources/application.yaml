@@ -67,3 +67,7 @@ cloudinary:
 
 bills.retention.period: P1Y
 
+jwt:
+  secret: ${jwt_key:WSdv1kEE1tCT1a8ihRSqfwMNzlPBq8IWSdv1kEE1tCT1a8ihRSqfwMNzlPBq8IWSdv1kEE1tCT1a8ihRSqfwMNzlPBq8I}
+  expiration: ${jwt_expiration:36000000}
+

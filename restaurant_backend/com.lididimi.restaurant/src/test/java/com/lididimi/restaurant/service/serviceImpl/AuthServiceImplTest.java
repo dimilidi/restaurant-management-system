@@ -1,9 +1,9 @@
 package com.lididimi.restaurant.service.serviceImpl;
 
+import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
-import com.lididimi.restaurant.jwt.JwtUtils;
-import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
+import com.lididimi.restaurant.model.user.RestaurantUserDetails;
 import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
 import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
@@ -25,6 +25,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -54,7 +56,7 @@ public class AuthServiceImplTest {
     private RestaurantUserDetailsService restaurantUserDetailsService;
 
     @Mock
-    private JwtUtils jwtUtils;
+    private JwtServiceImpl jwtService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -74,6 +76,29 @@ public class AuthServiceImplTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    // Helper method for common setup
+    private RestaurantUserDetails commonSetup(String email, StatusNameEnum status) {
+        // Mock authentication
+        Authentication auth = mock(Authentication.class);
+
+        // Mock user details with specified status
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        RestaurantUserDetails restaurantUserDetails = new RestaurantUserDetails(
+                email,
+                "Test User",
+                "password",
+                status,
+                authorities
+        );
+
+        // Mocking Spring Security components
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
+        when(auth.isAuthenticated()).thenReturn(true);
+        when(restaurantUserDetailsService.getUserDetails()).thenReturn(restaurantUserDetails);
+
+        return restaurantUserDetails;
     }
 
     @Test
@@ -110,7 +135,6 @@ public class AuthServiceImplTest {
         assertEquals("test@example.com", userDTO.getEmail()); // Ensure email matches
     }
 
-
     @Test
     public void testRegister_UserAlreadyExists() {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
@@ -123,59 +147,40 @@ public class AuthServiceImplTest {
 
     @Test
     public void testLogin_Success() {
+        // Use common setup
+        RestaurantUserDetails restaurantUserDetails = commonSetup("test@example.com", StatusNameEnum.ACTIVE);
+
+        // Mock JWT token generation
+        when(jwtService.generateToken(anyString(), anyString(), anyList())).thenReturn("token");
+
         // Given
         UserLoginDTO userLoginDTO = new UserLoginDTO();
         userLoginDTO.setEmail("test@example.com");
         userLoginDTO.setPassword("password");
-
-        // Mock authentication
-        Authentication auth = mock(Authentication.class);
-
-        // Mock user entity
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("test@example.com");
-        userEntity.setName("Test User");
-        userEntity.setStatus(StatusNameEnum.ACTIVE);
-
-        // Mock role entity
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setName(UserRoleNameEnum.ADMIN); // Ensure this is set properly
-
-        userEntity.setRoles(List.of(roleEntity));
-
-        // Mocking Spring Security components
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
-        when(auth.isAuthenticated()).thenReturn(true);
-        when(restaurantUserDetailsService.getUserDetails()).thenReturn(userEntity);
-
-        // Mock JWT token generation
-        when(jwtUtils.generateToken(anyString(), anyString(), anyList())).thenReturn("token");
 
         // When
         String token = authService.login(userLoginDTO);
 
         // Then
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        assertEquals("token", token); // Ensure token matches the expected value
+        verify(jwtService, times(1)).generateToken(anyString(), anyString(), anyList());
+        assertEquals("token", token);
     }
-
 
     @Test
     public void testLogin_UserNotActive() {
+        // Use common setup with inactive user
+        commonSetup("test@example.com", StatusNameEnum.INACTIVE);
+
+        // Given
         UserLoginDTO userLoginDTO = new UserLoginDTO();
         userLoginDTO.setEmail("test@example.com");
         userLoginDTO.setPassword("password");
 
-        Authentication auth = mock(Authentication.class);
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("test@example.com");
-        userEntity.setStatus(StatusNameEnum.INACTIVE);
-
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
-        when(auth.isAuthenticated()).thenReturn(true);
-        when(restaurantUserDetailsService.getUserDetails()).thenReturn(userEntity);
-
+        // When & Then
         assertThrows(BadCredentialsException.class, () -> authService.login(userLoginDTO));
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(restaurantUserDetailsService, times(1)).getUserDetails();
     }
 
     @Test
@@ -187,7 +192,45 @@ public class AuthServiceImplTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
-        assertThrows(BadCredentialsException.class, () -> authService.login(userLoginDTO));
+        // When & Then
+        BadCredentialsException thrownException = assertThrows(BadCredentialsException.class, () -> authService.login(userLoginDTO));
+        assertEquals("Invalid credentials", thrownException.getMessage());
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+    }
+
+    @Test
+    public void testLogin_AuthenticationFailsWithoutThrowingException() {
+        // Given
+        UserLoginDTO userLoginDTO = new UserLoginDTO();
+        userLoginDTO.setEmail("test@example.com");
+        userLoginDTO.setPassword("password");
+
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(false);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+
+        // When & Then
+        BadCredentialsException thrownException = assertThrows(BadCredentialsException.class, () -> authService.login(userLoginDTO));
+        assertEquals(RestaurantConstants.BAD_CREDENTIALS, thrownException.getMessage());
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(restaurantUserDetailsService, never()).getUserDetails(); // Ensure user details are not fetched
+    }
+
+    @Test
+    public void testLogin_UnexpectedError() {
+        // Given
+        UserLoginDTO userLoginDTO = new UserLoginDTO();
+        userLoginDTO.setEmail("test@example.com");
+        userLoginDTO.setPassword("password");
+
+        // Simulate unexpected exception during authentication
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new RuntimeException("Unexpected error"));
+
+        // When & Then
+        BadCredentialsException thrownException = assertThrows(BadCredentialsException.class, () -> authService.login(userLoginDTO));
+        assertEquals(RestaurantConstants.BAD_CREDENTIALS, thrownException.getMessage());
+        verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
 }
-

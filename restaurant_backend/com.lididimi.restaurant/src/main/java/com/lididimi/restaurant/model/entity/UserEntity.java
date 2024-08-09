@@ -2,6 +2,7 @@ package com.lididimi.restaurant.model.entity;
 
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import lombok.Data;
+import lombok.Getter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Getter
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "users")

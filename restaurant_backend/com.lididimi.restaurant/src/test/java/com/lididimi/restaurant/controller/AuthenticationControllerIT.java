@@ -1,9 +1,9 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
 import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
-import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,14 @@ public class AuthenticationControllerIT {
     private UserLoginDTO userLoginDTO;
     private UserDTO userDTO;
 
-
     @BeforeEach
     public void setUp() {
         userRegisterDTO = new UserRegisterDTO();
         userRegisterDTO.setEmail("testuser@example.com");
         userRegisterDTO.setPassword("password123");
+        userRegisterDTO.setConfirmPassword("password123");
         userRegisterDTO.setName("Test User");
+        userRegisterDTO.setContactNumber("0123456789");
 
         userLoginDTO = new UserLoginDTO();
         userLoginDTO.setEmail("testuser@example.com");
@@ -53,12 +54,8 @@ public class AuthenticationControllerIT {
         userDTO.setEmail("testuser@example.com");
     }
 
-
     @Test
     public void testRegister_Success() throws Exception {
-        userRegisterDTO.setContactNumber("0123456789");
-        userRegisterDTO.setConfirmPassword("password123");
-
         when(authService.register(any(UserRegisterDTO.class))).thenReturn(userDTO);
 
         mockMvc.perform(post("/auth/register")
@@ -68,7 +65,6 @@ public class AuthenticationControllerIT {
                 .andExpect(jsonPath("$.message").value("Successfully registered."))
                 .andExpect(jsonPath("$.data.email").value("testuser@example.com"));
     }
-
 
     @Test
     public void testRegister_ValidationError() throws Exception {

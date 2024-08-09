@@ -1,7 +1,7 @@
 package com.lididimi.restaurant.config;
 
 import com.cloudinary.Cloudinary;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +18,8 @@ class CloudinaryConfigTest {
     @Autowired
     private CloudinaryConfig cloudinaryConfig;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
         System.setProperty("cloudinary.cloud-name", "your_cloud_name");
         System.setProperty("cloudinary.api-key", "your_api_key");
         System.setProperty("cloudinary.api-secret", "your_api_secret");
@@ -30,10 +30,6 @@ class CloudinaryConfigTest {
         String cloudName = env.getProperty("cloudinary.cloud-name");
         String apiKey = env.getProperty("cloudinary.api-key");
         String apiSecret = env.getProperty("cloudinary.api-secret");
-
-        System.out.println("Cloud Name: " + cloudName);
-        System.out.println("API Key: " + apiKey);
-        System.out.println("API Secret: " + apiSecret);
 
         assertNotNull(cloudName, "Cloudinary cloud-name should not be null");
         assertNotNull(apiKey, "Cloudinary api-key should not be null");

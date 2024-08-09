@@ -1,2 +1,5 @@
-package com.lididimi.restaurant.service;public interface MonitoringService {
+package com.lididimi.restaurant.service;
+
+public interface MonitoringService {
+    void increaseProductSearches();
 }

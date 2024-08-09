@@ -3,7 +3,6 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
-import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
 import com.lididimi.restaurant.model.dto.email.EmailDTO;
 import com.lididimi.restaurant.model.entity.PasswordResetToken;
 import com.lididimi.restaurant.model.entity.UserEntity;

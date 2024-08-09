@@ -121,47 +121,6 @@ public class ReportServiceImplTest {
         assertTrue(topEmployeesList.isEmpty());
     }
 
-    /*@Test
-    public void testFindRegularGuestsWithFavoriteProducts_Success() {
-        // Arrange
-        LocalDate lastYearDate = LocalDate.now().minusYears(1);
-        Instant lastYear = lastYearDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        List<Map<String, Object>> regularGuests = new ArrayList<>();
-        Map<String, Object> guest1 = new HashMap<>();
-        guest1.put("email", "guest1@example.com");
-        guest1.put("name", "Guest One");
-        guest1.put("billCount", 400L);
-        regularGuests.add(guest1);
-
-        when(billRepository.findRegularGuestsWithAtLeast365Bills(lastYear)).thenReturn(regularGuests);
-        when(billRepository.findByEmail(anyString())).thenReturn(Optional.of(Collections.singletonList(new BillEntity())));
-        when(modelMapper.map(any(BillEntity.class), eq(BillDTO.class))).thenReturn(new BillDTO());
-
-        // Mock Gson behavior
-        Gson gson = new Gson();
-        JsonArray jsonArray = new JsonArray();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", "Pizza Margarita");
-        jsonObject.addProperty("quantity", "5");
-        jsonArray.add(jsonObject);
-        when(billRepository.findByEmail(anyString())).thenReturn(Optional.of(Collections.singletonList(new BillEntity() {
-            @Override
-            public String getProductDetails() {
-                return gson.toJson(jsonArray);
-            }
-        })));
-
-        // Act
-        List<GuestDTO> guests = reportService.findRegularGuestsWithFavoriteProducts();
-
-        // Assert
-        assertNotNull(guests);
-        assertEquals(1, guests.size());
-        assertEquals("guest1@example.com", guests.get(0).getEmail());
-        assertEquals("Guest One", guests.get(0).getName());
-        assertEquals(400L, guests.get(0).getBillCount());
-        assertEquals(Collections.singletonList("Pizza Margarita"), guests.get(0).getTopProducts());
-    }*/
 
     @Test
     public void testFindRegularGuestsWithFavoriteProducts_Success() {

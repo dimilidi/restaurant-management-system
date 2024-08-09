@@ -3,9 +3,6 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
-import com.lididimi.restaurant.jwt.JwtFilter;
-import com.lididimi.restaurant.jwt.JwtUtils;
-import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
 import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserLoginDTO;
 import com.lididimi.restaurant.model.dto.user.UserRegisterDTO;
@@ -13,12 +10,11 @@ import com.lididimi.restaurant.model.entity.RoleEntity;
 import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
-import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
+import com.lididimi.restaurant.model.user.RestaurantUserDetails;
 import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.AuthService;
-import com.lididimi.restaurant.utils.EmailUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.lididimi.restaurant.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -30,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -40,26 +35,26 @@ public class AuthServiceImpl implements AuthService {
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
     public final RestaurantUserDetailsService restaurantUserDetailsService;
-    private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
-    private final JwtFilter jwtFilter;
-    private final EmailUtils emailUtils;
-    private final PasswordResetTokenRepository tokenRepository;
     private final RoleRepository roleRepository;
-    private final HttpServletRequest request;
+    private final JwtService jwtService;
 
-    public AuthServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, RestaurantUserDetailsService restaurantUserDetailsService, JwtUtils jwtUtils, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, EmailUtils emailUtils, PasswordResetTokenRepository tokenRepository, RoleRepository roleRepository, HttpServletRequest request) {
+    public AuthServiceImpl(
+            UserRepository userRepository,
+            ModelMapper modelMapper,
+            AuthenticationManager authenticationManager,
+            RestaurantUserDetailsService restaurantUserDetailsService,
+            PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository,
+           JwtService jwtService
+    ) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
         this.restaurantUserDetailsService = restaurantUserDetailsService;
-        this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
-        this.jwtFilter = jwtFilter;
-        this.emailUtils = emailUtils;
-        this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
-        this.request = request;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -89,26 +84,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(UserLoginDTO userLoginDTO) {
         try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
-            );
-
-            if (auth.isAuthenticated()) {
-                log.info("Authentication Success");
-                UserEntity userEntity = restaurantUserDetailsService.getUserDetails();
-                if (StatusNameEnum.ACTIVE.equals(userEntity.getStatus())) {
-                    log.info("Active User");
-                    List<String> roles = userEntity.getRoles().stream()
-                            .map(roleEntity -> roleEntity.getName().name())
-                            .collect(Collectors.toList());
-
-                    String token = jwtUtils.generateToken(userEntity.getEmail(), userEntity.getName(), roles);
-
-                    return token;
-                } else {
-                    log.info("Wait for admin approval");
-                    throw new BadCredentialsException(RestaurantConstants.UNAPPROVED);
-                }
+            Authentication authentication = performAuthentication(userLoginDTO);
+            if (authentication.isAuthenticated()) {
+                RestaurantUserDetails currentUser = restaurantUserDetailsService.getUserDetails();
+                return processAuthenticatedUser(currentUser);
             } else {
                 log.error("Authentication Failed");
                 throw new BadCredentialsException(RestaurantConstants.BAD_CREDENTIALS);
@@ -122,6 +101,25 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    private Authentication performAuthentication(UserLoginDTO userLoginDTO) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
+        );
+    }
+
+    private String processAuthenticatedUser(RestaurantUserDetails currentUser) {
+        if (StatusNameEnum.ACTIVE.equals(currentUser.getStatus())) {
+            log.info("Active User");
+            log.info(currentUser.toString());
+
+            List<String> roles = currentUser.getRoles();
+            log.info("Authorities {}", currentUser.getAuthorities().stream().toList());
+
+            return jwtService.generateToken(currentUser.getUsername(), currentUser.getName(), roles);
+        } else {
+            log.info("Wait for admin approval");
+            throw new BadCredentialsException(RestaurantConstants.UNAPPROVED);
+        }
+    }
+
 }
-
-

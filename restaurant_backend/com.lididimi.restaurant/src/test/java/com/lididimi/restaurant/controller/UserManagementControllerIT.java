@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.model.dto.user.UserChangePasswordDTO;
 import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserUpdateStatusDTO;
@@ -82,13 +83,13 @@ public class UserManagementControllerIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testUpdateUserStatus_Success() throws Exception {
-        when(userService.update(any(UserUpdateStatusDTO.class))).thenReturn("User updated successfully");
+        when(userService.update(any(UserUpdateStatusDTO.class))).thenReturn(RestaurantConstants.USER_UPDATE_SUCCESS);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userUpdateStatusDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User updated successfully"));
+                .andExpect(jsonPath("$.message").value(RestaurantConstants.USER_UPDATE_SUCCESS));
     }
 
     @Test
@@ -106,13 +107,13 @@ public class UserManagementControllerIT {
     @Test
     @WithMockUser(roles = "USER")
     public void testChangePassword_Success() throws Exception {
-        when(userService.changePassword(any(UserChangePasswordDTO.class))).thenReturn("Password changed successfully");
+        when(userService.changePassword(any(UserChangePasswordDTO.class))).thenReturn(RestaurantConstants.PASSWORD_UPDATE_SUCCESS);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/changePassword")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userChangePasswordDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Password changed successfully"));
+                .andExpect(jsonPath("$.message").value(RestaurantConstants.PASSWORD_UPDATE_SUCCESS));
     }
 
 

@@ -3,7 +3,7 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
-import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.security.JwtFilter;
 import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.dto.product.ProductAddDTO;
 import com.lididimi.restaurant.model.dto.product.ProductDTO;

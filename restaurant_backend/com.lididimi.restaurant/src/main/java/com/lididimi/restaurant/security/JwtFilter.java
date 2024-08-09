@@ -1,5 +1,7 @@
-package com.lididimi.restaurant.jwt;
+package com.lididimi.restaurant.security;
 
+import com.lididimi.restaurant.service.JwtService;
+import com.lididimi.restaurant.service.serviceImpl.RestaurantUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,18 +14,18 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 
 @Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    private final JwtUtils jwtUtils;
-    private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
+    private final RestaurantUserDetailsService restaurantUserDetailsService;
     private String username;
 
-    public JwtFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
+    public JwtFilter(JwtService jwtService, JwtService jwtService1, RestaurantUserDetailsService restaurantUserDetailsService) {
+        this.jwtService = jwtService;
+        this.restaurantUserDetailsService = restaurantUserDetailsService;
     }
 
 
@@ -40,13 +42,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.warn("JWT token is empty");
             } else {
                 try {
-                    username = jwtUtils.extractUsername(jwt);
+                    username = jwtService.extractUsername(jwt);
                     log.info("JWT token received in request: {}", jwt);
 
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                        UserDetails userDetails = this.restaurantUserDetailsService.loadUserByUsername(username);
 
-                        if (jwtUtils.validateToken(jwt, userDetails)) {
+                        if (jwtService.validateToken(jwt, userDetails)) {
                             // Set up Spring Security context.
                             UsernamePasswordAuthenticationToken authenticationToken =
                                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -81,5 +83,4 @@ public class JwtFilter extends OncePerRequestFilter {
     public String currentUser() {
         return username;
     }
-
 }

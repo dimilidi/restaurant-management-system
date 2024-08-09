@@ -3,6 +3,7 @@ package com.lididimi.restaurant.model.entity;
 import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 

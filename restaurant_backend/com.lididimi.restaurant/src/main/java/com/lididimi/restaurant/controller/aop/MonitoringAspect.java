@@ -16,10 +16,7 @@ import java.lang.reflect.Method;
 @Component
 public class MonitoringAspect {
 
-    @Pointcut("@annotation(WarnIfExecutionExceeds)")
-    void onWarnIfExecutionTimeExceeds() {}
-
-    @Around("onWarnIfExecutionTimeExceeds()")
+    @Around("Pointcuts.onWarnIfExecutionTimeExceeds()")
     Object monitorExecutionTime(ProceedingJoinPoint pjp) throws Throwable {
         WarnIfExecutionExceeds annotation = getAnnotation(pjp);
 

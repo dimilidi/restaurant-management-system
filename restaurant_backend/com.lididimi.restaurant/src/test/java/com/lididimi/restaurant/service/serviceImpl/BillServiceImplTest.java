@@ -4,7 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.lididimi.restaurant.config.RetentionProperties;
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.security.JwtFilter;
 import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.model.enums.PaymentMethodNameEnum;
@@ -17,10 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.Period;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -49,6 +46,7 @@ public class BillServiceImplTest {
     @Mock
     private RetentionProperties retentionProperties;
 
+    @Mock
     private Clock clock;
 
     @InjectMocks
@@ -58,7 +56,7 @@ public class BillServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        clock = Clock.fixed(Instant.parse("2024-08-06T00:00:50.004Z"), ZoneId.of("Europe/Berlin"));
+
         billDTO = new BillDTO();
         billDTO.setUuid("12345");
         billDTO.setName("John Doe");
@@ -79,7 +77,15 @@ public class BillServiceImplTest {
     @Test
     public void testCleanupOldBills() {
         // Arrange
-        Instant expectedCutoffDate = Instant.parse("2023-08-06T00:00:00.000Z");
+        Instant fixedInstant = Instant.parse("2024-08-08T00:00:00Z");
+        Clock fixedClock = Clock.fixed(fixedInstant, ZoneId.of("Europe/Berlin"));
+        when(clock.instant()).thenReturn(fixedInstant);
+        when(clock.getZone()).thenReturn(ZoneId.of("Europe/Berlin"));
+
+        // Calculate expected cutoff date
+        LocalDate now = LocalDate.now(fixedClock);
+        LocalDate cutoffLocalDate = now.minus(Period.ofYears(1));
+        Instant expectedCutoffDate = cutoffLocalDate.atStartOfDay(ZoneId.of(fixedClock.getZone().getId())).toInstant();
 
         // Act
         billService.cleanupOldBills();
@@ -149,8 +155,6 @@ public class BillServiceImplTest {
         verify(billRepository, times(1)).findById(id);
         verify(billRepository, never()).deleteById(id);
     }
-
-
 }
 
 

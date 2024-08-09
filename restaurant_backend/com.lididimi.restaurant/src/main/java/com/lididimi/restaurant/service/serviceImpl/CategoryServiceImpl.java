@@ -5,7 +5,7 @@ import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.common.SomethingWentWrongException;
 import com.lididimi.restaurant.exception.common.UnauthorizedAccessException;
 import com.lididimi.restaurant.exception.user.AlreadyExistsException;
-import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.security.JwtFilter;
 import com.lididimi.restaurant.model.dto.category.CategoryDTO;
 import com.lididimi.restaurant.model.entity.ProductEntity;
 import com.lididimi.restaurant.repository.ProductRepository;

@@ -1,6 +1,6 @@
 package com.lididimi.restaurant.config;
 
-import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.security.JwtFilter;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +50,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
     @Bean
     PasswordEncoder passwordEncoder() {

@@ -43,7 +43,7 @@ public class BillControllerIT {
 
     @BeforeEach
     public void setUp() {
-        sampleBillDTO = new BillDTO(); // Initialize with any required data
+        sampleBillDTO = new BillDTO();
 
         // Example setups for `getBills`
         when(billService.getBills()).thenReturn(Collections.singletonList(sampleBillDTO));

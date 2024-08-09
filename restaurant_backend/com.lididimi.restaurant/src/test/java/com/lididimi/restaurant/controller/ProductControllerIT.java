@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -106,36 +105,36 @@ public class ProductControllerIT {
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testUpdateProduct() throws Exception {
-        when(productService.updateProduct(any(ProductDTO.class))).thenReturn("Product updated successfully");
+        when(productService.updateProduct(any(ProductDTO.class))).thenReturn(RestaurantConstants.PRODUCT_UPDATE_SUCCESS);
 
         mockMvc.perform(post("/products/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Product updated successfully"));
+                .andExpect(jsonPath("$.message").value(RestaurantConstants.PRODUCT_UPDATE_SUCCESS));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testDeleteProduct() throws Exception {
-        when(productService.deleteProduct(anyLong())).thenReturn("Product deleted successfully");
+        when(productService.deleteProduct(anyLong())).thenReturn(RestaurantConstants.PRODUCT_DELETE_SUCCESS);
 
         mockMvc.perform(delete("/products/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Product deleted successfully"));
+                .andExpect(jsonPath("$.message").value(RestaurantConstants.PRODUCT_DELETE_SUCCESS));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     public void testUpdateStatus() throws Exception {
-        when(productService.updateStatus(any(ProductDTO.class))).thenReturn("Product status updated successfully");
+        when(productService.updateStatus(any(ProductDTO.class))).thenReturn(RestaurantConstants.PRODUCT_UPDATE_SUCCESS);
 
         mockMvc.perform(patch("/products/updateStatus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Product status updated successfully"));
+                .andExpect(jsonPath("$.message").value(RestaurantConstants.PRODUCT_UPDATE_SUCCESS));
     }
 
     @Test

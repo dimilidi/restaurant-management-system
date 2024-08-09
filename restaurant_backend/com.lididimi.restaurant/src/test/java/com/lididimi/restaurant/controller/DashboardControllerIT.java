@@ -1,6 +1,5 @@
 package com.lididimi.restaurant.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lididimi.restaurant.service.DashboardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,8 +48,8 @@ public class DashboardControllerIT {
         mockMvc.perform(get("/dashboard/details")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value())) // Assuming the status field is in SuccessResponse
-                .andExpect(jsonPath("$.message").value("")) // Assuming the message field is empty
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.message").value(""))
                 .andExpect(jsonPath("$.data.category").value(10))
                 .andExpect(jsonPath("$.data.product").value(20))
                 .andExpect(jsonPath("$.data.bill").value(30));

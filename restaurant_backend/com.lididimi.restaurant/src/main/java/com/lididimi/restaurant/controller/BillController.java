@@ -1,6 +1,7 @@
 package com.lididimi.restaurant.controller;
 
 import com.lididimi.restaurant.constants.RestaurantConstants;
+import com.lididimi.restaurant.controller.aop.WarnIfExecutionExceeds;
 import com.lididimi.restaurant.model.response.ErrorResponse;
 import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.response.SuccessResponse;
@@ -25,6 +26,7 @@ public class BillController {
         this.billService = billService;
     }
 
+    @WarnIfExecutionExceeds(threshold = 800)
     @PostMapping("/generateReport")
     public ResponseEntity<?> generateReport(@RequestBody @Valid BillDTO billDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -52,8 +54,6 @@ public class BillController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
-
 
 
     @DeleteMapping("/delete/{id}")

@@ -39,8 +39,5 @@ public class RestaurantConstants {
     public static final String BILL_DELETE_SUCCESS = String.format(MESSAGE_TEMPLATE, "Bill deleted successfully.");
     public static final String PDF_GENERATION_FAILURE = String.format(MESSAGE_TEMPLATE, "Failed to generate PDF");
 
-   public static final String STORE_LOCATION = "C:\\Users\\dimit\\Documents\\SOFTUNI\\restaurant_pdf";
-    //  public static final String STORE_LOCATION = "restaurant_pdf";
-
 }
 

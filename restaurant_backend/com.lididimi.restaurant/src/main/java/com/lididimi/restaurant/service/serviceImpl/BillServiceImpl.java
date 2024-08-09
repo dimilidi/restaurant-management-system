@@ -8,7 +8,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.lididimi.restaurant.config.RetentionProperties;
 import com.lididimi.restaurant.constants.RestaurantConstants;
-import com.lididimi.restaurant.jwt.JwtFilter;
+import com.lididimi.restaurant.security.JwtFilter;
 import com.lididimi.restaurant.model.dto.bill.BillDTO;
 import com.lididimi.restaurant.model.entity.BillEntity;
 import com.lididimi.restaurant.repository.BillRepository;

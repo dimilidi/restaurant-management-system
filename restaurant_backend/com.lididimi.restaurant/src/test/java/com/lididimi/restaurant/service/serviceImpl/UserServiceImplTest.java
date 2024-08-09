@@ -3,9 +3,7 @@ package com.lididimi.restaurant.service.serviceImpl;
 import com.lididimi.restaurant.constants.RestaurantConstants;
 import com.lididimi.restaurant.exception.common.ObjectNotFoundException;
 import com.lididimi.restaurant.exception.user.BadCredentialsException;
-import com.lididimi.restaurant.jwt.JwtFilter;
-import com.lididimi.restaurant.jwt.JwtUtils;
-import com.lididimi.restaurant.jwt.RestaurantUserDetailsService;
+import com.lididimi.restaurant.security.JwtFilter;
 import com.lididimi.restaurant.model.dto.user.UserChangePasswordDTO;
 import com.lididimi.restaurant.model.dto.user.UserDTO;
 import com.lididimi.restaurant.model.dto.user.UserUpdateStatusDTO;
@@ -49,7 +47,7 @@ public class UserServiceImplTest {
     private RestaurantUserDetailsService restaurantUserDetailsService;
 
     @Mock
-    private JwtUtils jwtUtils;
+    private JwtServiceImpl jwtService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
