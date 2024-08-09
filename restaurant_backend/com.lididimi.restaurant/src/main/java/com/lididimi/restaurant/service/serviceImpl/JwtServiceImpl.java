@@ -36,7 +36,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(String email, String name, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("name", name);
-        claims.put("roles", roles.stream().map(role -> "ROLE_" + role).collect(Collectors.toList()));
+        claims.put("roles", roles);
 
         return createToken(claims, email);
     }

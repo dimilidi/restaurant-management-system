@@ -25,8 +25,6 @@ public class AppBeanConfig {
         DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
 
-        System.out.println("++++++++ Initializing DataSource");
-
         if (categoryRepository.count() == 0) {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
             populator.addScript(resourceLoader.getResource("classpath:data.sql"));

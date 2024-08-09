@@ -69,9 +69,7 @@ public class RestaurantUserDetailsService implements UserDetailsService {
     }
 
     private static GrantedAuthority mapToGrantedAuth(UserRoleNameEnum role) {
-        return new SimpleGrantedAuthority(
-                 role.toString()
-        );
+        return new SimpleGrantedAuthority("ROLE_" + role.toString());
     }
 
 

@@ -157,8 +157,8 @@ The Docker images for the Restaurant and Categories services are available on Do
 #### 1. Pull Docker Images
 You can pull the Docker images from Docker Hub using the following commands:
 ```
-docker pull lidididi/restaurant:v3
-docker pull lidididi/categories:v3
+docker pull lidididi/restaurant:v6
+docker pull lidididi/categories:v4
 ```
 
 #### 2. Run Services with Docker Compose
