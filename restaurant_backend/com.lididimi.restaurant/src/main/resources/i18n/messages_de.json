@@ -24,5 +24,65 @@
       "description": "Schokoladenkuchen ist ein beliebtes Dessert, das die Elemente eines Schokoladenkuchens und eines Soufflés kombiniert. Sein Name stammt von der flüssigen Schokoladenzentrale des Desserts und ist auch bekannt als Moelleux au chocolat, Lava-Kuchen oder einfach Lava-Kuchen."
     },
     "callToAction": "Werde Teil RMS!"
+  },
+
+  "login": {
+    "title": "Anmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort ausblenden",
+    "createAccount": "Konto erstellen",
+    "forgotPassword": "Passwort vergessen",
+    "loginButton": "Anmelden",
+    "closeButton": "Schließen",
+    "emailErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig.",
+      "serverError": "Serverfehler: E-Mail"
+    },
+    "passwordErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig.",
+      "serverError": "Serverfehler: Passwort"
+    }
+  },
+  "register": {
+    "title": "Registrieren",
+    "name": "Name",
+    "contactNumber": "Telefonnummer",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort ausblenden",
+    "registerButton": "Registrieren",
+    "closeButton": "Schließen",
+    "nameErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig.",
+      "serverError": "Serverfehler: Name"
+    },
+    "contactNumberErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig.",
+      "serverError": "Serverfehler: Telefonnummer"
+    },
+    "emailErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig.",
+      "serverError": "Serverfehler: E-Mail"
+    },
+    "passwordErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "serverError": "Serverfehler: Passwort"
+    },
+    "confirmPasswordErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "serverError": "Serverfehler: Passwortbestätigung"
+    },
+    "passwordMismatch": "Neues Passwort und Passwortbestätigung stimmen nicht überein."
   }
 }
+
+

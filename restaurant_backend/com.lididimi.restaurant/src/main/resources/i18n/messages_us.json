@@ -24,5 +24,64 @@
       "description": "Molten chocolate cake is a popular dessert that combines the elements of a chocolate cake and a soufflé. Its name derives from the dessert's liquid chocolate center, and it is also known as chocolate moelleux, chocolate lava cake, or simply lava cake."
     },
     "callToAction": "Join RMS!"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show Password",
+    "hidePassword": "Hide Password",
+    "createAccount": "Create Account",
+    "forgotPassword": "Forgot Password",
+    "loginButton": "Login",
+    "closeButton": "Close",
+    "emailErrors": {
+      "required": "This field is required.",
+      "pattern": "This field is invalid.",
+      "serverError": "Server error: Email"
+    },
+    "passwordErrors": {
+      "required": "This field is required.",
+      "pattern": "This field is invalid.",
+      "serverError": "Server error: Password"
+    }
+  },
+  "register": {
+    "title": "Register",
+    "name": "Name",
+    "contactNumber": "Contact Number",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "showPassword": "Show Password",
+    "hidePassword": "Hide Password",
+    "registerButton": "Register",
+    "closeButton": "Close",
+    "nameErrors": {
+      "required": "This field is mandatory.",
+      "pattern": "This field is invalid.",
+      "serverError": "Server error: Name"
+    },
+    "contactNumberErrors": {
+      "required": "This field is mandatory.",
+      "pattern": "This field is invalid.",
+      "serverError": "Server error: Contact Number"
+    },
+    "emailErrors": {
+      "required": "This field is mandatory.",
+      "pattern": "This field is invalid.",
+      "serverError": "Server error: Email"
+    },
+    "passwordErrors": {
+      "required": "This field is mandatory.",
+      "serverError": "Server error: Password"
+    },
+    "confirmPasswordErrors": {
+      "required": "This field is mandatory.",
+      "serverError": "Server error: Confirm Password"
+    },
+    "passwordMismatch": "New password and confirm password do not match."
   }
 }
+
+

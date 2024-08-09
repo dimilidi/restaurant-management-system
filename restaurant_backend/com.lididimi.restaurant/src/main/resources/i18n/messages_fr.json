@@ -24,5 +24,64 @@
       "description": "Le gâteau au chocolat fondant est un dessert populaire qui combine les éléments d'un gâteau au chocolat et d'un soufflé. Son nom vient du centre de chocolat liquide du dessert, et il est également connu sous le nom de moelleux au chocolat, de gâteau au chocolat lava ou simplement de gâteau lava."
     },
     "callToAction": "Faites partie de RMS!"
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "createAccount": "Créer un compte",
+    "forgotPassword": "Mot de passe oublié",
+    "loginButton": "Se connecter",
+    "closeButton": "Fermer",
+    "emailErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide.",
+      "serverError": "Erreur serveur : E-mail"
+    },
+    "passwordErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide.",
+      "serverError": "Erreur serveur : Mot de passe"
+    }
+  },
+  "register": {
+    "title": "Inscription",
+    "name": "Nom",
+    "contactNumber": "Numéro de téléphone",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "registerButton": "S'inscrire",
+    "closeButton": "Fermer",
+    "nameErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide.",
+      "serverError": "Erreur serveur : Nom"
+    },
+    "contactNumberErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide.",
+      "serverError": "Erreur serveur : Numéro de téléphone"
+    },
+    "emailErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide.",
+      "serverError": "Erreur serveur : E-mail"
+    },
+    "passwordErrors": {
+      "required": "Ce champ est obligatoire.",
+      "serverError": "Erreur serveur : Mot de passe"
+    },
+    "confirmPasswordErrors": {
+      "required": "Ce champ est obligatoire.",
+      "serverError": "Erreur serveur : Confirmation du mot de passe"
+    },
+    "passwordMismatch": "Le nouveau mot de passe et la confirmation du mot de passe ne correspondent pas."
   }
+}
+
 }
