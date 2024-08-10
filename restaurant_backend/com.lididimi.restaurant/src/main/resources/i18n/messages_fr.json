@@ -81,7 +81,19 @@
       "serverError": "Erreur serveur : Confirmation du mot de passe"
     },
     "passwordMismatch": "Le nouveau mot de passe et la confirmation du mot de passe ne correspondent pas."
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié ?",
+    "email": "E-mail",
+    "sendPasswordButton": "Envoyer le mot de passe",
+    "closeButton": "Fermer",
+    "emailErrors": {
+      "required": "Ce champ est obligatoire.",
+      "pattern": "Ce champ est invalide."
+    }
   }
 }
 
-}
+
+
+

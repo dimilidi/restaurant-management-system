@@ -82,7 +82,19 @@
       "serverError": "Serverfehler: Passwortbestätigung"
     },
     "passwordMismatch": "Neues Passwort und Passwortbestätigung stimmen nicht überein."
+  },
+  "forgotPassword": {
+    "title": "Passwort vergessen?",
+    "email": "E-Mail",
+    "sendPasswordButton": "Passwort senden",
+    "closeButton": "Schließen",
+    "emailErrors": {
+      "required": "Dieses Feld ist erforderlich.",
+      "pattern": "Dieses Feld ist ungültig."
+    }
   }
 }
+
+
 
 

@@ -81,7 +81,19 @@
       "serverError": "Server error: Confirm Password"
     },
     "passwordMismatch": "New password and confirm password do not match."
+  },
+  "forgotPassword": {
+    "title": "Forgot Password?",
+    "email": "Email",
+    "sendPasswordButton": "Send Password",
+    "closeButton": "Close",
+    "emailErrors": {
+      "required": "This field is required.",
+      "pattern": "This field is invalid."
+    }
   }
 }
+
+
 
 
