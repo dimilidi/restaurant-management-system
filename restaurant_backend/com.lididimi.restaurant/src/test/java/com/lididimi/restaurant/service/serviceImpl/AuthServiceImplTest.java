@@ -14,7 +14,6 @@ import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.RoleRepository;
 import com.lididimi.restaurant.repository.UserRepository;
-import com.lididimi.restaurant.utils.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +61,7 @@ public class AuthServiceImplTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private EmailUtils emailUtils;
+    private EmailServiceImpl emailUtils;
 
     @Mock
     private PasswordResetTokenRepository tokenRepository;

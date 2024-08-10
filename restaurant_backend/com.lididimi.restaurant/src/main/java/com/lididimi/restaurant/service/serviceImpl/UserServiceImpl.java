@@ -12,7 +12,6 @@ import com.lididimi.restaurant.model.enums.StatusNameEnum;
 import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.UserService;
-import com.lididimi.restaurant.utils.EmailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public final RestaurantUserDetailsService restaurantUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtFilter jwtFilter;
-    private final EmailUtils emailUtils;
+    private final EmailServiceImpl emailService;
 
 
     public UserServiceImpl(
@@ -39,14 +38,14 @@ public class UserServiceImpl implements UserService {
             RestaurantUserDetailsService restaurantUserDetailsService,
             PasswordEncoder passwordEncoder,
             JwtFilter jwtFilter,
-            EmailUtils emailUtils
+            EmailServiceImpl emailService
     ) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.restaurantUserDetailsService = restaurantUserDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.jwtFilter = jwtFilter;
-        this.emailUtils = emailUtils;
+        this.emailService = emailService;
     }
 
 
@@ -106,9 +105,9 @@ public class UserServiceImpl implements UserService {
         allAdmins.remove(jwtFilter.currentUser());
 
         if (status != null && status.equals(StatusNameEnum.ACTIVE)) {
-            emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account approved.", "User: " + user + "\nis approved by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
+            emailService.sendSimpleMessage(jwtFilter.currentUser(), "Account approved.", "User: " + user + "\nis approved by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
         } else {
-            emailUtils.sendSimpleMessage(jwtFilter.currentUser(), "Account disabled.", "User: " + user + "\nis disabled by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
+            emailService.sendSimpleMessage(jwtFilter.currentUser(), "Account disabled.", "User: " + user + "\nis disabled by\nAdmin: " + jwtFilter.currentUser(), allAdmins);
         }
     }
 }

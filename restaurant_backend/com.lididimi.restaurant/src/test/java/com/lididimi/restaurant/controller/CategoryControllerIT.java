@@ -24,7 +24,10 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "smtp_username=dummyUsername",
+        "smtp_password=dummyPassword",
+})
 @AutoConfigureMockMvc
 public class CategoryControllerIT {
 

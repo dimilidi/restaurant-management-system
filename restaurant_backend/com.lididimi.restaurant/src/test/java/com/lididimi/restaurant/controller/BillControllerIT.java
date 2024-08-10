@@ -23,7 +23,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "smtp_username=dummyUsername",
+        "smtp_password=dummyPassword",
+})
 @AutoConfigureMockMvc
 public class BillControllerIT {
 

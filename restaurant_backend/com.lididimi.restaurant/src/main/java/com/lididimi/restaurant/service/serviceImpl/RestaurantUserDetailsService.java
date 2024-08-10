@@ -6,29 +6,23 @@ import com.lididimi.restaurant.model.enums.UserRoleNameEnum;
 import com.lididimi.restaurant.model.user.RestaurantUserDetails;
 import com.lididimi.restaurant.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class RestaurantUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
     private RestaurantUserDetails userEntityDetail;
 
-    public RestaurantUserDetailsService(UserRepository userRepository, ModelMapper modelMapper) {
+    public RestaurantUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -77,8 +71,3 @@ public class RestaurantUserDetailsService implements UserDetailsService {
         return userEntityDetail;
     }
 }
-
-
-
-
-

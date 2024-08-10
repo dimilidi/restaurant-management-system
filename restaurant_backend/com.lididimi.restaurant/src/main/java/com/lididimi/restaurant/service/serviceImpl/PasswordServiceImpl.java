@@ -9,7 +9,6 @@ import com.lididimi.restaurant.model.entity.UserEntity;
 import com.lididimi.restaurant.repository.PasswordResetTokenRepository;
 import com.lididimi.restaurant.repository.UserRepository;
 import com.lididimi.restaurant.service.PasswordService;
-import com.lididimi.restaurant.utils.EmailUtils;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +25,7 @@ public class PasswordServiceImpl implements PasswordService {
 
     public final RestaurantUserDetailsService restaurantUserDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final EmailUtils emailUtils;
+    private final EmailServiceImpl emailService;
     private final PasswordResetTokenRepository tokenRepository;
 
 
@@ -34,13 +33,13 @@ public class PasswordServiceImpl implements PasswordService {
             UserRepository userRepository,
             RestaurantUserDetailsService restaurantUserDetailsService,
             PasswordEncoder passwordEncoder,
-            EmailUtils emailUtils,
+            EmailServiceImpl emailService,
             PasswordResetTokenRepository tokenRepository
     ) {
         this.userRepository = userRepository;
         this.restaurantUserDetailsService = restaurantUserDetailsService;
         this.passwordEncoder = passwordEncoder;
-        this.emailUtils = emailUtils;
+        this.emailService = emailService;
         this.tokenRepository = tokenRepository;
     }
 
@@ -50,7 +49,7 @@ public class PasswordServiceImpl implements PasswordService {
         Optional<UserEntity> optionalUser = userRepository.findByEmail(emailDTO.getEmail());
         if (optionalUser.isPresent() && !optionalUser.get().getEmail().isEmpty()) {
             UserEntity user = optionalUser.get();
-            emailUtils.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
+            emailService.forgotMail(user.getEmail(), "Link to reset password", passwordResetToken(user.getEmail()));
             return RestaurantConstants.CHECK_EMAIL;
         } else {
             throw new ObjectNotFoundException(RestaurantConstants.EMAIL_NOT_FOUND);
@@ -84,7 +83,7 @@ public class PasswordServiceImpl implements PasswordService {
         }
     }
 
-    private String passwordResetToken(String email) throws MessagingException {
+    private String passwordResetToken(String email) {
         Optional<UserEntity> userOpt = userRepository.findByEmail(email);
         String resetUrl = "";
         if (userOpt.isPresent()) {

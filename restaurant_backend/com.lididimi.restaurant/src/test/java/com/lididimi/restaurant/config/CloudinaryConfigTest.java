@@ -9,7 +9,10 @@ import org.springframework.core.env.Environment;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "smtp_username=dummyUsername",
+        "smtp_password=dummyPassword",
+})
 class CloudinaryConfigTest {
 
     @Autowired
