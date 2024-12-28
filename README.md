@@ -1,12 +1,12 @@
 
-# RMS - Restaurant Management System
+# Restaurant Management System (RMS)
 
 **RMS** is a user-friendly Restaurant Management System designed to help both employees and management efficiently serve guests and organize daily tasks.
 The website is built with Spring Boot in the backend and Angular in the frontend.
 
 This is my final project of the [CS50x](https://pll.harvard.edu/course/cs50-introduction-computer-science) course by [Harvard University](https://pll.harvard.edu/) in 2024.
 
-Video Demo: [RMS](#) //TODO
+Video Demo: [RMS Video Demo](https://www.youtube.com/watch?v=nQVFAzQCa2w) 
 
 ## Table of Contents
 
