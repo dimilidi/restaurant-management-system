@@ -4,9 +4,9 @@
 **RMS** is a user-friendly Restaurant Management System designed to help both employees and management efficiently serve guests and organize daily tasks.
 The website is built with Spring Boot in the backend and Angular in the frontend.
 
-This project is a result of my efforts during a Java Software Engineering Course by [SofUni](https://softuni.bg/) | 2024.
+This is my final project of the [CS50x](https://pll.harvard.edu/course/cs50-introduction-computer-science) course by [Harvard University](https://pll.harvard.edu/) in 2024.
 
-Visit the website: [RMS](https://rms-management-system.netlify.app/)
+Video Demo: [RMS](#) //TODO
 
 ## Table of Contents
 
@@ -62,9 +62,6 @@ Some of the key technologies used in the project include:
 - Angular
 - Rxjs
 
-**Deployment:**
-- Microsoft Azure (backend and database)
-- Netlify (frontend)
 
 ## 4. Setup
 
@@ -188,7 +185,7 @@ Ensure the services are running by executing:
 ## 5. Features
 
 **Public part**
-- View bestseller product with details
+- View bestseller products with details
 - Sign up, login, password reset
 - Page translation
 - Use the app in desktop and mobile version
@@ -206,14 +203,14 @@ Ensure the services are running by executing:
 
 ## 6. API Documentation
 
-The RMS application includes comprehensive API documentation using Swagger/OpenAPI. This documentation provides details about all available endpoints, request parameters, response formats, and possible status codes.
+The RMS application includes comprehensive API documentation using Swagger/OpenAPI. This documentation provides details about  endpoints, request parameters, response formats, and possible status codes.
 
 Access the API Documentation
 Once the backend services are running, you can access the API documentation at the following URL:
 ```
 http://localhost:9090/swagger-ui.html
 ```
-This will open the Swagger UI interface, where you can explore the API, view detailed information about each endpoint, and use the "Try it out" feature to test the endpoints directly from the browser.
+This will open the Swagger UI interface, where you can explore the API, view detailed information about some endpoints, and use the "Try it out" feature to test the endpoints directly from the browser.
 
 Authorize Requests
 For endpoints that require authentication, you need to provide a Bearer token. To do this - click on the "Authorize" button in the Swagger UI.
